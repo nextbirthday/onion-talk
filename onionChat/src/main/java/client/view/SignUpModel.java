@@ -160,12 +160,24 @@ public class SignUpModel {
         return account;
     }
     
+    /**
+     * 로그인 창에서 ID/PW 찾기 버튼을 눌렀을 때 ID와 PW를 DB서버와 연동해서
+     * 사용자가 입력한 정보가 맞으면 사용자에게 ID와 PW를 보여준다.
+     * 
+     * @param username (DB COLUMN NAME : USER_NAME)
+     * @param phone    (DB COLUMN NAME : USER_PHONE)
+     * @return ID 찾기 버튼을 눌렀을 때 입력한 이름과 번호가 맞으면 1을, 틀리면 1을 반환
+     */
     public Account findID( String username, String phone ) {
         StringBuilder sql = new StringBuilder();
+        Account       acc = new Account();
+        
         sql.append( "    SELECT USER_ID          " );
         sql.append( "    FROM ONION.ACCOUNT      " );
         sql.append( "    WHERE USER_NAME = ?     " );
         sql.append( "    AND USER_PHONE = ?      " );
+        
+        log.info( username + ", " + phone );
         
         try {
             conn = OracleConnection.getConnection();
@@ -174,10 +186,14 @@ public class SignUpModel {
             pstmt.setString( 2, phone );
             rs = pstmt.executeQuery();
             
+            if ( rs.next() ) {
+                acc.setUser_id( rs.getString( "USER_ID" ) );
+            }
+            
         }
         catch ( Exception e ) {}
         
-        return null;
+        return acc;
     }
     
 }
