@@ -19,8 +19,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 
+@Log4j2
 @SuppressWarnings( "serial" )
 public class LoginApp implements ActionListener {
     
@@ -152,14 +154,12 @@ public class LoginApp implements ActionListener {
         if ( obj == jbtn_login ) {
             SignUpModel model = new SignUpModel();
             
-            Account account = model.signIn( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ) );
+            model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, myId, null ) );
+            System.out.println( myId );
             
-            if ( account.getUser_nick() != null ) {
-                
-                ChatRoomView chatView = new ChatRoomView( true, account.getUser_nick() );
-                // Login 창을 죽이는 시점
+            if ( myId != null ) {
+                ChatRoomView chatView = new ChatRoomView( true, myId );
                 jf_login.dispose();
-                
             }
             else {
                 showDialog( "아이디 또는 비밀번호를 확인해주세요." );

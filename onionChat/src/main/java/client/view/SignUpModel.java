@@ -133,6 +133,7 @@ public class SignUpModel {
      * @return 닉네임 값이 들어있는 Account 객체
      */
     public Account signIn( Account account ) {
+        
         StringBuilder sql = new StringBuilder();
         sql.append( "   SELECT USER_NICK      " );
         sql.append( "   FROM ONION.ACCOUNT    " );
@@ -148,7 +149,8 @@ public class SignUpModel {
             
             if ( rs.next() ) {
                 account.setUser_nick( rs.getString( "USER_NICK" ) );
-                log.info( account.toString() );
+                LoginApp.myId = rs.getString( "USER_NICK" );
+                log.info( LoginApp.myId );
             }
             
         }
@@ -157,4 +159,25 @@ public class SignUpModel {
         }
         return account;
     }
+    
+    public Account findID( String username, String phone ) {
+        StringBuilder sql = new StringBuilder();
+        sql.append( "    SELECT USER_ID          " );
+        sql.append( "    FROM ONION.ACCOUNT      " );
+        sql.append( "    WHERE USER_NAME = ?     " );
+        sql.append( "    AND USER_PHONE = ?      " );
+        
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, username );
+            pstmt.setString( 2, phone );
+            rs = pstmt.executeQuery();
+            
+        }
+        catch ( Exception e ) {}
+        
+        return null;
+    }
+    
 }

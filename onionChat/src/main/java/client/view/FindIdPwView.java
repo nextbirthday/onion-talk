@@ -244,6 +244,7 @@ public class FindIdPwView extends JDialog {
         jbtn_pwupdate.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 String vpw = new String( jtf_pwupdate.getText() );
+                // String.valueOf( jtf_pwupdate.getPassword()
                 System.out.println( vpw + "," + mid );
             }
         } );
