@@ -1,6 +1,6 @@
-# KH JAVA B3과정 Semi Project <Onion Talk>
+### KH JAVA B3과정 Semi Project <Onion Talk>
 
-# 참고 자료
+### 참고 자료
 
 - 현재 프로젝트 및 로컬 PC Java 버전 : `OpenJDK 11 GA`
 - 참조 링크
