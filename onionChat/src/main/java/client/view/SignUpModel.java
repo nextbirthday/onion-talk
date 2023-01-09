@@ -196,4 +196,8 @@ public class SignUpModel {
         return acc;
     }
     
+    public Account pwFind() {
+        return null;
+    }
+    
 }
