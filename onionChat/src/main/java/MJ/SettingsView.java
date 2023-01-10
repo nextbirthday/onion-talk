@@ -15,7 +15,6 @@ public class SettingsView extends JFrame implements ActionListener {
 	JButton jbtn_chgPW = new JButton ("비밀번호 변경");// 비밀번호 변경 버튼
 	JButton jbtn_signout = new JButton ("탈퇴하기");// 탈퇴하기 버튼
 	JButton jbtn_home = new JButton ("홈");// 홈 가기 버튼
-	ImageIcon homebtn = new ImageIcon (imgPath + "powerB.png");
 	JButton jbtn_lobby = new JButton ("로비");// 로비 가기 버튼
 	JButton jbtn_settings = new JButton ("설정");// 설정 가기 버튼
 	JButton jbtn_logout = new JButton ("로그아웃");// 종료 버튼
@@ -72,8 +71,11 @@ public class SettingsView extends JFrame implements ActionListener {
 		
 		if (obj == jbtn_chgBG) {
 			setTitle ("배경화면 변경");
+			jf_settings.dispose ();
+			SettingsBG sv = new SettingsBG ();
+			sv.initDisplay ();
 			System.out.println ("배경화면 변경");
-			// 배경화면 변경
+			/* 파일 탐색기방식으로 변경 하려면 아래 코드 주석 해제
 			JFileChooser fileChooser = new JFileChooser (); // 파일 선택 창
 			int result = fileChooser.showOpenDialog (jf_settings); // 파일 선택 창 띄우기
 			if (result == JFileChooser.APPROVE_OPTION) { // 파일 선택 후 확인 버튼 누르면
@@ -82,9 +84,8 @@ public class SettingsView extends JFrame implements ActionListener {
 				System.out.println ("파일 이름 : " + file.getName ());// 파일 이름 출력
 				String filePath = file.getPath ();
 				String fileName = file.getName ();
-				// 파일 경로, 이름 저장
-				// DB에 저장
-			}
+			}*/
+			
 		} else if (obj == jbtn_chgName) {
 			setTitle ("닉네임 변경");
 			System.out.println ("닉네임 변경");
