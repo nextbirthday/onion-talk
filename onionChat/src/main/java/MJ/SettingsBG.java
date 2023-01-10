@@ -10,17 +10,17 @@ public class SettingsBG extends JFrame implements ActionListener {
 	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\img\\";
 	JFrame jf_setting = new JFrame ("BackGround Settings");
 	JLabel jlb_bgname = new JLabel ("배경화면 설정");
-	JButton jbtn_add = new JButton ("등록");
-	JButton jbtn_cancel = new JButton ("돌아가기");
-	JButton jbtn_bg1 = new JButton  ("배경화면 1");
-	JButton jbtn_bg2 = new JButton  ("배경화면 2");
-	JButton jbtn_bg3 = new JButton ("배경화면 3");
-	JButton jbtn_bg4 = new JButton ("배경화면 4");
-	JButton jbtn_bg5 = new JButton ("배경화면 5");
-	JButton jbtn_home = new JButton ("홈");// 홈 가기 버튼
-	JButton jbtn_lobby = new JButton ("로비");// 로비 가기 버튼
-	JButton jbtn_settings = new JButton ("설정");// 설정 가기 버튼
-	JButton jbtn_logout = new JButton ("로그아웃");// 종료 버튼
+	JButton btn_add = new JButton ("등록");
+	JButton btn_cancel = new JButton ("돌아가기");
+	JButton btn_setbg1 = new JButton  ("배경화면 1");
+	JButton btn_setbg2 = new JButton  ("배경화면 2");
+	JButton btn_setbg3 = new JButton ("배경화면 3");
+	JButton btn_setbg4 = new JButton ("배경화면 4");
+	JButton btn_setbg5 = new JButton ("배경화면 5");
+	JButton btn_home = new JButton ("홈");// 홈 가기 버튼
+	JButton btn_lobby = new JButton ("로비");// 로비 가기 버튼
+	JButton btn_settings = new JButton ("설정");// 설정 가기 버튼
+	JButton btn_logout = new JButton ("로그아웃");// 종료 버튼
 	
 	Font msgf = new Font ("맑은 고딕", Font.BOLD, 20);
 	
@@ -78,17 +78,17 @@ public class SettingsBG extends JFrame implements ActionListener {
 	
 	
 	public void initDisplay () {
-		jbtn_add.addActionListener(this);
-		jbtn_cancel.addActionListener(this);
-		jbtn_bg1.addActionListener(this);
-		jbtn_bg2.addActionListener(this);
-		jbtn_bg3.addActionListener(this);
-		jbtn_bg4.addActionListener(this);
-		jbtn_bg5.addActionListener(this);
-		jbtn_home.addActionListener(this);
-		jbtn_lobby.addActionListener(this);
-		jbtn_settings.addActionListener(this);
-		jbtn_logout.addActionListener(this);
+		btn_add.addActionListener(this);
+		btn_cancel.addActionListener(this);
+		btn_setbg1.addActionListener(this);
+		btn_setbg2.addActionListener(this);
+		btn_setbg3.addActionListener(this);
+		btn_setbg4.addActionListener(this);
+		btn_setbg5.addActionListener(this);
+		btn_home.addActionListener(this);
+		btn_lobby.addActionListener(this);
+		btn_settings.addActionListener(this);
+		btn_logout.addActionListener(this);
 		
 		jf_setting.setTitle ("배경화면 설정");
 		jf_setting.setLayout (null);
@@ -98,98 +98,98 @@ public class SettingsBG extends JFrame implements ActionListener {
 		jf_setting.setDefaultCloseOperation (DISPOSE_ON_CLOSE);
 		jf_setting.setVisible (true);
 		
-		jbtn_bg1.setFont (msgf);
-		jbtn_bg2.setFont (msgf);
-		jbtn_bg3.setFont (msgf);
-		jbtn_bg4.setFont (msgf);
-		jbtn_bg5.setFont (msgf);
-		jbtn_add.setFont (msgf);
-		jbtn_cancel.setFont (msgf);
+		btn_setbg1.setFont (msgf);
+		btn_setbg2.setFont (msgf);
+		btn_setbg3.setFont (msgf);
+		btn_setbg4.setFont (msgf);
+		btn_setbg5.setFont (msgf);
+		btn_add.setFont (msgf);
+		btn_cancel.setFont (msgf);
 		
-		jbtn_home.setFont (msgf);
-		jbtn_lobby.setFont (msgf);
-		jbtn_settings.setFont (msgf);
-		jbtn_logout.setFont (msgf);
+		btn_home.setFont (msgf);
+		btn_lobby.setFont (msgf);
+		btn_settings.setFont (msgf);
+		btn_logout.setFont (msgf);
 		
 		jlb_bgname.setFont (msgf);
 		jlb_bgname.setBounds (100, 50, 200, 40); // 배경화면 설정 라벨 위치
-		jbtn_add.setBounds (300, 50, 80, 40);// 선택된 배경화면 등록 버튼 위치
-		jbtn_cancel.setBounds (400, 50, 130, 40);// 돌아가기 버튼 위치
-		jbtn_bg1.setBounds (50, 100, 500, 50);// 배경화면 1 버튼 위치
-		jbtn_bg2.setBounds (50, 170, 500, 50);// 배경화면 2 버튼 위치
-		jbtn_bg3.setBounds (50, 240, 500, 50);// 배경화면 3 버튼 위치
-		jbtn_bg4.setBounds (50, 310, 500, 50);// 배경화면 4 버튼 위치
-		jbtn_bg5.setBounds (50, 380, 500, 50);// 배경화면 5 버튼 위치
-		jbtn_home.setBounds (0, 830, 150, 40);// 홈 가기 버튼 위치, 크기 설정
-		jbtn_lobby.setBounds (150, 830, 150, 40);// 로비 가기 버튼 위치, 크기 설정
-		jbtn_settings.setBounds (300, 830, 150, 40);// 설정 가기 버튼 위치, 크기 설정
-		jbtn_logout.setBounds (450, 830, 150, 40);// 종료 버튼 위치, 크기 설정
+		btn_add.setBounds (300, 50, 80, 40);// 선택된 배경화면 등록 버튼 위치
+		btn_cancel.setBounds (400, 50, 130, 40);// 돌아가기 버튼 위치
+		btn_setbg1.setBounds (50, 100, 500, 50);// 배경화면 1 버튼 위치
+		btn_setbg2.setBounds (50, 170, 500, 50);// 배경화면 2 버튼 위치
+		btn_setbg3.setBounds (50, 240, 500, 50);// 배경화면 3 버튼 위치
+		btn_setbg4.setBounds (50, 310, 500, 50);// 배경화면 4 버튼 위치
+		btn_setbg5.setBounds (50, 380, 500, 50);// 배경화면 5 버튼 위치
+		btn_home.setBounds (0, 830, 150, 40);// 홈 가기 버튼 위치, 크기 설정
+		btn_lobby.setBounds (150, 830, 150, 40);// 로비 가기 버튼 위치, 크기 설정
+		btn_settings.setBounds (300, 830, 150, 40);// 설정 가기 버튼 위치, 크기 설정
+		btn_logout.setBounds (450, 830, 150, 40);// 종료 버튼 위치, 크기 설정
 		
-		jf_setting.add (jbtn_add);
-		jf_setting.add (jbtn_cancel);
-		jf_setting.add (jbtn_bg1);
-		jf_setting.add (jbtn_bg2);
-		jf_setting.add (jbtn_bg3);
-		jf_setting.add (jbtn_bg4);
-		jf_setting.add (jbtn_bg5);
+		jf_setting.add (btn_add);
+		jf_setting.add (btn_cancel);
+		jf_setting.add (btn_setbg1);
+		jf_setting.add (btn_setbg2);
+		jf_setting.add (btn_setbg3);
+		jf_setting.add (btn_setbg4);
+		jf_setting.add (btn_setbg5);
 		jf_setting.add (jlb_bgname);
-		jf_setting.add (jbtn_home);
-		jf_setting.add (jbtn_lobby);
-		jf_setting.add (jbtn_settings);
-		jf_setting.add (jbtn_logout);
+		jf_setting.add (btn_home);
+		jf_setting.add (btn_lobby);
+		jf_setting.add (btn_settings);
+		jf_setting.add (btn_logout);
 		
-		jf_setting.add (jbtn_home);
-		jf_setting.add (jbtn_lobby);
-		jf_setting.add (jbtn_settings);
-		jf_setting.add (jbtn_logout);
+		jf_setting.add (btn_home);
+		jf_setting.add (btn_lobby);
+		jf_setting.add (btn_settings);
+		jf_setting.add (btn_logout);
 		
 	}
 	
 	@Override
 	public void actionPerformed (ActionEvent e) {
 		Object obj = e.getSource ();
-		if (obj == jbtn_home) {
+		if (obj == btn_home) {
 			jf_setting.dispose ();
 //			MainPage mp = new MainPage ();
 //			mp.initDisplay ();
 		}
-		else if (obj == jbtn_lobby) {
+		else if (obj == btn_lobby) {
 			jf_setting.dispose ();
 //			LobbyPage lp = new LobbyPage ();
 //			lp.initDisplay ();
 		}
-		else if (obj == jbtn_settings) {
+		else if (obj == btn_settings) {
 			jf_setting.dispose ();
 			SettingsView sv = new SettingsView ();
 			sv.initDisplay ();
 		}
-		else if (obj == jbtn_logout) {
+		else if (obj == btn_logout) {
 			System.exit (0);
 		}
-		else if (obj == jbtn_add) {
+		else if (obj == btn_add) {
 			JOptionPane.showMessageDialog (jf_setting, "선택하신 배경화면이 등록되었습니다.");
 			jf_setting.dispose ();
 			SettingsView sv = new SettingsView ();
 			sv.initDisplay ();
 		}
-		else if (obj == jbtn_cancel) { // 돌아가기 버튼 누르면 SettingsView로 돌아감
+		else if (obj == btn_cancel) { // 돌아가기 버튼 누르면 SettingsView로 돌아감
 			jf_setting.dispose ();
 			SettingsView sv = new SettingsView ();
 			sv.initDisplay ();
 		}
-		else if (obj == jbtn_bg1) {
+		else if (obj == btn_setbg1) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 1이 선택되었습니다.");
 		}
-		else if (obj == jbtn_bg2) {
+		else if (obj == btn_setbg2) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 2이 선택되었습니다.");
 		}
-		else if (obj == jbtn_bg3) {
+		else if (obj == btn_setbg3) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 3이 선택되었습니다.");
 		}
-		else if (obj == jbtn_bg4) {
+		else if (obj == btn_setbg4) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 4이 선택되었습니다.");
 		}
-		else if (obj == jbtn_bg5) {
+		else if (obj == btn_setbg5) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 5이 선택되었습니다.");
 		}
 		
