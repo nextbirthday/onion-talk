@@ -196,8 +196,32 @@ public class SignUpModel {
         return acc;
     }
     
-    public Account pwFind() {
-        return null;
+    public Account pwFind( String username, String id ) {
+        
+        StringBuilder sql = new StringBuilder();
+        Account       acc = new Account();
+        
+        sql.append( "    SELECT USER_PW          " );
+        sql.append( "    FROM ONION.ACCOUNT      " );
+        sql.append( "    WHERE USER_NAME = ?     " );
+        sql.append( "    AND USER_ID = ?      " );
+        
+        log.info( username + ", " + id );
+        
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, username );
+            pstmt.setString( 2, id );
+            rs = pstmt.executeQuery();
+            
+            if ( rs.next() ) {
+                acc.setUser_id( rs.getString( "USER_PW" ) );
+            }
+            
+        }
+        catch ( Exception e ) {}
+        return acc;
     }
     
 }
