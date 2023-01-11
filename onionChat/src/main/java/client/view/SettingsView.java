@@ -128,6 +128,8 @@ public class SettingsView extends JFrame implements ActionListener {
 			// 홈으로 이동ㅎ
 		} else if (obj == btn_lobby) {
 			setTitle ("로비");
+			ChatList cl = new ChatList ();
+			cl.initDisplay ();
 			System.out.println ("로비");
 			// 로비로 이동
 		} else if (obj == btn_settings) {

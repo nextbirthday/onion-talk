@@ -21,61 +21,10 @@ public class SettingsBG extends JFrame implements ActionListener {
 	JButton btn_lobby = new JButton ("로비");// 로비 가기 버튼
 	JButton btn_settings = new JButton ("설정");// 설정 가기 버튼
 	JButton btn_logout = new JButton ("로그아웃");// 종료 버튼
+	JScrollPane jsp = new JScrollPane();
+	ImageIcon icon = new ImageIcon(imgPath + "onion1.jpg");
 	
 	Font msgf = new Font ("맑은 고딕", Font.BOLD, 20);
-	
-//	Label lbl = new Label();
-//	SettingsBG(){
-//	super("배경화면 설정");
-//	this.setVisible (true);
-//	this.setSize (500, 500);
-//	this.setLayout (null);
-//	this.addWindowListener (new MyWinExit ());
-//	lbl=new Label("배경화면 설정1");
-//	lbl.setBounds (100, 50, 300, 50);
-//	add(lbl);
-//	lbl.addMouseListener (this);
-//	}
-//
-//	@Override
-//	public void actionPerformed (ActionEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void mouseClicked (MouseEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void mousePressed (MouseEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void mouseReleased (MouseEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void mouseEntered (MouseEvent e) {
-//
-//	}
-//
-//	@Override
-//	public void mouseExited (MouseEvent e) {
-//
-//	}
-//}
-//
-//	public class MyWinExit extends WindowAdapter {
-//		public void windowClosing (WindowEvent e) {
-//			System.exit (0);
-//		}
-//
-//
-//	}
-	
 	
 	public void initDisplay () {
 		btn_add.addActionListener(this);
@@ -155,8 +104,8 @@ public class SettingsBG extends JFrame implements ActionListener {
 		}
 		else if (obj == btn_lobby) {
 			jf_setting.dispose ();
-//			LobbyPage lp = new LobbyPage ();
-//			lp.initDisplay ();
+			ChatList cl = new ChatList ();
+			cl.initDisplay ();
 		}
 		else if (obj == btn_settings) {
 			jf_setting.dispose ();
@@ -168,9 +117,9 @@ public class SettingsBG extends JFrame implements ActionListener {
 		}
 		else if (obj == btn_add) {
 			JOptionPane.showMessageDialog (jf_setting, "선택하신 배경화면이 등록되었습니다.");
-			jf_setting.dispose ();
-			SettingsView sv = new SettingsView ();
-			sv.initDisplay ();
+//			jf_setting.dispose (); // 배경화면 등록 후 설정창 닫기
+//			SettingsView sv = new SettingsView (); // 설정창 다시 띄우기
+//			sv.initDisplay ();
 		}
 		else if (obj == btn_cancel) { // 돌아가기 버튼 누르면 SettingsView로 돌아감
 			jf_setting.dispose ();
@@ -178,7 +127,10 @@ public class SettingsBG extends JFrame implements ActionListener {
 			sv.initDisplay ();
 		}
 		else if (obj == btn_setbg1) {
+			icon.setImage (icon.getImage ());
+			icon.setImage (Toolkit.getDefaultToolkit ().getImage ("C:\\Users\\thdau\\Desktop\\SP\\img\\onion1.png"));
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 1이 선택되었습니다.");
+			
 		}
 		else if (obj == btn_setbg2) {
 			JOptionPane.showMessageDialog (jf_setting, "배경화면 2이 선택되었습니다.");
@@ -199,5 +151,6 @@ public class SettingsBG extends JFrame implements ActionListener {
 	public static void main (String[] args) {
 		SettingsBG sbg = new SettingsBG ();
 		sbg.initDisplay ();
+		
 	}
 }
