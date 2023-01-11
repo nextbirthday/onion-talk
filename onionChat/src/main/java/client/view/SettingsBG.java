@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+@SuppressWarnings( "serial" )
 public class SettingsBG extends JFrame implements ActionListener {
 	//	JPanel panel = new JPanel();
 	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\img\\";

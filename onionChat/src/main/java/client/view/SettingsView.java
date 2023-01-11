@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+@SuppressWarnings( "serial" )
 public class SettingsView extends JFrame implements ActionListener {
 	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\img\\";
 	JFrame jf_settings = new JFrame (); // 메인 프레임
