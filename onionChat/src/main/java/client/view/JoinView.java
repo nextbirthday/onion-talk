@@ -14,37 +14,39 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import oracle.jdbc.OracleTypes;
 import util.dto.Account;
 
 @SuppressWarnings( "serial" )
 public class JoinView implements ActionListener {
     
-    boolean        isIdCheck      = false;
-    String         imgPath        = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
-    JDialog        jdl_join       = new JDialog(); // 회원가입 프레임
-    JPanel         jp_join        = new JPanel( null ); // 회원가입 도화지
-    JLabel         jlb_name       = new JLabel( "이름" );
-    JLabel         jlb_id         = new JLabel( "아이디" );
-    JLabel         jlb_pw         = new JLabel( "비밀번호" );
-    JLabel         jlb_pw2        = new JLabel( "비밀번호확인" );
-    JLabel         jlb_birth      = new JLabel( "생년월일" );
-    JLabel         jlb_phone      = new JLabel( "전화번호" );
-    JLabel         jlb_nickName   = new JLabel( "닉네임" );
-    JLabel         jlb_idAvble    = new JLabel( "사용가능한 아이디 입니다." );
-    JLabel         jlb_idNotAvble = new JLabel( "중복된 아이디 입니다." );
-    JLabel         jlb_title      = new JLabel( "회원가입" );// 회원가입 , title 라벨
-    JTextField     jtf_name       = new JTextField(); // 이름
-    JTextField     jtf_id         = new JTextField(); // 아이디
-    JPasswordField jtf_pw         = new JPasswordField(); // 비밀번호
-    JPasswordField jtf_pw2        = new JPasswordField(); // 비밀번호 확인
-    JTextField     jtf_birth      = new JTextField(); // 생년월일
-    JTextField     jtf_phone      = new JTextField(); // 폰번호
-    JTextField     jtf_nickName   = new JTextField(); // 닉네임
-    ImageIcon      imgic_join     = new ImageIcon( imgPath + "bt_join.png" ); // 로그인 버튼 이미지
-    JButton        jbtn_idconfirm = new JButton( "중복검사" ); // 로그인 버튼
-    JButton        jbtn_join      = new JButton( imgic_join );// 회원가입 버튼
-    Font           f_join         = new Font( "맑은 고딕", Font.PLAIN, 25 );
-    Font           f_label        = new Font( "맑은 고딕", Font.PLAIN, 12 );
+    public static String register       = "SYSDATE"; // 가입 날짜
+    boolean              isIdCheck      = false;
+    String               imgPath        = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
+    JDialog              jdl_join       = new JDialog(); // 회원가입 프레임
+    JPanel               jp_join        = new JPanel( null ); // 회원가입 도화지
+    JLabel               jlb_name       = new JLabel( "이름" );
+    JLabel               jlb_id         = new JLabel( "아이디" );
+    JLabel               jlb_pw         = new JLabel( "비밀번호" );
+    JLabel               jlb_pw2        = new JLabel( "비밀번호확인" );
+    JLabel               jlb_birth      = new JLabel( "생년월일" );
+    JLabel               jlb_phone      = new JLabel( "전화번호" );
+    JLabel               jlb_nickName   = new JLabel( "닉네임" );
+    JLabel               jlb_idAvble    = new JLabel( "사용가능한 아이디 입니다." );
+    JLabel               jlb_idNotAvble = new JLabel( "중복된 아이디 입니다." );
+    JLabel               jlb_title      = new JLabel( "회원가입" );// 회원가입 , title 라벨
+    JTextField           jtf_name       = new JTextField(); // 이름
+    JTextField           jtf_id         = new JTextField(); // 아이디
+    JPasswordField       jtf_pw         = new JPasswordField(); // 비밀번호
+    JPasswordField       jtf_pw2        = new JPasswordField(); // 비밀번호 확인
+    JTextField           jtf_birth      = new JTextField(); // 생년월일
+    JTextField           jtf_phone      = new JTextField(); // 폰번호
+    JTextField           jtf_nickName   = new JTextField(); // 닉네임
+    ImageIcon            imgic_join     = new ImageIcon( imgPath + "bt_join.png" ); // 로그인 버튼 이미지
+    JButton              jbtn_idconfirm = new JButton( "중복검사" ); // 로그인 버튼
+    JButton              jbtn_join      = new JButton( imgic_join );// 회원가입 버튼
+    Font                 f_join         = new Font( "맑은 고딕", Font.PLAIN, 25 );
+    Font                 f_label        = new Font( "맑은 고딕", Font.PLAIN, 12 );
     
     SignUpModel signUpModel = new SignUpModel( this );
     
@@ -166,8 +168,9 @@ public class JoinView implements ActionListener {
                     
                     if ( String.valueOf( jtf_pw.getPassword() ).length() > 0
                                     && String.valueOf( jtf_pw.getPassword() ).equals( String.valueOf( jtf_pw2.getPassword() ) ) ) {
-                        int result = signUpModel.register( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ),
-                                        jtf_name.getText(), jtf_nickName.getText(), jtf_birth.getText(), jtf_phone.getText() ) );
+                        int result = signUpModel.register(
+                                        new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), jtf_name.getText(),
+                                                        jtf_birth.getText(), jtf_phone.getText(), jtf_nickName.getText(), null, null ) );
                         
                         if ( result > 0 ) {
                             showDialog( "회원가입 완료" );
