@@ -35,7 +35,7 @@ public class SignUpModel {
         StringBuilder sql = new StringBuilder();
         
         sql.append( "      SELECT USER_ID " ); // COLUMN USER_ID
-        sql.append( "  FROM ONION.ACCOUNT " ); // ACCOUNT TABLE
+        sql.append( "  FROM ONION.INFO " ); // ACCOUNT TABLE
         sql.append( "  WHERE USER_ID = ?" ); // CONDITION USER_ID data와 ?일치하면
         
         try {
@@ -68,11 +68,12 @@ public class SignUpModel {
      * @return INSERT 성공 시 : 성공한 개수, 실패 시 0
      */
     public int register( Account account ) {
-        StringBuilder sql    = new StringBuilder();
-        int           result = 0;
         
-        sql.append( " INSERT INTO ONION.ACCOUNT " );
-        sql.append( " VALUES (?, ?, ?, ?, ?, ?) " );
+        StringBuilder sql = new StringBuilder();
+        log.info( account.toString() );
+        int result = 0;
+        sql.append( " INSERT INTO ONION.INFO " );
+        sql.append( " VALUES (?, ?, ?, ?, ?, ?, ?, SYSDATE ) " );
         
         try {
             conn = OracleConnection.getConnection();
@@ -80,12 +81,14 @@ public class SignUpModel {
             pstmt.setString( 1, account.getUser_id() );
             pstmt.setString( 2, account.getUser_pw() );
             pstmt.setString( 3, account.getUser_name() );
-            pstmt.setString( 4, account.getUser_nick() );
-            pstmt.setString( 5, account.getUser_birth() );
-            pstmt.setString( 6, account.getUser_phone() );
+            pstmt.setString( 4, account.getUser_birth() );
+            pstmt.setString( 5, account.getUser_phone() );
+            pstmt.setString( 6, account.getUser_nick() );
+            pstmt.setString( 7, null );
+            // pstmt.setString( 8, null );
+            System.out.println( account.toString() );
             log.info( account.toString() );
             result = pstmt.executeUpdate();
-            
         }
         catch ( Exception e ) {
             e.printStackTrace();
@@ -101,7 +104,7 @@ public class SignUpModel {
         StringBuilder sql = new StringBuilder();
         Account       acc = new Account();
         sql.append( "   SELECT USER_NICK      " );
-        sql.append( "   FROM ONION.ACCOUNT    " );
+        sql.append( "   FROM ONION.INFO    " );
         sql.append( "   WHERE USER_ID = ?    " );
         sql.append( "   AND USER_PW = ?      " );
         
@@ -136,7 +139,7 @@ public class SignUpModel {
         
         StringBuilder sql = new StringBuilder();
         sql.append( "   SELECT USER_NICK      " );
-        sql.append( "   FROM ONION.ACCOUNT    " );
+        sql.append( "   FROM ONION.INFO    " );
         sql.append( "   WHERE USER_ID = ?    " );
         sql.append( "   AND USER_PW = ?      " );
         
@@ -173,7 +176,7 @@ public class SignUpModel {
         Account       acc = new Account();
         
         sql.append( "    SELECT USER_ID          " );
-        sql.append( "    FROM ONION.ACCOUNT      " );
+        sql.append( "    FROM ONION.INFO      " );
         sql.append( "    WHERE USER_NAME = ?     " );
         sql.append( "    AND USER_PHONE = ?      " );
         
@@ -202,7 +205,7 @@ public class SignUpModel {
         Account       acc = new Account();
         
         sql.append( "    SELECT USER_PW          " );
-        sql.append( "    FROM ONION.ACCOUNT      " );
+        sql.append( "    FROM ONION.INFO      " );
         sql.append( "    WHERE USER_NAME = ?     " );
         sql.append( "    AND USER_ID = ?      " );
         

@@ -148,13 +148,17 @@ public class LoginApp implements ActionListener {
     @Override
     public void actionPerformed( ActionEvent e ) {
         // join = new Join();
-        
+        // if(jtf_id.getText() 뭘 포함하지 않으면 false) {
+        //
+        // }else {
+        // JOptionPane.showMessageDialog( null, "형식에 맞게 입력해주세요." );
+        // }
         Object obj = e.getSource();
         
         if ( obj == jbtn_login ) {
             SignUpModel model = new SignUpModel();
             
-            model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, myId, null ) );
+            model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, myId, null, null ) );
             System.out.println( myId );
             
             if ( myId != null ) {
