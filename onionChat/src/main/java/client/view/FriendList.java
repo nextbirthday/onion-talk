@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -22,11 +23,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 
 // 채팅 목록
 public class FriendList extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
@@ -53,7 +50,7 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     JButton jbtn_delete_friend = new JButton("x"); // 친구삭제 버튼
     // 아래 버튼
     JButton jbtn_home = new JButton("친구목록"); // 친구목록 버튼
-    JButton jbtn_chatroom = new JButton("채팅방");// 채팅방 버튼
+    JButton jbtn_chatroom = new JButton("채팅목록");// 채팅방 버튼
     JButton jbtn_setting = new JButton("설정");// 설정 버튼
     JButton jbtn_logout = new JButton("로그아웃");// 로그아웃 버튼
 
@@ -65,9 +62,9 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     JButton delBtn = new JButton("삭제"); // 삭제 버튼
 
     // 생성자
-    // FriendList() {
-    // initDisplay();
-    // }
+    public FriendList() {
+        initDisplay();
+    }
 
     // 내부클래스로 배경 이미지 처리
     class MyPanel extends JPanel {
@@ -85,35 +82,41 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
         this.setContentPane(new MyPanel());
         this.setLayout(new BorderLayout(50, 20));// 배치
 
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 하나만 선택 될 수 있도록
+
+        // ==========이벤트 속성 추가=================
+        jbtn_change_msg.addActionListener(this); // 엔터 처리
+        inputField.addKeyListener(this); // 엔터 처리
+        addBtn.addMouseListener(this); // 아이템 추가
+        delBtn.addMouseListener(this); // 아이템 삭제
+        list.addListSelectionListener(this); // 항목 선택시
+
         // 상단 - 닉네임 - 상태메세지
         jp_north.add(jlb_nick);// 닉네임
         jp_north.add(jlb_msg); // 상태메세지
+        jp_north.add(jlb_msg2); // 상태메세지2
         jp_north.add(jbtn_change_msg);
         jlb_nick.setBounds(40, 20, 100, 35);
         jlb_msg.setBounds(100, 20, 200, 35);
+        jlb_msg2.setBounds(100, 20, 200, 35); // 상태메세지2
+        jlb_msg2.setVisible(false);
         jlb_msg.setToolTipText("수정버튼을 누르면 메세지를 변경하실 수 있습니다");
         jbtn_change_msg.setBounds(280, 20, 60, 35);
         jlb_msg.setBorder(eborder); // 메세지 테두리 설정
+        jlb_msg2.setBorder(eborder); // 메세지 테두리 설정
 
         // 하단 -탭
         jp_south.add(jbtn_home);
         jp_south.add(jbtn_chatroom);
         jp_south.add(jbtn_setting);
         jp_south.add(jbtn_logout);
+        jp_south.setBackground(new Color(146, 208, 80));
 
         // 가운데 - 친구목록
 
         list.setSize(400, 600);
         jp_center.add(jlb_list);
         this.add("Center", jp_center);
-
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 하나만 선택 될 수 있도록
-
-        inputField.addKeyListener(this); // 엔터 처리
-        addBtn.addMouseListener(this); // 아이템 추가
-        delBtn.addMouseListener(this); // 아이템 삭제
-        list.addListSelectionListener(this); // 항목 선택시
-
         this.setLayout(new BorderLayout());
 
         // JPanel topPanel=new JPanel(new FlowLayout(10,10,FlowLayout.LEFT));
@@ -140,11 +143,12 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     }
 
     // 메인메소드
-    public static void main(String[] args) {
-        FriendList FriendList = new FriendList();
-        FriendList.initDisplay();
-    }
+    // public static void main(String[] args) {
+    // FriendList FriendList = new FriendList();
+    // FriendList.initDisplay();
+    // }
 
+    // ====== 버튼 클릭 됐을 때 ===========
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -156,6 +160,7 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
             int selected = list.getSelectedIndex();
             removeItem(selected);
         }
+
     }
 
     public void removeItem(int index) {
@@ -169,7 +174,18 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
         model.remove(index);
     }
 
-    public void addItem() {
+    public void addItem() { // db연동 안되어있을 때 친구 추가 자동으로 하기
+        String inputText = inputField.getText();
+        if (inputText == null || inputText.length() == 0)
+            return;
+        model.addElement(inputText);
+        inputField.setText(""); // 내용 지우기
+        inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
+        // 가장 마지막으로 list 위치 이동
+        scrolled.getVerticalScrollBar().setValue(scrolled.getVerticalScrollBar().getMaximum());
+    }
+
+    public void addItem2() { // db연동의 경우
         String inputText = inputField.getText();
         if (inputText == null || inputText.length() == 0)
             return;
@@ -183,6 +199,7 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     // MouseListener
     @Override
     public void mousePressed(MouseEvent e) {
+
     }
 
     @Override
@@ -225,8 +242,18 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
+    public void actionPerformed(ActionEvent ae) {
+        Object obj = ae.getSource();
 
+        if (obj == jbtn_change_msg) {
+            String newMsg = JOptionPane.showInputDialog(null, "변경할 상태메세지를 입력하세요", "", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("변경할 상태메시지 : " + newMsg);
+
+            jlb_msg.setVisible(false);
+            jlb_msg2.setVisible(true);
+
+            // DB에 저장
+
+        }
     }
 }

@@ -158,7 +158,8 @@ public class LoginApp implements ActionListener {
             System.out.println( myId );
             
             if ( myId != null ) {
-                ChatRoomView chatView = new ChatRoomView( true, myId );
+                // ChatRoomView chatView = new ChatRoomView( true, myId );
+                FriendList friendList = new FriendList();
                 jf_login.dispose();
             }
             else {
