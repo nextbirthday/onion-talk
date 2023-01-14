@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,7 +20,7 @@ import oracle.jdbc.OracleTypes;
 import util.dto.Account;
 
 @SuppressWarnings( "serial" )
-public class JoinView implements ActionListener {
+public class JoinView implements ActionListener, FocusListener {
     
     public static String register       = "SYSDATE"; // 가입 날짜
     boolean              isIdCheck      = false;
@@ -35,13 +37,13 @@ public class JoinView implements ActionListener {
     JLabel               jlb_idAvble    = new JLabel( "사용가능한 아이디 입니다." );
     JLabel               jlb_idNotAvble = new JLabel( "중복된 아이디 입니다." );
     JLabel               jlb_title      = new JLabel( "회원가입" );// 회원가입 , title 라벨
-    JTextField           jtf_name       = new JTextField(); // 이름
-    JTextField           jtf_id         = new JTextField(); // 아이디
+    JTextField           jtf_name       = new JTextField( "ex) ONION" ); // 이름
+    JTextField           jtf_id         = new JTextField( "영문, 숫자만 입력할 수 있습니다." ); // 아이디
     JPasswordField       jtf_pw         = new JPasswordField(); // 비밀번호
     JPasswordField       jtf_pw2        = new JPasswordField(); // 비밀번호 확인
-    JTextField           jtf_birth      = new JTextField(); // 생년월일
-    JTextField           jtf_phone      = new JTextField(); // 폰번호
-    JTextField           jtf_nickName   = new JTextField(); // 닉네임
+    JTextField           jtf_birth      = new JTextField( "ex) 941225" ); // 생년월일
+    JTextField           jtf_phone      = new JTextField( "ex) 010-1234-5678" ); // 폰번호
+    JTextField           jtf_nickName   = new JTextField( "ex) 양파쿵야" ); // 닉네임
     ImageIcon            imgic_join     = new ImageIcon( imgPath + "bt_join.png" ); // 로그인 버튼 이미지
     JButton              jbtn_idconfirm = new JButton( "중복검사" ); // 로그인 버튼
     JButton              jbtn_join      = new JButton( imgic_join );// 회원가입 버튼
@@ -54,6 +56,12 @@ public class JoinView implements ActionListener {
         
         jbtn_join.addActionListener( this );
         jbtn_idconfirm.addActionListener( this );
+        
+        jtf_name.addFocusListener( this );
+        jtf_id.addFocusListener( this );
+        jtf_birth.addFocusListener( this );
+        jtf_phone.addFocusListener( this );
+        jtf_nickName.addFocusListener( this );
         // 타이틀 부분
         ImageIcon bookIcon = new ImageIcon( imgPath + "title.png" );
         jdl_join.setIconImage( bookIcon.getImage() );
@@ -117,6 +125,8 @@ public class JoinView implements ActionListener {
         jdl_join.setSize( 400, 600 );
         jdl_join.setLocationRelativeTo( null );// 창 가운데서 띄우기
         jdl_join.setVisible( true );
+        //회원가입창 열었을 때 jlb_name 강제로 포커스 주기
+        jlb_name.requestFocus( true );
     }
     
     // // 단위테스트용
@@ -179,22 +189,88 @@ public class JoinView implements ActionListener {
                         else {
                             showDialog( "회원가입 실패, 다시 시도해주세요." );
                         }
-                        
                     }
                     else {
                         showDialog( "비밀번호가 일치하지 않습니다." );
                     }
-                    
                 }
                 else {
                     showDialog( "입력되지 않은 정보가 있습니다." );
                 }
-                
             }
             else {
                 showDialog( "ID 중복체크를 먼저 진행해주세요." );
             }
+        }
+    }
+    
+    @Override
+    public void focusGained( FocusEvent e ) {
+        
+        if ( e.getSource() == jtf_id ) {
+            jtf_id.setText( "" );
+        }
+        else if ( e.getSource() == jtf_birth ) {
+            jtf_birth.setText( "" );
+        }
+        else if ( e.getSource() == jtf_phone ) {
+            jtf_phone.setText( "" );
+        }
+        else if ( e.getSource() == jtf_name ) {
+            jtf_name.setText( "" );
+        }
+        else if ( e.getSource() == jtf_nickName ) {
+            jtf_nickName.setText( "" );
+        }
+    }
+    
+    @Override
+    public void focusLost( FocusEvent e ) {
+        
+        if ( e.getSource() == jtf_id ) {
             
+            if ( jtf_id.getText().length() > 0 ) {
+                jtf_id.setText( jtf_id.getText() );
+            }
+            else {
+                jtf_id.setText( "영문, 숫자만 입력할 수 있습니다." );
+            }
+        }
+        else if ( e.getSource() == jtf_birth ) {
+            
+            if ( jtf_birth.getText().length() > 0 ) {
+                jtf_birth.setText( jtf_birth.getText() );
+            }
+            else {
+                jtf_birth.setText( "ex) 941225" );
+            }
+        }
+        else if ( e.getSource() == jtf_phone ) {
+            
+            if ( jtf_phone.getText().length() > 0 ) {
+                jtf_phone.setText( jtf_phone.getText() );
+            }
+            else {
+                jtf_phone.setText( "ex) 010-1234-5678" );
+            }
+        }
+        else if ( e.getSource() == jtf_name ) {
+            
+            if ( jtf_name.getText().length() > 0 ) {
+                jtf_name.setText( jtf_name.getText() );
+            }
+            else {
+                jtf_name.setText( "ex) ONION" );
+            }
+        }
+        else if ( e.getSource() == jtf_nickName ) {
+            
+            if ( jtf_nickName.getText().length() > 0 ) {
+                jtf_nickName.setText( jtf_nickName.getText() );
+            }
+            else {
+                jtf_nickName.setText( "ex) 양파쿵야" );
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 // 채팅 목록
+@SuppressWarnings( "serial" )
 public class FriendList extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
 
     // 선언부

@@ -132,10 +132,10 @@ public class LoginApp implements ActionListener {
         jf_login.setSize( 400, 600 );
         jf_login.setLocationRelativeTo( null );// 창 가운데서 띄우기
         jf_login.setVisible( true );
+        
     }
     
     private void showDialog( String message ) {
-        // showMessageDialog (Component parentComponent, Object message)
         // 첫 번째 파라미터 자리에 null이 들어가 있으면 지 혼자이고, Component가 들어오면
         JOptionPane.showMessageDialog( jf_login, message );
     }
@@ -147,12 +147,6 @@ public class LoginApp implements ActionListener {
     
     @Override
     public void actionPerformed( ActionEvent e ) {
-        // join = new Join();
-        // if(jtf_id.getText() 뭘 포함하지 않으면 false) {
-        //
-        // }else {
-        // JOptionPane.showMessageDialog( null, "형식에 맞게 입력해주세요." );
-        // }
         Object obj = e.getSource();
         
         if ( obj == jbtn_login ) {
@@ -167,8 +161,9 @@ public class LoginApp implements ActionListener {
                 jf_login.dispose();
             }
             else {
-                showDialog( "아이디 또는 비밀번호를 확인해주세요." );
+                showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
             }
         }
     }
+    
 }

@@ -10,15 +10,20 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import util.dto.Account;
+
 @SuppressWarnings( "serial" )
 public class FindIdPwView extends JDialog {
-    String  mid          = null;
-    JDialog jdl_infomiss = new JDialog();// 아이디/비밀번호찾기 프레임
+    SignUpModel model        = new SignUpModel();
+    Account     acc          = new Account();
+    String      mid          = null;
+    JDialog     jdl_infomiss = new JDialog();// 아이디/비밀번호찾기 프레임
     // CardLayout card = new CardLayout();
     // JPanel jp_cardbox = new JPanel();
     JPanel  jp_idmiss       = new JPanel(); // 1.첫 화면 도화지
@@ -218,40 +223,59 @@ public class FindIdPwView extends JDialog {
         jbtn_idsearch.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 System.out.println( "2번카드" );
+                acc = model.findID( jtf_name.getText(), jtf_phone.getText() );
+                
+                if ( acc.getUser_id() != null ) {
+                    // jp_idfind.setVisible( true );
+                    JOptionPane.showMessageDialog( jbtn_idsearch, "ID는 " + acc.getUser_id() + " 입니다." );
+                }
+                else {
+                    JOptionPane.showMessageDialog( null, "일치하는 회원정보가 없습니다.\n이름과 전화번호를 확인해주세요. " );
+                }
             }
         } );
         
         // 2번도화지 "비밀번호 찾기"버튼
-        jbtn_gotopwmiss.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
-                jp_idfind.setVisible( false );
-                jp_idmiss.setVisible( false );
-                jp_pwfind.setVisible( false );
-                jp_pwmiss.setVisible( true );
-                jbtn_idmiss.setBackground( Color.WHITE );
-                jbtn_pwmiss.setBackground( new Color( 146, 208, 80 ) );
-                System.out.println( "3번카드" );
-            }
-        } );
+        // jbtn_gotopwmiss.addActionListener( new ActionListener() {
+        // public void actionPerformed( ActionEvent e ) {
+        // jp_idfind.setVisible( false );
+        // jp_idmiss.setVisible( false );
+        // jp_pwfind.setVisible( false );
+        // jp_pwmiss.setVisible( true );
+        // jbtn_idmiss.setBackground( Color.WHITE );
+        // jbtn_pwmiss.setBackground( new Color( 146, 208, 80 ) );
+        // System.out.println( "3번카드" );
+        // }
+        // } );
         
         // 3번도화지 "비밀번호 찾기"버튼
         jbtn_pwsearch.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 System.out.println( "4번카드" );
+                acc = model.pwFind( jtf_name2.getText(), jtf_id.getText() );
+                
+                if ( acc.getUser_pw() != null ) {
+                    JOptionPane.showMessageDialog( jbtn_pwsearch, "회원님의 PW는 " + acc.getUser_pw() + " 입니다." );
+                }
+                else {
+                    JOptionPane.showMessageDialog( null, "일치하는 회원정보가 없습니다.\n이름과 아이디를 확인해주세요. " );
+                }
+                
             }
         } );
-        // 4번도화지 "비밀번호 변경"버튼
-        jbtn_pwupdate.addActionListener( new ActionListener() {
-            public void actionPerformed( ActionEvent e ) {
-                String vpw = new String( jtf_pwupdate.getText() );
-                // String.valueOf( jtf_pwupdate.getPassword()
-                System.out.println( vpw + "," + mid );
-            }
-        } );
+        // // 4번도화지 "비밀번호 변경"버튼
+        // jbtn_pwupdate.addActionListener( new ActionListener() {
+        // public void actionPerformed( ActionEvent e ) {
+        // String vpw = new String( jtf_pwupdate.getText() );
+        // // String.valueOf( jtf_pwupdate.getPassword()
+        // System.out.println( vpw + "," + mid );
+        // }
+        // } );
     }
     
     public static void main( String[] args ) {
         FindIdPwView minfo = new FindIdPwView();
         minfo.initDisplay();
     }
+    
 }
