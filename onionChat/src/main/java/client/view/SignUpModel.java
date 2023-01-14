@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import client.view.JoinView;
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 import util.oracle.OnionDB;
@@ -71,7 +72,6 @@ public class SignUpModel {
      * @return INSERT 성공 시 : 성공한 개수, 실패 시 0
      */
     public int register( Account account ) {
-        
         StringBuilder sql = new StringBuilder();
         log.info( account.toString() );
         int result = 0;
@@ -103,32 +103,32 @@ public class SignUpModel {
         return result;
     }
     
-    public Account signIn( String id, String pw ) {
-        StringBuilder sql = new StringBuilder();
-        Account       acc = new Account();
-        sql.append( "   SELECT USER_NICK      " );
-        sql.append( "   FROM ONION.INFO    " );
-        sql.append( "   WHERE USER_ID = ?    " );
-        sql.append( "   AND USER_PW = ?      " );
-        
-        try {
-            conn = OnionDB.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, id );
-            pstmt.setString( 2, pw );
-            rs = pstmt.executeQuery();
-            
-            if ( rs.next() ) {
-                
-                acc.setUser_nick( rs.getString( "USER_NICK" ) );
-            }
-            
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        return acc;
-    }
+    // 메서드 삭제예정 (사유 : 메서드 중복)
+    // public Account signIn( String id, String pw ) {
+    // StringBuilder sql = new StringBuilder();
+    // Account acc = new Account();
+    // sql.append( " SELECT USER_NICK " );
+    // sql.append( " FROM ONION.INFO " );
+    // sql.append( " WHERE USER_ID = ? " );
+    // sql.append( " AND USER_PW = ? " );
+    //
+    // try {
+    // conn = OnionDB.getConnection();
+    // pstmt = conn.prepareStatement( sql.toString() );
+    // pstmt.setString( 1, id );
+    // pstmt.setString( 2, pw );
+    // rs = pstmt.executeQuery();
+    //
+    // if ( rs.next() ) {
+    // acc.setUser_nick( rs.getString( "USER_NICK" ) );
+    // }
+    //
+    // }
+    // catch ( Exception e ) {
+    // e.printStackTrace();
+    // }
+    // return acc;
+    // }
     
     /**
      * @author HOJAE
@@ -137,15 +137,15 @@ public class SignUpModel {
      *         DB로부터 가져온 닉네임을 Account 클래스 user_nick 값에 초기화
      *         
      * @param account
-     * @return 닉네임 값이 들어있는 Account 객체
+     * @return ID와 닉네임이 들어있는 Account 객체
      */
     public Account signIn( Account account ) {
         
         StringBuilder sql = new StringBuilder();
-        sql.append( "   SELECT USER_NICK      " );
-        sql.append( "   FROM ONION.INFO    " );
-        sql.append( "   WHERE USER_ID = ?    " );
-        sql.append( "   AND USER_PW = ?      " );
+        sql.append( "   SELECT USER_ID, USER_NICK      " );
+        sql.append( "   FROM ONION.INFO                 "                );
+        sql.append( "   WHERE USER_ID = ?           "              );
+        sql.append( "   AND USER_PW = ?             "               );
         
         try {
             conn = OnionDB.getConnection();
@@ -155,14 +155,17 @@ public class SignUpModel {
             rs = pstmt.executeQuery();
             
             if ( rs.next() ) {
+                account.setUser_id( rs.getString( "USER_ID" ) );
                 account.setUser_nick( rs.getString( "USER_NICK" ) );
-                LoginApp.myId = rs.getString( "USER_NICK" );
-                log.info( LoginApp.myId );
+                log.info( account.toString() );
             }
             
         }
         catch ( Exception e ) {
             e.printStackTrace();
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt, rs );
         }
         return account;
     }
@@ -199,7 +202,12 @@ public class SignUpModel {
             }
             
         }
-        catch ( Exception e ) {}
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt, rs );
+        }
         
         return acc;
     }
@@ -228,7 +236,12 @@ public class SignUpModel {
             }
             
         }
-        catch ( Exception e ) {}
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt, rs );
+        }
         return acc;
     }
     

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -24,13 +25,12 @@ import util.dto.Account;
 
 @Log4j2
 @SuppressWarnings( "serial" )
-public class LoginApp implements ActionListener {
+public class LoginApp implements ActionListener, KeyListener {
     
-    public static String myId     = null; // 나의 아이디
-    String               imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
-    JLabel               msg      = new JLabel();
-    JFrame               jf_login = new JFrame(); // 메인 프레임
-    JPanel               jp_login = new JPanel( null ); // 제일 큰 도화지
+    String imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
+    JLabel msg      = new JLabel();
+    JFrame jf_login = new JFrame(); // 메인 프레임
+    JPanel jp_login = new JPanel( null ); // 제일 큰 도화지
     // 아이디, 비밀번호 입력을 위한 JTextField (테두리선을 지우기위해 클래스 재정의)
     JTextField     jtf_id          = new JTextField() {
                                        @Override
@@ -52,6 +52,10 @@ public class LoginApp implements ActionListener {
     Font           msgf            = new Font( "맑은 고딕", Font.PLAIN, 12 );
     
     public void initDisplay() {
+        
+        jtf_id.addKeyListener( this );
+        jtf_pw.addKeyListener( this );
+        
         jf_login.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         // ActionListener
         jbtn_login.addActionListener( this );
@@ -145,25 +149,81 @@ public class LoginApp implements ActionListener {
         pt.initDisplay();
     }
     
+    /**
+     * ActionListener과 KeyListener 동시사용을 위한 메서드
+     */
+    private void signinCheck() {
+        SignUpModel model = new SignUpModel();
+        
+        Account account = model.signIn(
+                        new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, null, null, null ) );
+        
+        if ( account.getUser_nick() != null ) {
+            // ChatRoomView chatView = new ChatRoomView( true, myId );
+            FriendList friendList = new FriendList( account );
+            jf_login.dispose();
+        }
+        else {
+            showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
+        }
+    }
+    
     @Override
     public void actionPerformed( ActionEvent e ) {
         Object obj = e.getSource();
         
         if ( obj == jbtn_login ) {
-            SignUpModel model = new SignUpModel();
-            
-            model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, myId, null, null ) );
-            System.out.println( myId );
-            
-            if ( myId != null ) {
-                // ChatRoomView chatView = new ChatRoomView( true, myId );
-                FriendList friendList = new FriendList();
-                jf_login.dispose();
-            }
-            else {
-                showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
-            }
+            signinCheck();
+            // SignUpModel model = new SignUpModel();
+            //
+            // model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, myId, null,
+            // null ) );
+            // System.out.println( myId );
+            //
+            // if ( myId != null ) {
+            // // ChatRoomView chatView = new ChatRoomView( true, myId );
+            // FriendList friendList = new FriendList();
+            // jf_login.dispose();
+            // }
+            // else {
+            // showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
+            // }
         }
+    }
+    
+    @Override
+    public void keyTyped( KeyEvent e ) {
+        
+    }
+    
+    @Override
+    public void keyPressed( KeyEvent e ) {
+        Object object = e.getSource();
+        
+        if ( e.getKeyCode() == KeyEvent.VK_ENTER ) {
+            signinCheck();
+            // SignUpModel model = new SignUpModel();
+            //
+            // model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, myId, null,
+            // null ) );
+            // System.out.println( myId );
+            //
+            // if ( myId != null ) {
+            // // ChatRoomView chatView = new ChatRoomView( true, myId );
+            // FriendList friendList = new FriendList();
+            // jf_login.dispose();
+            // }
+            // else {
+            // showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
+            // }
+            
+        }
+        
+    }
+    
+    @Override
+    public void keyReleased( KeyEvent e ) {
+        
     }
     
 }

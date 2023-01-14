@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import oracle.jdbc.OracleTypes;
 import util.dto.Account;
 
 @SuppressWarnings( "serial" )

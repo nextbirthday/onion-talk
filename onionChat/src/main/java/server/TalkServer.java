@@ -49,7 +49,7 @@ public class TalkServer extends JFrame implements Runnable {
         TalkServer ts     = new TalkServer();
         Thread     thread = new Thread( ts );
         
-        thread.run();
+        thread.start();
     }
     
 }

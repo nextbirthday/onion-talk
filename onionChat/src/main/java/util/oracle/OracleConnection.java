@@ -22,6 +22,7 @@ public class OracleConnection {
     private static Connection con;
     
     public static synchronized Connection getConnection() throws SQLException, ClassNotFoundException, IOException {
+        
         Reader reader = Resources.getResourceAsReader( RESOURCE );
         PROPS.load( reader );
         final String url      = PROPS.getProperty( "url" );
