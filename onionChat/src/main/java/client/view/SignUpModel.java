@@ -143,9 +143,9 @@ public class SignUpModel {
         
         StringBuilder sql = new StringBuilder();
         sql.append( "   SELECT USER_ID, USER_NICK      " );
-        sql.append( "   FROM ONION.INFO                 "                );
-        sql.append( "   WHERE USER_ID = ?           "              );
-        sql.append( "   AND USER_PW = ?             "               );
+        sql.append( "   FROM ONION.INFO                 " );
+        sql.append( "   WHERE USER_ID = ?           " );
+        sql.append( "   AND USER_PW = ?             " );
         
         try {
             conn = OnionDB.getConnection();
@@ -243,6 +243,34 @@ public class SignUpModel {
             OracleConnection.freeConnection( conn, pstmt, rs );
         }
         return acc;
+    }
+    
+    public int statusMessage( Account account ) {
+        int           result = 0;
+        StringBuilder sql    = new StringBuilder();
+        
+        sql.append( "  UPDATE ONION.INFO             " );
+        sql.append( "  SET                           " );
+        sql.append( "  USER_MSG = ?               " );
+        sql.append( "  WHERE USER_ID = ?;            " );
+        
+        try {
+            conn = OnionDB.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, null );
+            pstmt.setString( 2, null );
+            
+            result = pstmt.executeUpdate();
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt );
+        }
+        
+        return result;
+        
     }
     
 }
