@@ -22,7 +22,6 @@ import util.dto.Account;
 @SuppressWarnings( "serial" )
 public class FindIdPwView extends JDialog {
     FindIDPWLogic findIdPwLogic = new FindIDPWLogic();
-    SignUpModel   model         = new SignUpModel();
     Account       acc           = new Account();
     String        mid           = null;
     JDialog       jdl_infomiss  = new JDialog();// 아이디/비밀번호찾기 프레임

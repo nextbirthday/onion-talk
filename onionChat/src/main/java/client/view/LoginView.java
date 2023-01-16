@@ -166,11 +166,10 @@ public class LoginView implements ActionListener, KeyListener {
         
         Account account = signInLogic.signIn( new Account( getJtf_id().getText(), String.valueOf( getJtf_pw().getPassword() ), null, null,
                         null, null, null, null ) );
-        log.info( account.toString() );
         
         if ( account.getUser_nick() != null ) {
             
-            FriendList friendList = new FriendList( account );
+            MainView mainView = new MainView( account );
             jf_login.dispose();
         }
         else {
@@ -199,7 +198,6 @@ public class LoginView implements ActionListener, KeyListener {
         if ( e.getKeyCode() == KeyEvent.VK_ENTER ) {
             signinCheck();
         }
-        
     }
     
     @Override
