@@ -20,41 +20,48 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import model.SignInLogic;
 import util.dto.Account;
 
+@Getter
+@Setter
 @Log4j2
 @SuppressWarnings( "serial" )
-public class LoginApp implements ActionListener, KeyListener {
+public class LoginView implements ActionListener, KeyListener {
     
     String imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
     JLabel msg      = new JLabel();
     JFrame jf_login = new JFrame(); // 메인 프레임
     JPanel jp_login = new JPanel( null ); // 제일 큰 도화지
     // 아이디, 비밀번호 입력을 위한 JTextField (테두리선을 지우기위해 클래스 재정의)
-    JTextField     jtf_id          = new JTextField() {
-                                       @Override
-                                       public void setBorder( Border border ) {}
-                                   };
-    JPasswordField jtf_pw          = new JPasswordField() {
-                                       @Override
-                                       public void setBorder( Border border ) {}
-                                   };
-    JLabel         jlb_join        = new JLabel(); // 회원가입 라벨버튼
-    JLabel         jlb_infomissing = new JLabel(); // 아이디/비밀번호 분실 라벨버튼
-    JLabel         jlb_idtext      = new JLabel( " 아이디를 입력하세요" );
-    JLabel         jlb_pwtext      = new JLabel( " 비밀번호를 입력하세요" );
-    Font           f_join          = new Font( "맑은 고딕", Font.PLAIN, 12 );
-    ImageIcon      img_main        = new ImageIcon( imgPath + "main2.png" ); // 메인 바나나 이미지 아이콘
-    ImageIcon      img_loginbt     = new ImageIcon( imgPath + "bt_login.png" ); // 로그인 이미지 아이콘
-    JButton        jbtn_main       = new JButton( img_main ); // 메인 사진 붙이기용 버튼
-    JButton        jbtn_login      = new JButton( img_loginbt ); // 로그인 버튼
-    Font           msgf            = new Font( "맑은 고딕", Font.PLAIN, 12 );
+    private JTextField     jtf_id          = new JTextField() {
+                                               @Override
+                                               public void setBorder( Border border ) {}
+                                           };
+    private JPasswordField jtf_pw          = new JPasswordField() {
+                                               @Override
+                                               public void setBorder( Border border ) {}
+                                           };
+    JLabel                 jlb_join        = new JLabel(); // 회원가입 라벨버튼
+    JLabel                 jlb_infomissing = new JLabel(); // 아이디/비밀번호 분실 라벨버튼
+    JLabel                 jlb_idtext      = new JLabel( "  아이디를 입력하세요" );
+    JLabel                 jlb_pwtext      = new JLabel( "  비밀번호를 입력하세요" );
+    Font                   f_join          = new Font( "맑은 고딕", Font.PLAIN, 12 );
+    ImageIcon              img_main        = new ImageIcon( imgPath + "main2.png" ); // 메인 바나나 이미지 아이콘
+    ImageIcon              img_loginbt     = new ImageIcon( imgPath + "bt_login.png" ); // 로그인 이미지 아이콘
+    JButton                jbtn_main       = new JButton( img_main ); // 메인 사진 붙이기용 버튼
+    JButton                jbtn_login      = new JButton( img_loginbt ); // 로그인 버튼
+    Font                   msgf            = new Font( "맑은 고딕", Font.PLAIN, 12 );
+    
+    public LoginView() {}
     
     public void initDisplay() {
         
-        jtf_id.addKeyListener( this );
-        jtf_pw.addKeyListener( this );
+        getJtf_id().addKeyListener( this );
+        getJtf_pw().addKeyListener( this );
         
         jf_login.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         // ActionListener
@@ -72,17 +79,17 @@ public class LoginApp implements ActionListener, KeyListener {
         jp_login.add( jlb_pwtext );
         // 도화지에 JTextField(ip,pw입력), JLabel(회원가입, 분실정보찾기), JButton(바나나이미지, 로그인버튼) 붙임
         jp_login.add( msg );
-        jp_login.add( jtf_id );
-        jp_login.add( jtf_pw );
+        jp_login.add( getJtf_id() );
+        jp_login.add( getJtf_pw() );
         jp_login.add( jlb_join );
         jp_login.add( jlb_infomissing );
         jp_login.add( jbtn_login );
         jp_login.add( jbtn_main );
         
         // 아이디 비밀번호 입력창 고정 및 비밀번호 암호 *로 표시
-        jtf_id.setBounds( 60, 300, 270, 45 );
-        jtf_pw.setBounds( 60, 340, 270, 45 );
-        jtf_pw.setEchoChar( '♣' );
+        getJtf_id().setBounds( 60, 300, 270, 45 );
+        getJtf_pw().setBounds( 60, 340, 270, 45 );
+        getJtf_pw().setEchoChar( '♣' );
         // MouseListener 회원가입, 아이디/비밀번호 분실에 대한 JLabel 버튼화
         // 아이디/비밀번호 찾기 라벨버튼 정의
         jlb_infomissing.setText( "<HTML><U>ID/PW 분실</U></HTML>" );
@@ -110,6 +117,7 @@ public class LoginApp implements ActionListener, KeyListener {
                 super.mousePressed( e );
                 JoinView join = new JoinView();
                 join.initDisplay();
+                System.out.println( "JoinView initDisplay call" );
             }
             
         } );
@@ -145,21 +153,23 @@ public class LoginApp implements ActionListener, KeyListener {
     }
     
     public static void main( String[] args ) {
-        LoginApp pt = new LoginApp();
-        pt.initDisplay();
+        LoginView loginView = new LoginView();
+        loginView.initDisplay();
     }
     
     /**
      * ActionListener과 KeyListener 동시사용을 위한 메서드
      */
     private void signinCheck() {
-        SignUpModel model = new SignUpModel();
         
-        Account account = model.signIn(
-                        new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, null, null, null ) );
+        SignInLogic signInLogic = new SignInLogic();
+        
+        Account account = signInLogic.signIn( new Account( getJtf_id().getText(), String.valueOf( getJtf_pw().getPassword() ), null, null,
+                        null, null, null, null ) );
+        log.info( account.toString() );
         
         if ( account.getUser_nick() != null ) {
-            // ChatRoomView chatView = new ChatRoomView( true, myId );
+            
             FriendList friendList = new FriendList( account );
             jf_login.dispose();
         }
@@ -174,20 +184,6 @@ public class LoginApp implements ActionListener, KeyListener {
         
         if ( obj == jbtn_login ) {
             signinCheck();
-            // SignUpModel model = new SignUpModel();
-            //
-            // model.signIn( new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), null, null, null, myId, null,
-            // null ) );
-            // System.out.println( myId );
-            //
-            // if ( myId != null ) {
-            // // ChatRoomView chatView = new ChatRoomView( true, myId );
-            // FriendList friendList = new FriendList();
-            // jf_login.dispose();
-            // }
-            // else {
-            // showDialog( "일치하는 회원정보가 없습니다.\n아이디 또는 비밀번호를 확인해주세요." );
-            // }
         }
     }
     

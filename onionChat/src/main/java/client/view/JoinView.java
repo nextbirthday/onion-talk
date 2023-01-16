@@ -16,8 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import lombok.Getter;
+import lombok.Setter;
+import model.SignUpLogic;
 import util.dto.Account;
 
+@Getter
+@Setter
 @SuppressWarnings( "serial" )
 public class JoinView implements ActionListener, FocusListener {
     
@@ -49,7 +54,9 @@ public class JoinView implements ActionListener, FocusListener {
     Font                 f_join         = new Font( "맑은 고딕", Font.PLAIN, 25 );
     Font                 f_label        = new Font( "맑은 고딕", Font.PLAIN, 12 );
     
-    SignUpModel signUpModel = new SignUpModel( this );
+    // SignUpModel signUpModel = new SignUpModel( this );
+    
+    SignUpLogic signUpLogic = new SignUpLogic( this );
     
     public void initDisplay() {
         
@@ -124,7 +131,7 @@ public class JoinView implements ActionListener, FocusListener {
         jdl_join.setSize( 400, 600 );
         jdl_join.setLocationRelativeTo( null );// 창 가운데서 띄우기
         jdl_join.setVisible( true );
-        //회원가입창 열었을 때 jlb_name 강제로 포커스 주기
+        // 회원가입창 열었을 때 jlb_name 강제로 포커스 주기
         jlb_name.requestFocus( true );
     }
     
@@ -145,7 +152,8 @@ public class JoinView implements ActionListener, FocusListener {
         Object object = e.getSource();
         
         if ( object == jbtn_idconfirm ) {
-            int result = signUpModel.idCheck();
+            
+            int result = signUpLogic.idCheck();
             
             if ( result == 0 ) {
                 jlb_idNotAvble.setVisible( false );
@@ -177,7 +185,7 @@ public class JoinView implements ActionListener, FocusListener {
                     
                     if ( String.valueOf( jtf_pw.getPassword() ).length() > 0
                                     && String.valueOf( jtf_pw.getPassword() ).equals( String.valueOf( jtf_pw2.getPassword() ) ) ) {
-                        int result = signUpModel.register(
+                        int result = signUpLogic.register(
                                         new Account( jtf_id.getText(), String.valueOf( jtf_pw.getPassword() ), jtf_name.getText(),
                                                         jtf_birth.getText(), jtf_phone.getText(), jtf_nickName.getText(), null, null ) );
                         
@@ -272,4 +280,5 @@ public class JoinView implements ActionListener, FocusListener {
             }
         }
     }
+    
 }

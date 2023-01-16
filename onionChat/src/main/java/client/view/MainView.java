@@ -30,7 +30,7 @@ import util.dto.Account;
 
 // 채팅 목록
 @SuppressWarnings( "serial" )
-public class FriendList extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
+public class MainView extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
     // Account DTO를 받아오기 위한 전역변수 선언
     Account account;
     
@@ -67,28 +67,28 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     JButton                  addBtn     = new JButton( "검색" );; // 검색 버튼
     JButton                  delBtn     = new JButton( "삭제" ); // 삭제 버튼
     
-    public FriendList() {}
+    public MainView() {}
     
     // 생성자
-    public FriendList( Account account ) {
+    public MainView( Account account ) {
         this.account = account;
         initDisplay();
     }
     
-//    내부클래스로 배경 이미지 처리
-//    class MyPanel extends JPanel {
-//        public void paintComponent( Graphics g ) {
-//            g.drawImage( imageIcon.getImage(), 0, 0, null );
-//            setOpaque( false );
-//            super.paintComponent( g );
-//        }
-//    }// end of MyPanel - 사용자 패널정의 - LoginForm$1.class, LoginForm$MyPanel.class
-     // 화면그리기
+    // 내부클래스로 배경 이미지 처리
+    // class MyPanel extends JPanel {
+    // public void paintComponent( Graphics g ) {
+    // g.drawImage( imageIcon.getImage(), 0, 0, null );
+    // setOpaque( false );
+    // super.paintComponent( g );
+    // }
+    // }// end of MyPanel - 사용자 패널정의 - LoginForm$1.class, LoginForm$MyPanel.class
+    // 화면그리기
     
     public void initDisplay() {
         
         this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-//        this.setContentPane( new MyPanel() );
+        // this.setContentPane( new MyPanel() );
         this.setLayout( new BorderLayout( 50, 20 ) );// 배치
         
         list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ); // 하나만 선택 될 수 있도록
@@ -250,7 +250,7 @@ public class FriendList extends JFrame implements ActionListener, KeyListener, M
     }
     
     public static void main( String[] args ) {
-        Account    account = new Account();
-        FriendList t       = new FriendList( account );
+        Account  account  = new Account();
+        MainView mainView = new MainView( account );
     }
 }

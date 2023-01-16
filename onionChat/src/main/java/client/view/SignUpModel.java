@@ -103,33 +103,6 @@ public class SignUpModel {
         return result;
     }
     
-    // 메서드 삭제예정 (사유 : 메서드 중복)
-    // public Account signIn( String id, String pw ) {
-    // StringBuilder sql = new StringBuilder();
-    // Account acc = new Account();
-    // sql.append( " SELECT USER_NICK " );
-    // sql.append( " FROM ONION.INFO " );
-    // sql.append( " WHERE USER_ID = ? " );
-    // sql.append( " AND USER_PW = ? " );
-    //
-    // try {
-    // conn = OnionDB.getConnection();
-    // pstmt = conn.prepareStatement( sql.toString() );
-    // pstmt.setString( 1, id );
-    // pstmt.setString( 2, pw );
-    // rs = pstmt.executeQuery();
-    //
-    // if ( rs.next() ) {
-    // acc.setUser_nick( rs.getString( "USER_NICK" ) );
-    // }
-    //
-    // }
-    // catch ( Exception e ) {
-    // e.printStackTrace();
-    // }
-    // return acc;
-    // }
-    
     /**
      * @author HOJAE
      *         사용자로부터 ID와 PW를 파라미터로 받아온다.
@@ -183,10 +156,10 @@ public class SignUpModel {
         StringBuilder sql = new StringBuilder();
         Account       acc = new Account();
         
-        sql.append( "    SELECT USER_ID          " );
-        sql.append( "    FROM ONION.INFO      " );
-        sql.append( "    WHERE USER_NAME = ?     " );
-        sql.append( "    AND USER_PHONE = ?      " );
+        sql.append( " SELECT USER_ID " );
+        sql.append( " FROM ONION.INFO " );
+        sql.append( " WHERE USER_NAME = ? " );
+        sql.append( " AND USER_PHONE = ? " );
         
         log.info( username + ", " + phone );
         
@@ -217,10 +190,10 @@ public class SignUpModel {
         StringBuilder sql = new StringBuilder();
         Account       acc = new Account();
         
-        sql.append( "    SELECT USER_PW          " );
-        sql.append( "    FROM ONION.INFO      " );
-        sql.append( "    WHERE USER_NAME = ?     " );
-        sql.append( "    AND USER_ID = ?      " );
+        sql.append( " SELECT USER_PW " );
+        sql.append( " FROM ONION.INFO " );
+        sql.append( " WHERE USER_NAME = ? " );
+        sql.append( " AND USER_ID = ? " );
         
         System.out.println( "username = " + username + ", id = " + id );
         
@@ -268,9 +241,7 @@ public class SignUpModel {
         finally {
             OracleConnection.freeConnection( conn, pstmt );
         }
-        
         return result;
-        
     }
     
 }

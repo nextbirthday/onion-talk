@@ -16,14 +16,16 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import model.FindIDPWLogic;
 import util.dto.Account;
 
 @SuppressWarnings( "serial" )
 public class FindIdPwView extends JDialog {
-    SignUpModel model        = new SignUpModel();
-    Account     acc          = new Account();
-    String      mid          = null;
-    JDialog     jdl_infomiss = new JDialog();// 아이디/비밀번호찾기 프레임
+    FindIDPWLogic findIdPwLogic = new FindIDPWLogic();
+    SignUpModel   model         = new SignUpModel();
+    Account       acc           = new Account();
+    String        mid           = null;
+    JDialog       jdl_infomiss  = new JDialog();// 아이디/비밀번호찾기 프레임
     // CardLayout card = new CardLayout();
     // JPanel jp_cardbox = new JPanel();
     JPanel  jp_idmiss       = new JPanel(); // 1.첫 화면 도화지
@@ -223,7 +225,8 @@ public class FindIdPwView extends JDialog {
         jbtn_idsearch.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 System.out.println( "2번카드" );
-                acc = model.findID( jtf_name.getText(), jtf_phone.getText() );
+                acc = findIdPwLogic.findID( jtf_name.getText(), jtf_phone.getText() );
+                // acc = model.findID( jtf_name.getText(), jtf_phone.getText() );
                 
                 if ( acc.getUser_id() != null ) {
                     // jp_idfind.setVisible( true );
@@ -252,7 +255,8 @@ public class FindIdPwView extends JDialog {
         jbtn_pwsearch.addActionListener( new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 System.out.println( "4번카드" );
-                acc = model.pwFind( jtf_name2.getText(), jtf_id.getText() );
+                acc = findIdPwLogic.pwFind( jtf_name2.getText(), jtf_id.getText() );
+                // acc = model.pwFind( jtf_name2.getText(), jtf_id.getText() );
                 
                 if ( acc.getUser_pw() != null ) {
                     JOptionPane.showMessageDialog( jbtn_pwsearch, "회원님의 PW는 " + acc.getUser_pw() + " 입니다." );
