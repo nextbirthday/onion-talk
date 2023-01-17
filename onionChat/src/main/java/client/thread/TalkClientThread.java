@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import lombok.extern.log4j.Log4j2;
+import util.command.Protocol;
 
 @Log4j2
 public class TalkClientThread extends Thread {
@@ -35,7 +36,7 @@ public class TalkClientThread extends Thread {
                 int protocol = 0;
                 
                 if ( receive != null ) {
-                    st = new StringTokenizer( ( String ) receive, util.command.Protocol.separator );
+                    st = new StringTokenizer( ( String ) receive, Protocol.SEPARATOR );
                     log.info( st.countTokens() );
                     
                     protocol = Integer.parseInt( st.nextToken() );
@@ -59,7 +60,7 @@ public class TalkClientThread extends Thread {
                         break;
                     }
                     case util.command.Protocol.MESSAGE: {
-                        System.out.println( "util.command.Protocol.MESSAGE" );
+                        System.out.println( "Protocol.MESSAGE" );
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
                         tc.jta_display.append( nickName + ": " + message + "\n" );

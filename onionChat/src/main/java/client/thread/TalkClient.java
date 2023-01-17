@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import lombok.extern.log4j.Log4j2;
+import util.command.Protocol;
 
 @Log4j2
 @SuppressWarnings( "serial" )
@@ -83,22 +84,20 @@ public class TalkClient extends JFrame implements ActionListener {
         try {
             // 서버측의 ip주소 작성하기
             
-            socket = new Socket( "192.168.0.6", 20000 );
+            socket = new Socket( "focusrite.iptime.org", 20000 );
             
             oos = new ObjectOutputStream( socket.getOutputStream() );
             ois = new ObjectInputStream( socket.getInputStream() );
             
             // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
             // 서버에게 내가 입장한 사실을 알린다.(말하기)
-            oos.writeObject( util.command.Protocol.TALK_IN + util.command.Protocol.separator + nickname + util.command.Protocol.separator
-                            + "님이 입장하셨습니다." );
+            oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 입장하셨습니다." );
             log.info( nickname );
             
             TalkClientThread tct = new TalkClientThread( this, ois );
             tct.start();
         }
         catch ( Exception e ) {
-            // 예외가 발생했을 때 직접적인 원인되는 클래스명 출력하기
             System.out.println( e.toString() );
         }
     }
@@ -120,13 +119,18 @@ public class TalkClient extends JFrame implements ActionListener {
                 System.out.println( "jbtn_send" + " or " + "jtf_msg" );
                 String message = jtf_msg.getText();
                 System.out.println( message );
-                oos.writeObject( util.command.Protocol.MESSAGE + util.command.Protocol.separator + nickname
-                                + util.command.Protocol.separator + message );
+                oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
             }
             catch ( IOException e1 ) {
                 e1.printStackTrace();
             }
             jtf_msg.setText( "" );
         }
+        
+        if ( object == jbtn_exit ) {
+            System.out.println( jbtn_exit );
+            this.dispose();
+        }
+        
     }
 }

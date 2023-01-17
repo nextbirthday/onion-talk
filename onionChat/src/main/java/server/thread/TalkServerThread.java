@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 
 import lombok.extern.log4j.Log4j2;
 import server.TalkServer;
+import util.command.Protocol;
 
 @Log4j2
 public class TalkServerThread extends Thread {
@@ -32,13 +33,6 @@ public class TalkServerThread extends Thread {
         this.client = socket;
         this.userList = userList;
         this.talkServer = talkServer;
-        log.info( socket );
-        
-        // 나 보다 먼저 들어와 있는 사람들에 대한 처리
-        userList.add( this );// 현재 들어온 클라이언트 스레드
-        
-        log.info( userList.size() + " + " + userList );
-        
     }
     
     @Override
@@ -53,7 +47,7 @@ public class TalkServerThread extends Thread {
                 log.info( receive );
                 
                 if ( receive != null && receive.trim().length() > 0 ) {
-                    st = new StringTokenizer( receive, util.command.Protocol.separator );
+                    st = new StringTokenizer( receive, Protocol.SEPARATOR );
                 }
                 
                 int protocol = 0;
@@ -67,8 +61,7 @@ public class TalkServerThread extends Thread {
                         
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
-                        this.broadCasting( util.command.Protocol.TALK_IN + util.command.Protocol.separator + nickname
-                                        + util.command.Protocol.separator + message );
+                        this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                     }
                         break;
                     
@@ -78,8 +71,7 @@ public class TalkServerThread extends Thread {
                         String message  = st.nextToken();
                         log.info( "nickname = " + nickname + " + " + "message = " + message );
                         
-                        this.send( util.command.Protocol.MESSAGE + util.command.Protocol.separator + nickname
-                                        + util.command.Protocol.separator + message );
+                        this.broadCasting( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                     }
                         break;
                     
@@ -98,13 +90,14 @@ public class TalkServerThread extends Thread {
         catch ( ClassNotFoundException e ) {
             e.printStackTrace();
         }
-        finally {
-            
-        }
         
     }
     
-    // 현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
+    /**
+     * 현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
+     * 
+     * @param message
+     */
     public void broadCasting( Object message ) {
         
         for ( TalkServerThread talkServerThread : userList ) {// 여러사람

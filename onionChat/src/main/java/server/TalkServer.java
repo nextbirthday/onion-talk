@@ -50,6 +50,9 @@ public class TalkServer extends JFrame implements Runnable {
                 
                 // TalkServerThread 클래스로 client 연결정보 넘겨주기
                 TalkServerThread tst = new TalkServerThread( userList, socket, this );
+                // 현재 들어온 클라이언트 스레드
+                userList.add( tst );
+                
                 tst.start(); // TalkServerThread run(); call
             }
         }
