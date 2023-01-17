@@ -21,7 +21,6 @@ public class TalkClientThread extends Thread {
     
     @Override
     public void run() {
-        System.out.println( " TalkClientThread run 호출" );
         
         try {
             
@@ -29,8 +28,7 @@ public class TalkClientThread extends Thread {
                 Object receive = null;
                 
                 receive = ( String ) ois.readObject();
-                log.info( receive );
-                System.out.println( "서버에서 전송된 message = " + receive );
+                log.info( "서버에서 전송된 message = " + receive );
                 
                 StringTokenizer st = null;
                 
@@ -39,10 +37,8 @@ public class TalkClientThread extends Thread {
                 if ( receive != null ) {
                     st = new StringTokenizer( ( String ) receive, util.command.Protocol.separator );
                     log.info( st.countTokens() );
-                    // log.info( st.nextToken() );
                     
                     protocol = Integer.parseInt( st.nextToken() );
-                    System.out.println( "protocol:" + protocol );
                 }
                 
                 switch ( protocol ) {
@@ -50,10 +46,18 @@ public class TalkClientThread extends Thread {
                     case util.command.Protocol.TALK_IN: {
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
-                        tc.jta_display.append( nickName + ": " + message );
+                        tc.jta_display.append( nickName + message + "\n" );
+                        
+                        /*
+                         * JTable은 양식일 뿐이고 DataSet은 DefaultTableModel이니까 거기에 닉네임을 출력한다.
+                         * 데이터셋 객체에 한 개 row 추가하기
+                         */
+                        Vector<String> temp = new Vector<>();
+                        temp.add( nickName );
+                        tc.dtm.addRow( temp );
+                        
                         break;
                     }
-                    // 200|tomato|메시지
                     case util.command.Protocol.MESSAGE: {
                         System.out.println( "util.command.Protocol.MESSAGE" );
                         String nickName = st.nextToken();

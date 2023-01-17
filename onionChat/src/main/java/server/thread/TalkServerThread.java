@@ -38,8 +38,7 @@ public class TalkServerThread extends Thread {
         userList.add( this );// 현재 들어온 클라이언트 스레드
         
         log.info( userList.size() + " + " + userList );
-        // String enterMsg = "100#tomato";
-        // this.broadCasting( enterMsg );// 로그인하고 입장했다는 정보전송하기
+        
     }
     
     @Override
@@ -61,16 +60,15 @@ public class TalkServerThread extends Thread {
                 
                 if ( st != null ) {
                     protocol = Integer.parseInt( st.nextToken() );
-                    log.info( protocol );
                 }
                 
                 switch ( protocol ) {
                     case util.command.Protocol.TALK_IN: {
-                        System.out.println( "TalkServerThread - util.command.Protocol.TALK_IN" );
                         
-                        String nickName = st.nextToken();
-                        String msg      = st.nextToken();
-                        talkServer.jta_log.append( nickName + "#" + msg );
+                        String nickname = st.nextToken();
+                        String message  = st.nextToken();
+                        this.broadCasting( util.command.Protocol.TALK_IN + util.command.Protocol.separator + nickname
+                                        + util.command.Protocol.separator + message );
                     }
                         break;
                     
@@ -79,6 +77,7 @@ public class TalkServerThread extends Thread {
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
                         log.info( "nickname = " + nickname + " + " + "message = " + message );
+                        
                         this.send( util.command.Protocol.MESSAGE + util.command.Protocol.separator + nickname
                                         + util.command.Protocol.separator + message );
                     }
@@ -106,14 +105,19 @@ public class TalkServerThread extends Thread {
     }
     
     // 현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
-    public void broadCasting( String message ) {
+    public void broadCasting( Object message ) {
         
         for ( TalkServerThread talkServerThread : userList ) {// 여러사람
             talkServerThread.send( message );
         }
     }
     
-    // 클라이언트에게 말하기 구현
+    /**
+     * 클라이언트에게 말하기
+     * <p>
+     * 
+     * @param message
+     */
     public void send( Object message ) {
         
         try {

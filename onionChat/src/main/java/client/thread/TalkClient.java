@@ -91,9 +91,7 @@ public class TalkClient extends JFrame implements ActionListener {
             // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
             // 서버에게 내가 입장한 사실을 알린다.(말하기)
             oos.writeObject( util.command.Protocol.TALK_IN + util.command.Protocol.separator + nickname + util.command.Protocol.separator
-                            + "님이 입장하셨습니다.\n" );
-            
-            jta_display.append( nickname + "님이 입장하셨습니다.\n" );
+                            + "님이 입장하셨습니다." );
             log.info( nickname );
             
             TalkClientThread tct = new TalkClientThread( this, ois );
