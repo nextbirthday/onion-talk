@@ -21,7 +21,7 @@ public class StatusMessageLogic {
         sql.append( "  WHERE USER_ID = ?;            " );
         
         try {
-            conn = OnionDB.getConnection();
+            conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
             pstmt.setString( 1, null );
             pstmt.setString( 2, null );

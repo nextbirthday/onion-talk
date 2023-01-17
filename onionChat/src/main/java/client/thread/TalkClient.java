@@ -1,21 +1,80 @@
 package client.thread;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @SuppressWarnings( "serial" )
-public class TalkClient extends JFrame implements Runnable {
+public class TalkClient extends JFrame implements ActionListener {
     
     Socket             socket;
     ObjectOutputStream oos;
     ObjectInputStream  ois;
     
-    @Override
-    public void run() {
-        
+    String            nickname;
+    JPanel            jp_second       = new JPanel();
+    JPanel            jp_second_south = new JPanel();
+    JButton           jbtn_one        = new JButton( "1:1" );
+    JButton           jbtn_change     = new JButton( "대화명변경" );
+    JButton           jbtn_font       = new JButton( "글자색" );
+    JButton           jbtn_exit       = new JButton( "나가기" );
+    String            cols[]          = { "대화명" };
+    String            data[][]        = new String[0][1];
+    DefaultTableModel dtm             = new DefaultTableModel( data, cols );
+    JTable            jtb             = new JTable( dtm );
+    JScrollPane       jsp             = new JScrollPane( jtb );
+    JPanel            jp_first        = new JPanel();
+    JPanel            jp_first_south  = new JPanel();
+    JTextField        jtf_msg         = new JTextField( 20 );// south속지 center
+    JButton           jbtn_send       = new JButton( "전송" );// south속지 east
+    JTextArea         jta_display     = new JTextArea( 15, 38 );
+    JScrollPane       jsp_display     = new JScrollPane( jta_display, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+    
+    public void initDisplay() {
+        jtf_msg.addActionListener( this );
+        // 사용자의 닉네임 받기
+        nickname = JOptionPane.showInputDialog( "닉네임을 입력하세요." );
+        this.setLayout( new GridLayout( 1, 2 ) );
+        jp_second.setLayout( new BorderLayout() );
+        jp_second.add( "Center", jsp );
+        jp_second_south.setLayout( new GridLayout( 2, 2 ) );
+        jp_second_south.add( jbtn_one );
+        jp_second_south.add( jbtn_change );
+        jp_second_south.add( jbtn_font );
+        jp_second_south.add( jbtn_exit );
+        jp_second.add( "South", jp_second_south );
+        jp_first.setLayout( new BorderLayout() );
+        jp_first_south.setLayout( new BorderLayout() );
+        jp_first_south.add( "Center", jtf_msg );
+        jp_first_south.add( "East", jbtn_send );
+        jp_first.add( "Center", jsp_display );
+        jp_first.add( "South", jp_first_south );
+        jta_display.setLineWrap( true );
+        this.add( jp_first );
+        this.add( jp_second );
+        this.setSize( 800, 550 );
+        this.setVisible( true );
+        this.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
     }
     
     // 소켓 관련 초기화
@@ -23,16 +82,18 @@ public class TalkClient extends JFrame implements Runnable {
         
         try {
             // 서버측의 ip주소 작성하기
-            // socket = new Socket("192.168.0.244",3000);
-            // new ServerSocket(3000)이 받아서 accept()통해서 client 소켓에 저장이된다.
-            socket = new Socket( "localhost", 54300 );
+            
+            socket = new Socket( "localhost", 50000 );
+            
             oos = new ObjectOutputStream( socket.getOutputStream() );
             ois = new ObjectInputStream( socket.getInputStream() );
+            
             // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
             // 서버에게 내가 입장한 사실을 알린다.(말하기)
-            // oos.writeObject( 100 + util.command.Protocol.TALK_IN + );
-            // 서버에 말을 한 후 들을 준비를 한다.
-            TalkClientThread tct = new TalkClientThread( this );
+            oos.writeObject( util.command.Protocol.TALK_IN + util.command.Protocol.separator + nickname + "님이 입장하셨습니다.\n" );
+            jta_display.append( nickname + "님이 입장하셨습니다." );
+            log.info( nickname );
+            TalkClientThread tct = new TalkClientThread( this, ois );
             tct.start();
         }
         catch ( Exception e ) {
@@ -42,6 +103,26 @@ public class TalkClient extends JFrame implements Runnable {
     }
     
     public static void main( String[] args ) {
+        TalkClient talkClient = new TalkClient();
+        talkClient.initDisplay();
+        talkClient.init();
+    }
+    
+    @Override
+    public void actionPerformed( ActionEvent e ) {
+        Object object = e.getSource();
         
+        if ( object == jbtn_send || object == jtf_msg ) {
+            String message = jtf_msg.getText();
+            jta_display.append( message + "\n" );
+            
+            try {
+                oos.writeObject( util.command.Protocol.MESSAGE + util.command.Protocol.separator + nickname + "님이 입장하셨습니다.\n" );
+            }
+            catch ( IOException e1 ) {
+                e1.printStackTrace();
+            }
+            jtf_msg.setText( "" );
+        }
     }
 }

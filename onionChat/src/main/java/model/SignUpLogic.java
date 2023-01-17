@@ -42,7 +42,7 @@ public class SignUpLogic {
         sql.append( "  WHERE USER_ID = ?" ); // CONDITION USER_ID data와 ?일치하면
         
         try {
-            conn = OnionDB.getConnection();
+            conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
             pstmt.setString( 1, view.getJtf_id().getText() );
             rs = pstmt.executeQuery();

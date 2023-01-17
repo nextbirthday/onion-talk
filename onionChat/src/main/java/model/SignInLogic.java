@@ -41,7 +41,7 @@ public class SignInLogic {
         sql.append( "   AND USER_PW = ?             " );
         
         try {
-            conn = OnionDB.getConnection();
+            conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
             pstmt.setString( 1, account.getUser_id() );
             pstmt.setString( 2, account.getUser_pw() );

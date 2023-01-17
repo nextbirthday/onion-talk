@@ -1,5 +1,6 @@
 package client.thread;
 
+import java.io.ObjectInputStream;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -7,27 +8,25 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class TalkClientThread extends Thread {
-    TalkClient tc = null;
+    
+    TalkClient        tc;
+    ObjectInputStream ois;
     
     public TalkClientThread() {}
     
-    public TalkClientThread( TalkClient tc ) {
+    public TalkClientThread( TalkClient tc, ObjectInputStream ois ) {
         this.tc = tc;
+        this.ois = ois;
     }
     
-    // server측에서 client가 접속하면 접속자의 정보를 List<TalkServerThread> add(생성자) 했고
-    // 메시지를 청취하자 마자 클라이언트측에 반복문을 돌려서 쓰기 한다.(전송함) - broadCastring(String message)
     @Override
     public void run() {
-        boolean isStop = false;
         
-        // run_stop:
-        while ( !isStop ) {
+        while ( true ) {
             
             try {
-                // 100#tomato 님 입장하였습니다.
                 String message = "";
-                message = ( String ) tc.ois.readObject();
+                message = ( String ) ois.readObject();
                 System.out.println( "서버에서 전송된 message:" + message );
                 StringTokenizer st       = null;
                 int             protocol = 0; // 100 200 300 400 500
