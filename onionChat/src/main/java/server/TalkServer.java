@@ -18,9 +18,10 @@ import server.thread.TalkServerThread;
 @SuppressWarnings( "serial" )
 public class TalkServer extends JFrame implements Runnable {
     
-    ServerSocket           serverSocket;
-    Socket                 socket;
     List<TalkServerThread> userList = new Vector<>();
+    
+    ServerSocket serverSocket;
+    Socket       socket;
     
     public JTextArea   jta_log = new JTextArea( 10, 30 );
     public JScrollPane jsp_log = new JScrollPane( jta_log, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -34,17 +35,14 @@ public class TalkServer extends JFrame implements Runnable {
     
     @Override
     public void run() {
-        connect();
-    }
-    
-    public void connect() {
-        int port = 50000;
+        int port = 20000;
         
         try {
+            serverSocket = new ServerSocket( port );
+            jta_log.append( "Server Ready.........\n" );
             
             while ( true ) {
-                serverSocket = new ServerSocket( port );
-                jta_log.append( "Server Ready.........\n" );
+                
                 log.info( "서버 대기중... " + serverSocket.getLocalSocketAddress() );
                 
                 socket = serverSocket.accept();// 클라이언트 시그널 대기

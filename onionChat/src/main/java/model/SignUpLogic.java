@@ -12,6 +12,7 @@ import util.oracle.OracleConnection;
 
 @Log4j2
 public class SignUpLogic {
+    
     private JoinView          view;
     private Connection        conn;
     private PreparedStatement pstmt;
