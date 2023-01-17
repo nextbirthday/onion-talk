@@ -14,6 +14,7 @@ public class StatusMessageLogic {
     public int statusMessage( Account account ) {
         int           result = 0;
         StringBuilder sql    = new StringBuilder();
+
         
         sql.append( "  UPDATE ONION.INFO             " );
         sql.append( "  SET                           " );
@@ -23,8 +24,8 @@ public class StatusMessageLogic {
         try {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, null );
-            pstmt.setString( 2, null );
+            pstmt.setString( 1,  );
+            pstmt.setString( 2, id ); //아이디를 ??
             
             result = pstmt.executeUpdate();
         }

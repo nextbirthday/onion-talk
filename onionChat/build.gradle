@@ -40,4 +40,8 @@ dependencies {
     implementation 'com.oracle.database.jdbc:ojdbc8:21.8.0.0'
 
     implementation 'com.oracle.database.nls:orai18n:21.8.0.0'
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
 }

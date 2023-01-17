@@ -26,8 +26,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import lombok.Getter;
+import lombok.Setter;
+import model.MainFriendLogic;
 import util.dto.Account;
-
+@Getter
+@Setter
 // 채팅 목록
 @SuppressWarnings( "serial" )
 public class MainView extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
@@ -153,7 +157,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     public void mouseClicked( MouseEvent e ) {
         
         if ( e.getSource() == addBtn ) {
-            addItem();
+            addItem2();
         }
         
         if ( e.getSource() == delBtn ) {
@@ -175,7 +179,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         model.remove( index );
     }
     
-    public void addItem() { // db연동 안되어있을 때 친구 추가 자동으로 하기
+    public void addItem() { // db연동 안되어있을 때 jlist에 친구 추가 하기 (사용안함)
         String inputText = inputField.getText();
         if ( inputText == null || inputText.length() == 0 )
             return;
@@ -187,9 +191,26 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     }
     
     public void addItem2() { // db연동의 경우
-        String inputText = inputField.getText();
-        if ( inputText == null || inputText.length() == 0 )
-            return;
+        //만약 디비에 있는 친구라면 [친구등록이 가능합니다] 창을 띄우고 추가시킨다.
+        //만약 디비에 없는 친구라면 [아이디를 확인해주세요] 창을 띄운다.
+        String inputText = inputField.getText();//사용자가 입력한 아이디
+        MainFriendLogic mainFriendLogic = new MainFriendLogic();
+        Account account = mainFriendLogic.friendIdFind(inputText);
+        if("없음".equals(account.getUser_id())){
+            JOptionPane.showMessageDialog(this, "아이디를 확인하세요");
+            return;//addItem2탈출
+        }
+        else{
+            JOptionPane.showConfirmDialog(this, account.getUser_id() +"("+ account.getUser_name()+ ")" + "님을 친구로 등록하시겠습니까? ", "친구 등록 중",JOptionPane.YES_OPTION);
+            
+             // 아니오 눌렀을 때 창이 닫혀야됨
+            if (0 != JOptionPane.NO_OPTION){
+                JOptionPane.getRootFrame().dispose();
+            }
+        }
+        //if ( inputText == null || inputText.length() == 0 )
+            //return;
+        //}
         model.addElement( inputText );
         inputField.setText( "" ); // 내용 지우기
         inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
@@ -224,7 +245,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         int keyCode = e.getKeyCode();
         
         if ( keyCode == KeyEvent.VK_ENTER ) {
-            addItem();
+            addItem2();
         }
     }
     
@@ -246,7 +267,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
             // 공백 입력 허용불가하게 바꾸기
             if ( newMsg.length() > 0 )
                 jlb_msg.setText( newMsg );
-        }
+        } 
     }
     
     public static void main( String[] args ) {
