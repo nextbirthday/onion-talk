@@ -5,65 +5,39 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import lombok.extern.log4j.Log4j2;
 import server.thread.TalkServerThread;
 
-@Log4j2
-@SuppressWarnings( "serial" )
-public class TalkServer extends JFrame implements Runnable {
+@Log4j2( topic = "talk-server" )
+public class TalkServer implements Runnable {
     
-    public List<TalkServerThread> userList = null;
-    
-    ServerSocket serverSocket;
-    Socket       socket;
-    
-    public JTextArea   jta_log = new JTextArea( 10, 30 );
-    public JScrollPane jsp_log = new JScrollPane( jta_log, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-    
-    public void initDisplay() {
-        this.add( "Center", jsp_log );
-        this.setSize( 500, 400 );
-        this.setVisible( true );
-    }
+    private static List<TalkServerThread> userList = new Vector<>();
     
     @Override
     public void run() {
-        int port = 20000;
-        
-        userList = new Vector<>();
+        ServerSocket serverSocket = null;
+        final int    port         = 20000;
         
         try {
             serverSocket = new ServerSocket( port );
-            jta_log.append( "Server Ready.........\n" );
+            log.info( "서버 소켓 바인딩, 포트번호 : {}", serverSocket.getLocalPort() );
             
             while ( true ) {
-                
-                log.info( "서버 대기중... {}", serverSocket.getLocalSocketAddress() );
-                
-                socket = serverSocket.accept();// 클라이언트 시그널 대기
-                log.info( "클라이언트 접속... {}", socket.getRemoteSocketAddress() );
+                log.info( "클라이언트 연결 대기" );
+                Socket socket = serverSocket.accept();// 클라이언트 시그널 대기
+                log.info( "클라이언트 접속 : {}", socket.getRemoteSocketAddress() );
                 
                 // TalkServerThread 클래스로 client 연결정보 넘겨주기
-                TalkServerThread tst = new TalkServerThread( socket, this );
+                TalkServerThread tst = new TalkServerThread( socket, userList );
                 tst.start();
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception : ", e );
         }
     }
     
     public static void main( String[] args ) {
-        TalkServer ts = new TalkServer();
-        ts.initDisplay();
-        
-        Thread thread = new Thread( ts );
-        thread.start();
+        new Thread( new TalkServer() ).start();
     }
-    
 }

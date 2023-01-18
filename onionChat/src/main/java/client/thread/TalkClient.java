@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -23,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 import util.command.Protocol;
 import util.dto.Account;
 
-@Log4j2
+@Log4j2( topic = "logger" )
 @SuppressWarnings( "serial" )
 public class TalkClient extends JFrame implements ActionListener {
     Account account;
@@ -98,8 +97,8 @@ public class TalkClient extends JFrame implements ActionListener {
         try {
             // 서버측의 ip주소 작성하기
             
-            socket = new Socket( "focusrite.iptime.org", 20000 );
-            // socket = new Socket( "localhost", 20000 );
+            // socket = new Socket( "focusrite.iptime.org", 20000 );
+            socket = new Socket( "localhost", 20000 );
             
             oos = new ObjectOutputStream( socket.getOutputStream() );
             ois = new ObjectInputStream( socket.getInputStream() );
@@ -107,13 +106,14 @@ public class TalkClient extends JFrame implements ActionListener {
             // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로 서버에게 내가 입장한 사실을 알린다.
             oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 입장하셨습니다." );
             
-            log.info( nickname );
+            log.info( "nickname : {}", nickname );
             
             TalkClientThread tct = new TalkClientThread( this, ois );
+            tct.setDaemon( true );
             tct.start();
         }
         catch ( Exception e ) {
-            System.out.println( e.toString() );
+            log.error( "Exception : ", e );
         }
     }
     
@@ -128,34 +128,32 @@ public class TalkClient extends JFrame implements ActionListener {
     public void actionPerformed( ActionEvent e ) {
         Object object = e.getSource();
         
-        if ( object == jbtn_send || object == jtf_msg ) {
-            String message = jtf_msg.getText();
+        try {
             
-            if ( message == null || message.trim().length() == 0 ) {
-                JOptionPane.showMessageDialog( this, "메세지를 입력하세요." );
+            // 채팅 메시지 송신
+            if ( object == jbtn_send || object == jtf_msg ) {
+                String message = jtf_msg.getText();
+                
+                if ( message == null || message.trim().length() == 0 ) {
+                    // JOptionPane.showMessageDialog( this, "메세지를 입력하세요." );
+                    return;
+                }
+                oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
+                jtf_msg.setText( "" );
+            }
+            else if ( object == jbtn_exit ) {
+                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
+                                + "님이 퇴장하셨습니다." );
+                this.dispose();
+                if ( !socket.isClosed() )
+                    socket.close();
+            }
+            else {
                 return;
             }
-            
-            try {
-                System.out.println( "jbtn_send" + " or " + "jtf_msg" );
-                oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                System.out.println( message );
-            }
-            catch ( IOException e1 ) {
-                e1.printStackTrace();
-            }
-            jtf_msg.setText( "" );
         }
-        
-        if ( object == jbtn_exit ) {
-            
-            try {
-                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR );
-            }
-            catch ( IOException e1 ) {
-                e1.printStackTrace();
-            }
-            this.dispose();
+        catch ( Exception ex ) {
+            log.error( "Exception : ", ex );
         }
     }
 }

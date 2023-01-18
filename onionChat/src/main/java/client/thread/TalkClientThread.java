@@ -7,7 +7,7 @@ import java.util.Vector;
 import lombok.extern.log4j.Log4j2;
 import util.command.Protocol;
 
-@Log4j2
+@Log4j2( topic = "logger" )
 public class TalkClientThread extends Thread {
     
     TalkClient                tc;
@@ -26,51 +26,49 @@ public class TalkClientThread extends Thread {
         try {
             
             while ( true ) {
-                String receive = null;
+                String receive = ( String ) ois.readObject();
+                log.debug( "클라이언트 수신 메시지 : {}", receive );
                 
-                receive = ( String ) ois.readObject();
-                log.info( "서버에서 전송된 message = " + receive );
-                
-                StringTokenizer st = null;
-                
-                int protocol = 0;
-                
-                st = new StringTokenizer( receive, Protocol.SEPARATOR );
-                log.info( st.countTokens() );
-                
-                protocol = Integer.parseInt( st.nextToken() );
-                log.info( "protocol = " + protocol );
+                StringTokenizer st       = new StringTokenizer( receive, Protocol.SEPARATOR );
+                int             protocol = Integer.parseInt( st.nextToken() );
+                String          nickName = st.nextToken();
+                String          message  = st.nextToken();
                 
                 switch ( protocol ) {
                     
-                    case Protocol.TALK_IN: {
-                        
-                        String nickName = st.nextToken();
-                        String message  = st.nextToken();
+                    // 입장
+                    case Protocol.TALK_IN:
                         tc.jta_display.append( nickName + message + "\n" );
                         
                         Vector<String> temp = new Vector<>();
                         temp.add( nickName );
                         tc.dtm.addRow( temp );
                         break;
-                    }
                     
-                    case Protocol.MESSAGE: {
-                        
-                        String nickName = st.nextToken();
-                        String message  = st.nextToken();
+                    // 메시지 수신
+                    case Protocol.MESSAGE:
                         tc.jta_display.append( nickName + ": " + message + "\n" );
                         break;
-                    }
+                    
+                    // 로그아웃
+                    case Protocol.TALK_OUT:
+                        tc.jta_display.append( nickName + ": " + message + "\n" );
+                        
+                        for ( int i = 0; i < tc.dtm.getRowCount(); i++ )
+                            if ( nickName.equals( tc.dtm.getValueAt( i, 0 ) ) ) {
+                                tc.dtm.removeRow( i );
+                                break;
+                            }
+                        break;
                     
                     default:
-                        System.out.println( "해당하는 프로토콜이 존재하지 않습니다." );
+                        log.error( "no matched protocol" );
                         break;
                 }
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception : ", e );
         }
     }
 }
