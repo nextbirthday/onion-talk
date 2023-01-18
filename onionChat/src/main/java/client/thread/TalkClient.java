@@ -90,11 +90,10 @@ public class TalkClient extends JFrame implements ActionListener {
             oos = new ObjectOutputStream( socket.getOutputStream() );
             ois = new ObjectInputStream( socket.getInputStream() );
             
-            // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
-            // 서버에게 내가 입장한 사실을 알린다.(말하기)
+            // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로 서버에게 내가 입장한 사실을 알린다.
             oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 입장하셨습니다." );
             
-            oos.writeObject( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
+            // oos.writeObject( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
             log.info( nickname );
             
             TalkClientThread tct = new TalkClientThread( this, ois );

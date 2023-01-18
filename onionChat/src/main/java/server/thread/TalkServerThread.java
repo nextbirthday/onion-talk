@@ -23,7 +23,7 @@ public class TalkServerThread extends Thread {
     ObjectInputStream  ois;
     
     List<TalkServerThread> userList;
-    String                 nickname;
+    String                 nicknameList;
     
     String user_id;
     String user_nick;
@@ -35,6 +35,7 @@ public class TalkServerThread extends Thread {
         this.client = socket;
         this.userList = userList;
         this.talkServer = talkServer;
+        log.info( userList.size() + ", " + userList );
     }
     
     @Override
@@ -60,10 +61,16 @@ public class TalkServerThread extends Thread {
                 
                 switch ( protocol ) {
                     case Protocol.TALK_IN: {
-                        nickname = st.nextToken();
-                        String message = st.nextToken();
+                        String nickname = st.nextToken();
+                        String message  = st.nextToken();
                         
                         this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
+                        
+                        nicknameList = nickname;
+                        
+                        for ( TalkServerThread talkServerThread : userList ) {
+                            this.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nicknameList );
+                        }
                         
                     }
                         break;
@@ -78,13 +85,6 @@ public class TalkServerThread extends Thread {
                     }
                         break;
                     
-                    case Protocol.ENTER_ROOM: {
-                        
-                        for ( TalkServerThread talkServerThread : userList ) {
-                            this.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
-                        }
-                        break;
-                    }
                     case Protocol.TALK_OUT: {
                         
                     }

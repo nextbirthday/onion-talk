@@ -45,11 +45,13 @@ public class TalkClientThread extends Thread {
                 switch ( protocol ) {
                     
                     case Protocol.TALK_IN: {
+                        
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
                         tc.jta_display.append( nickName + message + "\n" );
                         break;
                     }
+                    
                     case Protocol.MESSAGE: {
                         System.out.println( "Protocol.MESSAGE" );
                         String nickName = st.nextToken();
