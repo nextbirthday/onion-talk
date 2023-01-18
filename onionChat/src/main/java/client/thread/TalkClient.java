@@ -21,10 +21,12 @@ import javax.swing.table.DefaultTableModel;
 
 import lombok.extern.log4j.Log4j2;
 import util.command.Protocol;
+import util.dto.Account;
 
 @Log4j2
 @SuppressWarnings( "serial" )
 public class TalkClient extends JFrame implements ActionListener {
+    Account account;
     
     Socket             socket;
     ObjectOutputStream oos;
@@ -44,15 +46,25 @@ public class TalkClient extends JFrame implements ActionListener {
     JScrollPane        jsp             = new JScrollPane( jtb );
     JPanel             jp_first        = new JPanel();
     JPanel             jp_first_south  = new JPanel();
-    JTextField         jtf_msg         = new JTextField( 20 );// south속지 center
+    JTextField         jtf_msg         = new JTextField( "" );// south속지 center
     JButton            jbtn_send       = new JButton( "전송" );// south속지 east
     public JTextArea   jta_display     = new JTextArea( 15, 38 );
     public JScrollPane jsp_display     = new JScrollPane( jta_display, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
     
+    public TalkClient() {}
+    
+    public TalkClient( Account account ) {
+        this.account = account;
+        initDisplay();
+        init();
+        log.info( account );
+    }
+    
     public void initDisplay() {
         jtf_msg.addActionListener( this );
         jbtn_exit.addActionListener( this );
+        jbtn_change.addActionListener( this );
         // 사용자의 닉네임 받기
         nickname = JOptionPane.showInputDialog( "닉네임을 입력하세요." );
         this.setLayout( new GridLayout( 1, 2 ) );
@@ -104,22 +116,27 @@ public class TalkClient extends JFrame implements ActionListener {
         }
     }
     
-    public static void main( String[] args ) {
-        TalkClient talkClient = new TalkClient();
-        talkClient.initDisplay();
-        
-        talkClient.init();
-    }
+    // public static void main( String[] args ) {
+    // TalkClient talkClient = new TalkClient();
+    // talkClient.initDisplay();
+    //
+    // talkClient.init();
+    // }
     
     @Override
     public void actionPerformed( ActionEvent e ) {
         Object object = e.getSource();
         
         if ( object == jbtn_send || object == jtf_msg ) {
+            String message = jtf_msg.getText();
+            
+            if ( message == null || message.trim().length() == 0 ) {
+                JOptionPane.showMessageDialog( this, "메세지를 입력하세요." );
+                return;
+            }
             
             try {
                 System.out.println( "jbtn_send" + " or " + "jtf_msg" );
-                String message = jtf_msg.getText();
                 System.out.println( message );
                 oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
             }
@@ -130,6 +147,13 @@ public class TalkClient extends JFrame implements ActionListener {
         }
         
         if ( object == jbtn_exit ) {
+            
+            try {
+                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR );
+            }
+            catch ( IOException e1 ) {
+                e1.printStackTrace();
+            }
             this.dispose();
         }
     }

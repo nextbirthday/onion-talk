@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import client.thread.TalkClient;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -169,7 +170,8 @@ public class LoginView implements ActionListener, KeyListener {
         
         if ( account.getUser_nick() != null ) {
             
-            MainView mainView = new MainView( account );
+            // MainView mainView = new MainView( account );
+            TalkClient talkClient = new TalkClient( account );
             jf_login.dispose();
         }
         else {

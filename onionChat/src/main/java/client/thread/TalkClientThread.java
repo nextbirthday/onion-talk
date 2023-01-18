@@ -26,7 +26,7 @@ public class TalkClientThread extends Thread {
         try {
             
             while ( true ) {
-                Object receive = null;
+                String receive = null;
                 
                 receive = ( String ) ois.readObject();
                 log.info( "서버에서 전송된 message = " + receive );
@@ -35,12 +35,11 @@ public class TalkClientThread extends Thread {
                 
                 int protocol = 0;
                 
-                if ( receive != null ) {
-                    st = new StringTokenizer( ( String ) receive, Protocol.SEPARATOR );
-                    log.info( st.countTokens() );
-                    
-                    protocol = Integer.parseInt( st.nextToken() );
-                }
+                st = new StringTokenizer( receive, Protocol.SEPARATOR );
+                log.info( st.countTokens() );
+                
+                protocol = Integer.parseInt( st.nextToken() );
+                log.info( "protocol = " + protocol );
                 
                 switch ( protocol ) {
                     
@@ -67,6 +66,11 @@ public class TalkClientThread extends Thread {
                         temp.add( nickName );
                         tc.dtm.addRow( temp );
                         log.info( temp );
+                        break;
+                    }
+                    case Protocol.ERROR: {
+                        String error = st.nextToken();
+                        tc.jta_display.append( error + "\n" );
                         break;
                     }
                     

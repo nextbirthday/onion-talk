@@ -23,7 +23,7 @@ public class TalkServerThread extends Thread {
     ObjectInputStream  ois;
     
     List<TalkServerThread> userList;
-    String                 nicknameList;
+    List<String>           nicknameList;
     
     String user_id;
     String user_nick;
@@ -66,10 +66,8 @@ public class TalkServerThread extends Thread {
                         
                         this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                         
-                        nicknameList = nickname;
-                        
                         for ( TalkServerThread talkServerThread : userList ) {
-                            this.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nicknameList );
+                            talkServerThread.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
                         }
                         
                     }
@@ -79,11 +77,14 @@ public class TalkServerThread extends Thread {
                         
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
-                        log.info( "nickname = " + nickname + " + " + "message = " + message );
                         
                         this.broadCasting( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                    }
+                        
+                        // String error = "🎉빈 문자열이 입력되었습니다!🎉";
+                        // oos.writeObject( Protocol.ERROR + Protocol.SEPARATOR + error );
+                        
                         break;
+                    }
                     
                     case Protocol.TALK_OUT: {
                         
@@ -94,7 +95,9 @@ public class TalkServerThread extends Thread {
             }
             // Talk_OUT이면 여기로 탈출
         }
-        catch ( IOException e ) {
+        catch (
+        
+        IOException e ) {
             e.printStackTrace();
         }
         catch ( ClassNotFoundException e ) {
