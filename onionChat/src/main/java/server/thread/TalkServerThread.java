@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import lombok.extern.log4j.Log4j2;
 import server.TalkServer;
@@ -22,20 +20,17 @@ public class TalkServerThread extends Thread {
     ObjectOutputStream oos;
     ObjectInputStream  ois;
     
-    List<TalkServerThread> userList;
-    List<String>           nicknameList;
+    String nickname = null;
     
     String user_id;
     String user_nick;
     String user_msg;
     
-    public TalkServerThread( List<TalkServerThread> userList, Socket socket, TalkServer talkServer ) throws IOException {
+    public TalkServerThread( Socket socket, TalkServer talkServer ) throws IOException {
+        this.client = socket;
+        this.talkServer = talkServer;
         oos = new ObjectOutputStream( socket.getOutputStream() );
         ois = new ObjectInputStream( socket.getInputStream() );
-        this.client = socket;
-        this.userList = userList;
-        this.talkServer = talkServer;
-        log.info( userList.size() + ", " + userList );
     }
     
     @Override
@@ -59,17 +54,22 @@ public class TalkServerThread extends Thread {
                     protocol = Integer.parseInt( st.nextToken() );
                 }
                 
+                talkServer.userList.add( this );
+                
                 switch ( protocol ) {
                     case Protocol.TALK_IN: {
-                        String nickname = st.nextToken();
-                        String message  = st.nextToken();
+                        nickname = st.nextToken();
+                        String message = st.nextToken();
                         
-                        this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                        
-                        for ( TalkServerThread talkServerThread : userList ) {
-                            talkServerThread.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
+                        for ( TalkServerThread talkServerThread : talkServer.userList ) {
+                            
+                            if ( !talkServerThread.equals( this ) ) {
+                                this.send( Protocol.TALK_IN + Protocol.SEPARATOR + talkServerThread.nickname + Protocol.SEPARATOR
+                                                + message );
+                            }
                         }
                         
+                        this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                     }
                         break;
                     
@@ -79,19 +79,13 @@ public class TalkServerThread extends Thread {
                         String message  = st.nextToken();
                         
                         this.broadCasting( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                        
-                        // String error = "🎉빈 문자열이 입력되었습니다!🎉";
-                        // oos.writeObject( Protocol.ERROR + Protocol.SEPARATOR + error );
-                        
                         break;
                     }
-                    
                     case Protocol.TALK_OUT: {
                         
                     }
                         break talk_stop;//
                 }
-                
             }
             // Talk_OUT이면 여기로 탈출
         }
@@ -113,7 +107,7 @@ public class TalkServerThread extends Thread {
      */
     public void broadCasting( Object message ) {
         
-        for ( TalkServerThread talkServerThread : userList ) {// 여러사람
+        for ( TalkServerThread talkServerThread : talkServer.userList ) {// 여러사람
             talkServerThread.send( message );
         }
     }

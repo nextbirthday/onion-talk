@@ -18,7 +18,7 @@ import server.thread.TalkServerThread;
 @SuppressWarnings( "serial" )
 public class TalkServer extends JFrame implements Runnable {
     
-    List<TalkServerThread> userList = new Vector<>();
+    public List<TalkServerThread> userList = null;
     
     ServerSocket serverSocket;
     Socket       socket;
@@ -37,6 +37,8 @@ public class TalkServer extends JFrame implements Runnable {
     public void run() {
         int port = 20000;
         
+        userList = new Vector<>();
+        
         try {
             serverSocket = new ServerSocket( port );
             jta_log.append( "Server Ready.........\n" );
@@ -49,11 +51,9 @@ public class TalkServer extends JFrame implements Runnable {
                 log.info( "클라이언트 접속... " + socket.getRemoteSocketAddress() );
                 
                 // TalkServerThread 클래스로 client 연결정보 넘겨주기
-                TalkServerThread tst = new TalkServerThread( userList, socket, this );
-                // 현재 들어온 클라이언트 스레드
-                userList.add( tst );
+                TalkServerThread tst = new TalkServerThread( socket, this );
                 
-                tst.start(); // TalkServerThread run(); call
+                tst.start();
             }
         }
         catch ( Exception e ) {

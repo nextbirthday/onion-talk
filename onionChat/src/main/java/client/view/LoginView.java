@@ -171,7 +171,7 @@ public class LoginView implements ActionListener, KeyListener {
         if ( account.getUser_nick() != null ) {
             
             // MainView mainView = new MainView( account );
-            TalkClient talkClient = new TalkClient( account );
+            // TalkClient talkClient = new TalkClient( account );
             jf_login.dispose();
         }
         else {

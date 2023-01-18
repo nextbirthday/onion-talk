@@ -48,29 +48,18 @@ public class TalkClientThread extends Thread {
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
                         tc.jta_display.append( nickName + message + "\n" );
-                        break;
-                    }
-                    
-                    case Protocol.MESSAGE: {
-                        System.out.println( "Protocol.MESSAGE" );
-                        String nickName = st.nextToken();
-                        String message  = st.nextToken();
-                        tc.jta_display.append( nickName + ": " + message + "\n" );
-                        break;
-                    }
-                    
-                    case Protocol.ENTER_ROOM: {
-                        String nickName = st.nextToken();
                         
                         Vector<String> temp = new Vector<>();
                         temp.add( nickName );
                         tc.dtm.addRow( temp );
-                        log.info( temp );
                         break;
                     }
-                    case Protocol.ERROR: {
-                        String error = st.nextToken();
-                        tc.jta_display.append( error + "\n" );
+                    
+                    case Protocol.MESSAGE: {
+                        
+                        String nickName = st.nextToken();
+                        String message  = st.nextToken();
+                        tc.jta_display.append( nickName + ": " + message + "\n" );
                         break;
                     }
                     
