@@ -10,8 +10,8 @@ import util.command.Protocol;
 @Log4j2
 public class TalkClientThread extends Thread {
     
-    TalkClient        tc;
-    ObjectInputStream ois;
+    TalkClient                tc;
+    private ObjectInputStream ois;
     
     public TalkClientThread() {}
     
@@ -44,28 +44,29 @@ public class TalkClientThread extends Thread {
                 
                 switch ( protocol ) {
                     
-                    case util.command.Protocol.TALK_IN: {
+                    case Protocol.TALK_IN: {
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
                         tc.jta_display.append( nickName + message + "\n" );
-                        
-                        /*
-                         * JTable은 양식일 뿐이고 DataSet은 DefaultTableModel이니까 거기에 닉네임을 출력한다.
-                         * 데이터셋 객체에 한 개 row 추가하기
-                         */
-                        Vector<String> temp = new Vector<>();
-                        temp.add( nickName );
-                        tc.dtm.addRow( temp );
-                        
                         break;
                     }
-                    case util.command.Protocol.MESSAGE: {
+                    case Protocol.MESSAGE: {
                         System.out.println( "Protocol.MESSAGE" );
                         String nickName = st.nextToken();
                         String message  = st.nextToken();
                         tc.jta_display.append( nickName + ": " + message + "\n" );
-                    }
                         break;
+                    }
+                    
+                    case Protocol.ENTER_ROOM: {
+                        String nickName = st.nextToken();
+                        
+                        Vector<String> temp = new Vector<>();
+                        temp.add( nickName );
+                        tc.dtm.addRow( temp );
+                        log.info( temp );
+                        break;
+                    }
                     
                     default:
                         System.out.println( "해당하는 프로토콜이 존재하지 않습니다." );

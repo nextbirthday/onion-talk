@@ -52,6 +52,7 @@ public class TalkClient extends JFrame implements ActionListener {
     
     public void initDisplay() {
         jtf_msg.addActionListener( this );
+        jbtn_exit.addActionListener( this );
         // 사용자의 닉네임 받기
         nickname = JOptionPane.showInputDialog( "닉네임을 입력하세요." );
         this.setLayout( new GridLayout( 1, 2 ) );
@@ -92,6 +93,8 @@ public class TalkClient extends JFrame implements ActionListener {
             // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
             // 서버에게 내가 입장한 사실을 알린다.(말하기)
             oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 입장하셨습니다." );
+            
+            oos.writeObject( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
             log.info( nickname );
             
             TalkClientThread tct = new TalkClientThread( this, ois );
@@ -128,9 +131,7 @@ public class TalkClient extends JFrame implements ActionListener {
         }
         
         if ( object == jbtn_exit ) {
-            System.out.println( jbtn_exit );
             this.dispose();
         }
-        
     }
 }

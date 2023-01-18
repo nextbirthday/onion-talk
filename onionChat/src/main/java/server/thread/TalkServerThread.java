@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import lombok.extern.log4j.Log4j2;
 import server.TalkServer;
@@ -22,6 +23,7 @@ public class TalkServerThread extends Thread {
     ObjectInputStream  ois;
     
     List<TalkServerThread> userList;
+    String                 nickname;
     
     String user_id;
     String user_nick;
@@ -57,15 +59,16 @@ public class TalkServerThread extends Thread {
                 }
                 
                 switch ( protocol ) {
-                    case util.command.Protocol.TALK_IN: {
+                    case Protocol.TALK_IN: {
+                        nickname = st.nextToken();
+                        String message = st.nextToken();
                         
-                        String nickname = st.nextToken();
-                        String message  = st.nextToken();
                         this.broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
+                        
                     }
                         break;
                     
-                    case util.command.Protocol.MESSAGE: {
+                    case Protocol.MESSAGE: {
                         
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
@@ -75,7 +78,14 @@ public class TalkServerThread extends Thread {
                     }
                         break;
                     
-                    case util.command.Protocol.TALK_OUT: {
+                    case Protocol.ENTER_ROOM: {
+                        
+                        for ( TalkServerThread talkServerThread : userList ) {
+                            this.send( Protocol.ENTER_ROOM + Protocol.SEPARATOR + nickname );
+                        }
+                        break;
+                    }
+                    case Protocol.TALK_OUT: {
                         
                     }
                         break talk_stop;//
