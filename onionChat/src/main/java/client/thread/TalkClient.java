@@ -99,6 +99,7 @@ public class TalkClient extends JFrame implements ActionListener {
             // 서버측의 ip주소 작성하기
             
             socket = new Socket( "focusrite.iptime.org", 20000 );
+            // socket = new Socket( "localhost", 20000 );
             
             oos = new ObjectOutputStream( socket.getOutputStream() );
             ois = new ObjectInputStream( socket.getInputStream() );

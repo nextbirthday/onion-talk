@@ -54,10 +54,10 @@ public class TalkServerThread extends Thread {
                     protocol = Integer.parseInt( st.nextToken() );
                 }
                 
-                talkServer.userList.add( this );
                 
                 switch ( protocol ) {
                     case Protocol.TALK_IN: {
+                        talkServer.userList.add( this );
                         nickname = st.nextToken();
                         String message = st.nextToken();
                         
