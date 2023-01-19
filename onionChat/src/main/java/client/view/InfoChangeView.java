@@ -58,6 +58,16 @@ public class InfoChangeView extends JFrame implements ActionListener {
 	public static void main (String[] args) {
 		InfoChangeView infoChange = new InfoChangeView ();
 		infoChange.initDisplay ();
+//		ValidateUtil vu = new ValidateUtil ();
+//		vu.equals (infoChange.jtf_pw, infoChange.jtf_pw2);
+//		if (vu.equals (infoChange.jtf_pw, infoChange.jtf_pw2)) {
+//			JOptionPane.showMessageDialog (null, "비밀번호가 일치하지 않습니다.");
+//			System.out.println ("비밀번호 일치");
+//		}
+//		else {
+//			System.out.println ("비밀번호 불일치");
+//		}
+	
 	}
 	
 	public void initDisplay () {
@@ -182,6 +192,9 @@ public class InfoChangeView extends JFrame implements ActionListener {
 //        jf_warning.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
+
+
+
 //    ============================글자 입력 갯수 제한 메소드=================================
 		jtf_name.addKeyListener (new KeyAdapter () { // PW확인 글자입력갯수제한
 			@Override
@@ -222,12 +235,9 @@ public class InfoChangeView extends JFrame implements ActionListener {
 			@Override
 			public void keyTyped (KeyEvent ke) {
 				JTextField src = (JTextField) ke.getSource ();
-				if (src.getText ().length () >= 15) // 15자리 이하
-//                    if (src.getText ().length () <= 8) // 8자리 이상
-					ke.consume ();
+				if (src.getText ().length () >8 && src.getText ().length () <15) // 8자리 이상, 15자리 이하
+				ke.consume ();
 			}
-			
-			
 		});
 		phone.addKeyListener (new KeyAdapter () { // 폰번호 숫자 이외 입력금지 메소드
 			public void keyTyped (KeyEvent ke) {
@@ -237,7 +247,6 @@ public class InfoChangeView extends JFrame implements ActionListener {
 			}
 		});
 		
-		
 		jtf_birth.addKeyListener (new KeyAdapter () { // 생년월일 숫자입력갯수제한
 			@Override
 			public void keyTyped (KeyEvent ke) {
@@ -245,7 +254,6 @@ public class InfoChangeView extends JFrame implements ActionListener {
 				if (src.getText ().length () >= 8) // 8자리까지만 입력가능
 					ke.consume ();
 			}
-			
 		});
 		
 		jtf_nickName.addKeyListener (new KeyAdapter () { // 닉네임 글자입력갯수제한
@@ -256,11 +264,7 @@ public class InfoChangeView extends JFrame implements ActionListener {
 //                    if (src.getText ().length () <= 8) // 8자리 이상
 					ke.consume ();
 			}
-			
-			
 		});
-		
-		
 	}
 	
 	private void showDialog (String message) {
@@ -269,13 +273,19 @@ public class InfoChangeView extends JFrame implements ActionListener {
 		JOptionPane.showMessageDialog (jdl_join, message);
 		
 		JOptionPane.showMessageDialog (jf_warning, message);
-//        if (jf_warning == {
-//            jf_warning = new JFrame();
-
-
-//        }
-	
 	}
+	
+	
+	public static String isValidPW(String pw) {
+		String result = "";
+		if (pw.length () < 8 || pw.length () > 15) {
+			result = "비밀번호는 8자리 이상 15자리 이하로 입력해주세요.";
+		} else {
+			result = "사용가능한 비밀번호입니다.";
+		}
+		return result;
+	}
+	
 	
 	@Override
 	public void actionPerformed (ActionEvent e) {
@@ -294,8 +304,6 @@ public class InfoChangeView extends JFrame implements ActionListener {
 				jlb_idNotAvble.setVisible (true);
 				isIdCheck = false;
 			}
-			
-			
 		}
 		
 		/*
@@ -343,7 +351,12 @@ public class InfoChangeView extends JFrame implements ActionListener {
 		if (object == jtf_birth) {
 			jtf_birth.setEditable (false);
 		}
+
 		
+		if (jtf_pw == jtf_pw2) {
+			JOptionPane.showMessageDialog (jf_warning, "비밀번호가 일치합니다.");
+		} else {
+		} JOptionPane.showMessageDialog (jf_warning, "비밀번호가 일치하지 않습니다.");
 		
 	}
 }
