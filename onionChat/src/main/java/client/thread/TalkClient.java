@@ -142,8 +142,7 @@ public class TalkClient extends JFrame implements ActionListener {
                 jtf_msg.setText( "" );
             }
             else if ( object == jbtn_exit ) {
-                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
-                                + "님이 퇴장하셨습니다." );
+                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 퇴장하셨습니다." );
                 this.dispose();
                 if ( !socket.isClosed() )
                     socket.close();

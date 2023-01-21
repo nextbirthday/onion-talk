@@ -11,6 +11,7 @@ import util.oracle.OracleConnection;
 
 @Log4j2
 public class SignInLogic {
+    
     private Connection        conn;
     private PreparedStatement pstmt;
     private ResultSet         rs;
@@ -24,17 +25,17 @@ public class SignInLogic {
     
     /**
      * @author HOJAE
-     *         사용자로부터 ID와 PW를 파라미터로 받아온다.
+     *         사용자로부터 ID, PW, Status Message(상태메시지)를 파라미터로 받아온다.
      *         사용자로부터 입력받은 ID와 PW가 DB 서버의 record와 일치하면 USER_NICK을 DB에서 가져온다.
      *         DB로부터 가져온 닉네임을 Account 클래스 user_nick 값에 초기화
-     *         
+     *         <p>
      * @param account
      * @return ID와 닉네임이 들어있는 Account 객체
      */
     public Account signIn( Account account ) {
         
         StringBuilder sql = new StringBuilder();
-        sql.append( "   SELECT USER_ID, USER_NICK      " );
+        sql.append( "   SELECT USER_ID, USER_NICK, USER_MSG      " );
         sql.append( "   FROM ONION.INFO                 " );
         sql.append( "   WHERE USER_ID = ?           " );
         sql.append( "   AND USER_PW = ?             " );
@@ -49,6 +50,7 @@ public class SignInLogic {
             if ( rs.next() ) {
                 account.setUser_id( rs.getString( "USER_ID" ) );
                 account.setUser_nick( rs.getString( "USER_NICK" ) );
+                account.setUser_msg( rs.getString( "USER_MSG" ) );
                 log.info( account.toString() );
             }
         }

@@ -26,13 +26,21 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import lombok.extern.log4j.Log4j2;
+import model.FriendAddLogic;
+import model.StatusMessageLogic;
 import util.dto.Account;
+import util.dto.FriendVO;
 
-// 채팅 목록
+@Log4j2
 @SuppressWarnings( "serial" )
 public class MainView extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
+    
     // Account DTO를 받아오기 위한 전역변수 선언
-    Account account;
+    Account myAccount;
+    
+    // 친구 이름(아이디)를 받아오기 위한 전역변수 선언
+    FriendVO friendVO;
     
     // 선언부
     String    imgPath   = ".\\src\\images\\";
@@ -61,17 +69,21 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     
     // generic type 명시할 것
     DefaultListModel<String> model      = new DefaultListModel<>(); // JList에 보이는 실제 데이터
-    private JScrollPane      scrolled;
     JList<String>            list       = new JList<>( model );; // 리스트
+    JScrollPane              scrolled   = new JScrollPane( list );
     JTextField               inputField = new JTextField( 10 ); // 테스트 입력 Field
     JButton                  addBtn     = new JButton( "검색" );; // 검색 버튼
     JButton                  delBtn     = new JButton( "삭제" ); // 삭제 버튼
+    String                   existStatusMessage;
     
     public MainView() {}
     
     // 생성자
     public MainView( Account account ) {
-        this.account = account;
+        this.myAccount = account;
+        this.existStatusMessage = account.getUser_msg();
+        log.info( this.myAccount );
+        
         initDisplay();
     }
     
@@ -86,6 +98,8 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     // 화면그리기
     
     public void initDisplay() {
+        
+        addBtn.addActionListener( this );
         
         this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         // this.setContentPane( new MyPanel() );
@@ -138,6 +152,8 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         jp_center.add( scrolled );
         // this.add(jp_center,"North");
         
+        // 로그인 시 기존 상태메시지 DB서버에서 불러오기
+        jlb_msg.setText( existStatusMessage );
         this.add( "North", jp_north );
         this.add( "Center", jp_center ); // 가운데 list
         this.add( "South", jp_south );
@@ -153,7 +169,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     public void mouseClicked( MouseEvent e ) {
         
         if ( e.getSource() == addBtn ) {
-            addItem();
+            // addItem();
         }
         
         if ( e.getSource() == delBtn ) {
@@ -171,7 +187,6 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                 return; // 아무것도 저장되어 있지 않으면 return
             index = 0; // 그 이상이면 가장 상위 list index
         }
-        
         model.remove( index );
     }
     
@@ -223,9 +238,9 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     public void keyReleased( KeyEvent e ) {
         int keyCode = e.getKeyCode();
         
-        if ( keyCode == KeyEvent.VK_ENTER ) {
-            addItem();
-        }
+        // if ( keyCode == KeyEvent.VK_ENTER ) {
+        // addItem();
+        // }
     }
     
     // ListSelectionListener
@@ -242,15 +257,71 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         Object obj = ae.getSource();
         
         if ( obj == jbtn_change_msg ) {
-            String newMsg = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "", JOptionPane.INFORMATION_MESSAGE );
+            String statusMessage = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "", JOptionPane.INFORMATION_MESSAGE );
+            
             // 공백 입력 허용불가하게 바꾸기
-            if ( newMsg.length() > 0 )
-                jlb_msg.setText( newMsg );
+            if ( statusMessage.length() > 0 ) {
+                int                result             = 0;
+                StatusMessageLogic statusMessageLogic = new StatusMessageLogic();
+                
+                result = statusMessageLogic.statusMessage( myAccount, statusMessage );
+                
+                log.info( myAccount.toString() + ", " + "statusMessage = " + statusMessage + "result = " + result );
+                
+                if ( result == 0 ) {
+                    JOptionPane.showMessageDialog( null, "상태메시지 변경에 실패했습니다." );
+                }
+                else {
+                    JOptionPane.showMessageDialog( null, "상태메시지 변경에 성공했습니다." );
+                    jlb_msg.setText( statusMessage );
+                }
+            }
+        }
+        
+        if ( obj == addBtn ) {
+            
+            String         friendID       = inputField.getText();
+            FriendAddLogic friendAddLogic = new FriendAddLogic();
+            Account        friendAccount  = new Account();
+            
+            if ( friendID == null || friendID.length() == 0 ) {
+                JOptionPane.showMessageDialog( null, "친구 아이디를 입력해주세요." );
+            }
+            else {
+                log.info( friendID );
+                
+                friendAccount = friendAddLogic.friendIDCheck( friendID );
+                
+                friendAddLogic.friendAdd( myAccount, friendID );
+                
+                friendID = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
+                
+                log.info( "이름(아이디) = " + friendID );
+                
+                JOptionPane.showMessageDialog( null, friendID );
+                model.addElement( friendID );
+                inputField.setText( "" );// 내용 지우기
+                inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
+                
+            }
+            
+            // for ( int i = 0; i < model.size(); i++ ) {
+            //
+            // if ( model.get( i ).equalsIgnoreCase( friendID ) ) {
+            // JOptionPane.showMessageDialog( null, "이미 존재하는 친구입니다." );
+            // log.info( model.get( i ) );
+            // }
+            // else {
+            //
+            // JOptionPane.showMessageDialog( null, friendID );
+            // model.addElement( friendID );
+            // }
+            // }
         }
     }
     
-    public static void main( String[] args ) {
-        Account  account  = new Account();
-        MainView mainView = new MainView( account );
-    }
+    // public static void main( String[] args ) {
+    // Account account = new Account();
+    // MainView mainView = new MainView( account );
+    // }
 }

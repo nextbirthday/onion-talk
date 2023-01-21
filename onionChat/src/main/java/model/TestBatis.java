@@ -26,7 +26,7 @@ public class TestBatis {
         sqlSessionFactory = DBSessionFactory.getInstance();
         SqlSession sqlSession = sqlSessionFactory.openSession();
         account = sqlSession.selectOne( "signIn", account );
-        // System.out.println( account.toString() );
+        System.out.println( account.toString() );
         // System.out.println( account.hashCode() );
     }
 }

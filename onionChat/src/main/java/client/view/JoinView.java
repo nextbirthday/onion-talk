@@ -190,6 +190,7 @@ public class JoinView implements ActionListener, FocusListener {
                                                         jtf_birth.getText(), jtf_phone.getText(), jtf_nickName.getText(), null, null ) );
                         
                         if ( result > 0 ) {
+                            
                             showDialog( "회원가입 완료" );
                             jdl_join.dispose();
                         }

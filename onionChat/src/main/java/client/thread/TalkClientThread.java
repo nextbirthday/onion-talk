@@ -47,7 +47,8 @@ public class TalkClientThread extends Thread {
                     
                     // 메시지 수신
                     case Protocol.MESSAGE:
-                        tc.jta_display.append( nickName + ": " + message + "\n" );
+                        tc.jta_display.append( "[" + nickName + "]" + message + "\n" );
+                        tc.jta_display.setCaretPosition( tc.jta_display.getDocument().getLength() );
                         break;
                     
                     // 로그아웃

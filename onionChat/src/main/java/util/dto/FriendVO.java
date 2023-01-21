@@ -8,12 +8,12 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-
-public class Friend {
-    private String friend_no;
+public class FriendVO {
+    
+    private String user_id;
     private String friend_id;
     private String friend_reg;
 }

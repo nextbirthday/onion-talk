@@ -67,8 +67,7 @@ public class TalkServerThread extends Thread {
                             
                             // 다른 유저들의 [100#닉네임#님이 입장하셨습니다.]를 나에게 전송
                             if ( !user.equals( this ) ) {
-                                send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
-                                                + message );
+                                send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR + message );
                             }
                         }
                         
@@ -89,8 +88,7 @@ public class TalkServerThread extends Thread {
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
                         userList.remove( this );
-                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
-                                        + message );
+                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                         log.info( "{} 퇴장, 현재 접속자 수 : {}", nickname, userList.size() );
                     }
                         break talk_stop; // TALK_OUT일 때 루프 종료

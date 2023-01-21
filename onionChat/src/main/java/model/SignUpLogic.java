@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import client.view.JoinView;
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OnionDB;
 import util.oracle.OracleConnection;
 
 @Log4j2
@@ -34,6 +33,7 @@ public class SignUpLogic {
      * @return ID 중복체크 버튼을 눌렀을 때 ID가 중복이 아니면 0을, ID가 중복이면 1을 반환
      */
     public int idCheck() {
+        
         int result = 0;
         
         StringBuilder sql = new StringBuilder();
@@ -90,7 +90,6 @@ public class SignUpLogic {
             pstmt.setString( 6, account.getUser_nick() );
             pstmt.setString( 7, null );
             // pstmt.setString( 8, null );
-            System.out.println( account.toString() );
             log.info( account.toString() );
             result = pstmt.executeUpdate();
         }
