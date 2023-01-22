@@ -30,7 +30,6 @@ public class FriendTableLogic {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql );
             pstmt.execute( sql );
-            
         }
         catch ( ClassNotFoundException | SQLException | IOException e ) {
             log.error( "error", e );

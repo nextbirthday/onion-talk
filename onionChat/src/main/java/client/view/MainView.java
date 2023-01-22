@@ -9,6 +9,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.Socket;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -26,6 +29,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import client.thread.TalkClient;
 import lombok.extern.log4j.Log4j2;
 import model.FriendAddLogic;
 import model.StatusMessageLogic;
@@ -35,6 +39,8 @@ import util.dto.FriendVO;
 @Log4j2
 @SuppressWarnings( "serial" )
 public class MainView extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
+    
+    Socket socket;
     
     // Account DTO를 받아오기 위한 전역변수 선언
     Account myAccount;
@@ -105,14 +111,15 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         // this.setContentPane( new MyPanel() );
         this.setLayout( new BorderLayout( 50, 20 ) );// 배치
         
+        list.addListSelectionListener( this ); // 항목 선택시
         list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ); // 하나만 선택 될 수 있도록
+        list.addMouseListener( this );
         
         // ==========이벤트 속성 추가=================
         jbtn_change_msg.addActionListener( this ); // 엔터 처리
         inputField.addKeyListener( this ); // 엔터 처리
         addBtn.addMouseListener( this ); // 아이템 추가
         delBtn.addMouseListener( this ); // 아이템 삭제
-        list.addListSelectionListener( this ); // 항목 선택시
         
         // 상단 - 닉네임 - 상태메세지
         jp_north.add( jlb_nick );// 닉네임
@@ -168,15 +175,15 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     @Override
     public void mouseClicked( MouseEvent e ) {
         
-        if ( e.getSource() == addBtn ) {
-            // addItem();
-        }
-        
-        if ( e.getSource() == delBtn ) {
-            int selected = list.getSelectedIndex();
-            removeItem( selected );
-            System.out.println( selected );
-        }
+        // if ( e.getSource() == addBtn ) {
+        // // addItem();
+        // }
+        //
+        // if ( e.getSource() == delBtn ) {
+        // int selected = list.getSelectedIndex();
+        // removeItem( selected );
+        // System.out.println( selected );
+        // }
         
     }
     
@@ -219,7 +226,22 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     }
     
     @Override
-    public void mouseReleased( MouseEvent e ) {}
+    public void mouseReleased( MouseEvent e ) {
+        
+        if ( e.getClickCount() == 2 ) {
+            
+            int     selected      = list.getSelectedIndex();
+            String  selectedItem  = model.getElementAt( selected );
+            Account friendAccount = new Account();
+            friendAccount.setUser_nick( selectedItem );
+            List<Account> accountList = new Vector<>();
+            accountList.add( myAccount );
+            accountList.add( friendAccount );
+            log.info( accountList );
+            new TalkClient( accountList );
+            
+        }
+    }
     
     @Override
     public void mouseEntered( MouseEvent e ) {}
@@ -248,7 +270,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     public void valueChanged( ListSelectionEvent e ) {
         
         if ( !e.getValueIsAdjusting() ) { // 이거 없으면 mouse 눌릴때, 뗄때 각각 한번씩 호출되서 총 두번 호출
-            System.out.println( "selected :" + list.getSelectedValue() );
+            log.info( "selected :{}", list.getSelectedValue() );
         }
     }
     
@@ -281,6 +303,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         if ( obj == addBtn ) {
             
             String         friendID       = inputField.getText();
+            String         friendID2      = null;
             FriendAddLogic friendAddLogic = new FriendAddLogic();
             Account        friendAccount  = new Account();
             
@@ -288,35 +311,26 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                 JOptionPane.showMessageDialog( null, "친구 아이디를 입력해주세요." );
             }
             else {
-                log.info( friendID );
+                log.info( friendAccount );
                 
                 friendAccount = friendAddLogic.friendIDCheck( friendID );
                 
-                friendAddLogic.friendAdd( myAccount, friendID );
+                log.info( friendAccount );
                 
-                friendID = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
-                
-                log.info( "이름(아이디) = " + friendID );
-                
-                JOptionPane.showMessageDialog( null, friendID );
-                model.addElement( friendID );
-                inputField.setText( "" );// 내용 지우기
-                inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
-                
+                if ( friendAccount.getUser_id() == null ) {
+                    JOptionPane.showMessageDialog( null, "존재하지 않는 회원입니다." );
+                    return;
+                }
+                else {
+                    friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
+                    
+                    friendAddLogic.friendAdd( myAccount, friendID );
+                    
+                    model.addElement( friendID2 );
+                    inputField.setText( "" );// 내용 지우기
+                    inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
+                }
             }
-            
-            // for ( int i = 0; i < model.size(); i++ ) {
-            //
-            // if ( model.get( i ).equalsIgnoreCase( friendID ) ) {
-            // JOptionPane.showMessageDialog( null, "이미 존재하는 친구입니다." );
-            // log.info( model.get( i ) );
-            // }
-            // else {
-            //
-            // JOptionPane.showMessageDialog( null, friendID );
-            // model.addElement( friendID );
-            // }
-            // }
         }
     }
     

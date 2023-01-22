@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,7 +25,8 @@ import util.dto.Account;
 @Log4j2( topic = "logger" )
 @SuppressWarnings( "serial" )
 public class TalkClient extends JFrame implements ActionListener {
-    Account account;
+   
+    List<Account> accountList;
     
     Socket             socket;
     ObjectOutputStream oos;
@@ -53,11 +54,11 @@ public class TalkClient extends JFrame implements ActionListener {
     
     public TalkClient() {}
     
-    public TalkClient( Account account ) {
-        this.account = account;
+    public TalkClient( List<Account> accountList ) {
+        this.accountList = accountList;
         initDisplay();
         init();
-        log.info( account );
+        log.info( accountList );
     }
     
     public void initDisplay() {
@@ -65,8 +66,8 @@ public class TalkClient extends JFrame implements ActionListener {
         jbtn_exit.addActionListener( this );
         jbtn_change.addActionListener( this );
         jbtn_send.addActionListener( this );
-        // 사용자의 닉네임 받기
-        nickname = JOptionPane.showInputDialog( "닉네임을 입력하세요." );
+        // 나와 친구의 닉네임 받기
+        nickname = accountList.get( 0 ).getUser_nick();
         this.setLayout( new GridLayout( 1, 2 ) );
         jp_second.setLayout( new BorderLayout() );
         jp_second.add( "Center", jsp );
@@ -117,12 +118,11 @@ public class TalkClient extends JFrame implements ActionListener {
         }
     }
     
-    public static void main( String[] args ) {
-        TalkClient talkClient = new TalkClient();
-        talkClient.initDisplay();
-        
-        talkClient.init();
-    }
+    // public static void main( String[] args ) {
+    // TalkClient talkClient = new TalkClient();
+    // talkClient.initDisplay();
+    // talkClient.init();
+    // }
     
     @Override
     public void actionPerformed( ActionEvent e ) {
@@ -134,10 +134,11 @@ public class TalkClient extends JFrame implements ActionListener {
             if ( object == jbtn_send || object == jtf_msg ) {
                 String message = jtf_msg.getText();
                 
-                if ( message == null || message.trim().length() == 0 ) {
+                if ( message == null || message.length() == 0 ) {
                     // JOptionPane.showMessageDialog( this, "메세지를 입력하세요." );
                     return;
                 }
+                oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                 oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                 jtf_msg.setText( "" );
             }

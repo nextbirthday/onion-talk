@@ -33,6 +33,8 @@ import util.dto.Account;
 @SuppressWarnings( "serial" )
 public class LoginView implements ActionListener, KeyListener {
     
+    
+    
     String imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
     JLabel msg      = new JLabel();
     JFrame jf_login = new JFrame(); // 메인 프레임
@@ -174,6 +176,7 @@ public class LoginView implements ActionListener, KeyListener {
             friendTableLogic.createFriendTable( account );
             
             log.info( account.toString() );
+           
             MainView mainView = new MainView( account );
             // TalkClient talkClient = new TalkClient( account );
             jf_login.dispose();
