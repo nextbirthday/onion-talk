@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OnionDB;
 import util.oracle.OracleConnection;
 
 @Log4j2

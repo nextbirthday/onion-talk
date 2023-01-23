@@ -1,6 +1,7 @@
 package client.thread;
 
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -10,13 +11,12 @@ import util.command.Protocol;
 @Log4j2( topic = "logger" )
 public class TalkClientThread extends Thread {
     
-    TalkClient                tc;
-    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+    private ObjectInputStream  ois;
+    private TalkClient         tc;
     
-    public TalkClientThread() {}
-    
-    public TalkClientThread( TalkClient tc, ObjectInputStream ois ) {
-        this.tc = tc;
+    public TalkClientThread( ObjectOutputStream oos, ObjectInputStream ois ) {
+        this.oos = oos;
         this.ois = ois;
     }
     
@@ -38,6 +38,7 @@ public class TalkClientThread extends Thread {
                     
                     // 입장
                     case Protocol.TALK_IN:
+                        tc = new TalkClient( nickName, oos );
                         tc.jta_display.append( nickName + message + "\n" );
                         
                         Vector<String> temp = new Vector<>();
@@ -51,7 +52,7 @@ public class TalkClientThread extends Thread {
                         tc.jta_display.setCaretPosition( tc.jta_display.getDocument().getLength() );
                         break;
                     
-                    // 로그아웃
+                    // 상대방이 나갔을 경우 채팅방 나갔을 경우 목록에서 삭제
                     case Protocol.TALK_OUT:
                         tc.jta_display.append( nickName + ": " + message + "\n" );
                         

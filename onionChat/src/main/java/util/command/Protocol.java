@@ -8,5 +8,6 @@ public class Protocol {
     public static final int    TALK_OUT   = 500;
     public static final int    ENTER_ROOM = 600;
     public static final int    ERROR      = 700;
+    public static final int    SIGN_IN    = 800;
     public static final String SEPARATOR  = "#";
 }

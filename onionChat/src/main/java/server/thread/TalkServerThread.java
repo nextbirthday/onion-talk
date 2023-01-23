@@ -55,23 +55,34 @@ public class TalkServerThread extends Thread {
                 }
                 
                 switch ( protocol ) {
-                    case Protocol.TALK_IN: {
+                    case Protocol.SIGN_IN:
                         userList.add( this );
                         nickname = st.nextToken();
-                        String message = st.nextToken();
                         log.info( "{} 입장, 현재 접속자 수 : {}", nickname, userList.size() );
+                        break;
+                    
+                    case Protocol.TALK_IN: {
+                        String receiveNick = st.nextToken();
+                        String message     = st.nextToken();
                         
                         // 현재 접속 중인 유저(스레드) 전체 루프
                         // n번째 유저는 n-1번째까지 ~님이 입장하셨습니다. 가 반복되는 이슈
+                        // for ( TalkServerThread user : userList ) {
+                        //
+                        // // 다른 유저들의 [100#닉네임#님이 입장하셨습니다.]를 나에게 전송
+                        // if ( !user.equals( this ) ) {
+                        // send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
+                        // + message );
+                        // }
+                        // }
+                        
                         for ( TalkServerThread user : userList ) {
                             
-                            // 다른 유저들의 [100#닉네임#님이 입장하셨습니다.]를 나에게 전송
-                            if ( !user.equals( this ) ) {
-                                send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR + message );
+                            if ( user.nickname.equals( nickname ) || user.nickname.equals( receiveNick ) ) {
+                                user.send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
+                                                + message );
                             }
                         }
-                        
-                        broadCasting( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                     }
                         break;
                     
@@ -83,13 +94,14 @@ public class TalkServerThread extends Thread {
                         broadCasting( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                         break;
                     }
+                    // 채팅방에서 나간다는 메시지 전송, 서버와의 연결은 유지하도록 수정
                     case Protocol.TALK_OUT: {
-                        // 유저 리스트에서 로그아웃한 유저 삭제 및 다른 유저에게 퇴장메시지 송신
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
-                        userList.remove( this );
-                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                        log.info( "{} 퇴장, 현재 접속자 수 : {}", nickname, userList.size() );
+                        // userList.remove( this );
+                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
+                                        + message );
+                        // log.info( "{} 퇴장, 현재 접속자 수 : {}", nickname, userList.size() );
                     }
                         break talk_stop; // TALK_OUT일 때 루프 종료
                 }

@@ -11,7 +11,7 @@ import server.thread.TalkServerThread;
 @Log4j2( topic = "talk-server" )
 public class TalkServer implements Runnable {
     
-    private static List<TalkServerThread> userList = new Vector<>();
+    private static final List<TalkServerThread> userList = new Vector<>();
     
     @Override
     public void run() {
@@ -33,7 +33,7 @@ public class TalkServer implements Runnable {
             }
         }
         catch ( Exception e ) {
-            log.error( "Exception : ", e );
+            log.error( "Exception :", e );
         }
     }
     

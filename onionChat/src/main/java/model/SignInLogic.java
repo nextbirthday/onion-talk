@@ -55,7 +55,7 @@ public class SignInLogic {
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );

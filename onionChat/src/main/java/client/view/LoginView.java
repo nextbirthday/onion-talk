@@ -33,9 +33,7 @@ import util.dto.Account;
 @SuppressWarnings( "serial" )
 public class LoginView implements ActionListener, KeyListener {
     
-    
-    
-    String imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
+    String imgPath  = "src/main/resources/images/";
     JLabel msg      = new JLabel();
     JFrame jf_login = new JFrame(); // 메인 프레임
     JPanel jp_login = new JPanel( null ); // 제일 큰 도화지
@@ -167,8 +165,8 @@ public class LoginView implements ActionListener, KeyListener {
         
         SignInLogic signInLogic = new SignInLogic();
         
-        Account account = signInLogic.signIn( new Account( getJtf_id().getText(), String.valueOf( getJtf_pw().getPassword() ), null, null,
-                        null, null, null, null ) );
+        Account account = signInLogic.signIn( new Account( getJtf_id().getText(),
+                        String.valueOf( getJtf_pw().getPassword() ), null, null, null, null, null, null ) );
         
         if ( account.getUser_nick() != null ) {
             
@@ -176,8 +174,8 @@ public class LoginView implements ActionListener, KeyListener {
             friendTableLogic.createFriendTable( account );
             
             log.info( account.toString() );
-           
-            MainView mainView = new MainView( account );
+            
+            new MainView( account );
             // TalkClient talkClient = new TalkClient( account );
             jf_login.dispose();
         }

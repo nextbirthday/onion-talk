@@ -4,10 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,17 +17,12 @@ import javax.swing.table.DefaultTableModel;
 
 import lombok.extern.log4j.Log4j2;
 import util.command.Protocol;
-import util.dto.Account;
 
 @Log4j2( topic = "logger" )
 @SuppressWarnings( "serial" )
 public class TalkClient extends JFrame implements ActionListener {
-   
-    List<Account> accountList;
     
-    Socket             socket;
     ObjectOutputStream oos;
-    ObjectInputStream  ois;
     
     String             nickname;
     JPanel             jp_second       = new JPanel();
@@ -54,20 +46,18 @@ public class TalkClient extends JFrame implements ActionListener {
     
     public TalkClient() {}
     
-    public TalkClient( List<Account> accountList ) {
-        this.accountList = accountList;
+    public TalkClient( String nickname, ObjectOutputStream oos ) {
+        this.nickname = nickname;
+        this.oos = oos;
         initDisplay();
-        init();
-        log.info( accountList );
     }
     
     public void initDisplay() {
+        setTitle( nickname );
         jtf_msg.addActionListener( this );
         jbtn_exit.addActionListener( this );
         jbtn_change.addActionListener( this );
         jbtn_send.addActionListener( this );
-        // 나와 친구의 닉네임 받기
-        nickname = accountList.get( 0 ).getUser_nick();
         this.setLayout( new GridLayout( 1, 2 ) );
         jp_second.setLayout( new BorderLayout() );
         jp_second.add( "Center", jsp );
@@ -92,38 +82,6 @@ public class TalkClient extends JFrame implements ActionListener {
         this.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
     }
     
-    // 소켓 관련 초기화
-    public void init() {
-        
-        try {
-            // 서버측의 ip주소 작성하기
-            
-            // socket = new Socket( "focusrite.iptime.org", 20000 );
-            socket = new Socket( "localhost", 20000 );
-            
-            oos = new ObjectOutputStream( socket.getOutputStream() );
-            ois = new ObjectInputStream( socket.getInputStream() );
-            
-            // initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로 서버에게 내가 입장한 사실을 알린다.
-            oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 입장하셨습니다." );
-            
-            log.info( "nickname : {}", nickname );
-            
-            TalkClientThread tct = new TalkClientThread( this, ois );
-            tct.setDaemon( true );
-            tct.start();
-        }
-        catch ( Exception e ) {
-            log.error( "Exception : ", e );
-        }
-    }
-    
-    // public static void main( String[] args ) {
-    // TalkClient talkClient = new TalkClient();
-    // talkClient.initDisplay();
-    // talkClient.init();
-    // }
-    
     @Override
     public void actionPerformed( ActionEvent e ) {
         Object object = e.getSource();
@@ -139,14 +97,12 @@ public class TalkClient extends JFrame implements ActionListener {
                     return;
                 }
                 oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
-                oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                 jtf_msg.setText( "" );
             }
             else if ( object == jbtn_exit ) {
-                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 퇴장하셨습니다." );
+                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
+                                + "님이 퇴장하셨습니다." );
                 this.dispose();
-                if ( !socket.isClosed() )
-                    socket.close();
             }
             else {
                 return;

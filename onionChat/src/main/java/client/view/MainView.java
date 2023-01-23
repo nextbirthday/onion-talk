@@ -9,9 +9,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -29,10 +30,11 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import client.thread.TalkClient;
+import client.thread.TalkClientThread;
 import lombok.extern.log4j.Log4j2;
 import model.FriendAddLogic;
 import model.StatusMessageLogic;
+import util.command.Protocol;
 import util.dto.Account;
 import util.dto.FriendVO;
 
@@ -40,7 +42,9 @@ import util.dto.FriendVO;
 @SuppressWarnings( "serial" )
 public class MainView extends JFrame implements ActionListener, KeyListener, MouseListener, ListSelectionListener {
     
-    Socket socket;
+    private Socket             client;
+    private ObjectOutputStream oos;
+    private ObjectInputStream  ois;
     
     // Account DTO를 받아오기 위한 전역변수 선언
     Account myAccount;
@@ -49,7 +53,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     FriendVO friendVO;
     
     // 선언부
-    String    imgPath   = ".\\src\\images\\";
+    String    imgPath   = "src/main/resources/images/";
     ImageIcon imageIcon = new ImageIcon( imgPath + "main.png" );
     JFrame    jf        = new JFrame();
     
@@ -91,6 +95,28 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         log.info( this.myAccount );
         
         initDisplay();
+        
+        connectSocket();
+    }
+    
+    private void connectSocket() {
+        
+        try {
+            client = new Socket( "localhost", 20000 );
+            oos = new ObjectOutputStream( client.getOutputStream() );
+            ois = new ObjectInputStream( client.getInputStream() );
+            oos.writeObject( Protocol.SIGN_IN + Protocol.SEPARATOR + myAccount.getUser_nick() + Protocol.SEPARATOR
+                            + "로그인" );
+            
+            log.info( "nickname : {}", myAccount.getUser_nick() );
+            
+            TalkClientThread oisThread = new TalkClientThread( oos, ois );
+            oisThread.setDaemon( true );
+            oisThread.start();
+        }
+        catch ( Exception e ) {
+            log.error( "소켓 연결 실패 :", e );
+        }
     }
     
     // 내부클래스로 배경 이미지 처리
@@ -230,16 +256,27 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         
         if ( e.getClickCount() == 2 ) {
             
-            int     selected      = list.getSelectedIndex();
-            String  selectedItem  = model.getElementAt( selected );
-            Account friendAccount = new Account();
-            friendAccount.setUser_nick( selectedItem );
-            List<Account> accountList = new Vector<>();
-            accountList.add( myAccount );
-            accountList.add( friendAccount );
-            log.info( accountList );
-            new TalkClient( accountList );
+            int    selected     = list.getSelectedIndex();
+            String selectedItem = model.getElementAt( selected );
+            String friendNick   = selectedItem.split( "\\(" )[0];
             
+            Account friendAccount = new Account();
+            friendAccount.setUser_nick( friendNick );
+            
+            // List<Account> accountList = new Vector<>();
+            // 내 정보
+            // accountList.add( myAccount );
+            // 채팅방 생성할 친구 정보
+            // accountList.add( friendAccount );
+            // accountList.forEach( user -> log.info( user.toString() ) );
+            
+            try {
+                oos.writeObject( Protocol.TALK_IN + Protocol.SEPARATOR + friendAccount.getUser_nick()
+                                + Protocol.SEPARATOR + "입장" );
+            }
+            catch ( IOException ex ) {
+                log.error( "IOException :", ex );
+            }
         }
     }
     
@@ -279,7 +316,8 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         Object obj = ae.getSource();
         
         if ( obj == jbtn_change_msg ) {
-            String statusMessage = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "", JOptionPane.INFORMATION_MESSAGE );
+            String statusMessage = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "",
+                            JOptionPane.INFORMATION_MESSAGE );
             
             // 공백 입력 허용불가하게 바꾸기
             if ( statusMessage.length() > 0 ) {

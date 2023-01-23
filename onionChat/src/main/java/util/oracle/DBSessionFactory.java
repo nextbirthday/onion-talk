@@ -26,7 +26,7 @@ public class DBSessionFactory {
                 sqlSessionFactory = new SqlSessionFactoryBuilder().build( inputStream );
             }
             catch ( IOException e ) {
-                log.error( "데이터베이스 연결 실패 : " + e.getMessage() );
+                log.error( "데이터베이스 연결 실패 : {}", e );
                 e.printStackTrace();
             }
         }
