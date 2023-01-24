@@ -9,7 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 import util.oracle.OracleConnection;
 
-@Log4j2
+@Log4j2( topic = "database" )
 public class SignUpLogic {
     
     private JoinView          view;
@@ -56,12 +56,11 @@ public class SignUpLogic {
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
         }
-        
         return result;
     }
     
@@ -90,17 +89,14 @@ public class SignUpLogic {
             pstmt.setString( 6, account.getUser_nick() );
             pstmt.setString( 7, null );
             // pstmt.setString( 8, null );
-            log.info( account.toString() );
             result = pstmt.executeUpdate();
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt );
         }
-        
         return result;
     }
-    
 }

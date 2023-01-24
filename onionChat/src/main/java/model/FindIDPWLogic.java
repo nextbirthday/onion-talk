@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 import util.oracle.OracleConnection;
 
-@Log4j2
+@Log4j2( topic = "database" )
 public class FindIDPWLogic {
     private Connection        conn;
     private PreparedStatement pstmt;
@@ -32,7 +32,7 @@ public class FindIDPWLogic {
         sql.append( "    WHERE USER_NAME = ?     " );
         sql.append( "    AND USER_PHONE = ?      " );
         
-        log.info( username + ", " + phone );
+        log.debug( "{}, {}", username, phone );
         
         try {
             conn = OracleConnection.getConnection();
@@ -47,7 +47,7 @@ public class FindIDPWLogic {
             
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
@@ -66,7 +66,7 @@ public class FindIDPWLogic {
         sql.append( "    WHERE USER_NAME = ?     " );
         sql.append( "    AND USER_ID = ?      " );
         
-        log.info( "username = " + username + ", id = " + id );
+        log.debug( "{}, {}", username, id );
         
         try {
             conn = OracleConnection.getConnection();
@@ -81,7 +81,7 @@ public class FindIDPWLogic {
             
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );

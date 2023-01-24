@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="fileName">server</Property>
+        <Property name="serverLog">server</Property>
+        <Property name="databaseLog">server</Property>
     </Properties>
     <Appenders>
         <Console name="consoleAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %c %-5p [ %l ] %m%n" disableAnsi="false" />
         </Console>
-        <RollingFile name="serverAppender" fileName="logs/${fileName}.log" filePattern="logs/%d{yyyy-MM-dd}-%i-${fileName}.log" append="true" createOnDemand="true">
+        <RollingFile name="serverAppender" fileName="logs/${serverLog}.log" filePattern="logs/%d{yyyy-MM-dd}-%i-${fileName}.log" append="true" createOnDemand="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %c %-5p [ %l ] %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="1 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="databaseAppender" fileName="logs/${databaseLog}.log" filePattern="logs/%d{yyyy-MM-dd}-%i-${fileName}.log" append="true" createOnDemand="true">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %c %-5p [ %l ] %m%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy />
@@ -21,6 +29,10 @@
         </Root>
         <Logger name="logger" level="DEBUG" additivity="false">
             <AppenderRef ref="consoleAppender" />
+        </Logger>
+        <Logger name="database" level="TRACE" additivity="false">
+            <AppenderRef ref="consoleAppender" />
+            <AppenderRef ref="databaseAppender" />
         </Logger>
         <Logger name="talk-server" level="TRACE" additivity="false">
             <AppenderRef ref="consoleAppender" />

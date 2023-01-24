@@ -1,14 +1,13 @@
 package model;
 
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 import util.oracle.OracleConnection;
 
-@Log4j2
+@Log4j2( topic = "database" )
 public class StatusMessageLogic {
     private Connection        conn;
     private PreparedStatement pstmt;
@@ -32,7 +31,7 @@ public class StatusMessageLogic {
             result = pstmt.executeUpdate();
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt );

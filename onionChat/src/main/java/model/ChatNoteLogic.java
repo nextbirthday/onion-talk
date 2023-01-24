@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.view.ChatView;
+import lombok.extern.log4j.Log4j2;
 import util.dto.ChatNote;
 import util.oracle.OracleConnection;
 
+@Log4j2( topic = "database" )
 public class ChatNoteLogic {
     private Connection        conn;
     private PreparedStatement pstmt;
@@ -28,7 +30,6 @@ public class ChatNoteLogic {
      * @return
      */
     public List<ChatNote> chatNote() {
-        // System.out.println("정상 작동 확인 1!");
         List<ChatNote> chatList = new ArrayList<>();
         StringBuilder  sql      = new StringBuilder();
         sql.append( "   SELECT ch_id, ch_user, ch_note, ch_date      " );
@@ -38,7 +39,6 @@ public class ChatNoteLogic {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
             rs = pstmt.executeQuery();
-            // System.out.println("정상 작동 확인 2!");
             ChatNote cn = null;
             
             while ( rs.next() ) {
@@ -48,12 +48,11 @@ public class ChatNoteLogic {
                 cn.setCh_note( rs.getString( "ch_note" ) );
                 cn.setCh_date( rs.getString( "ch_date" ) );
                 chatList.add( cn );
-                System.out.println( rs.getString( "ch_id" ) );
             }
-            System.out.println( chatList );
+            chatList.forEach( e -> log.debug( e ) );
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
@@ -76,20 +75,14 @@ public class ChatNoteLogic {
             pstmt.setString( 2, your_id );
             pstmt.setString( 3, ch_message );
             result = pstmt.executeUpdate( sql.toString() );
-            System.out.println( "result : " + result );
+            log.debug( "result = {}", result );
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt );
         }
         return result;
-    }
-    
-    public static void main( String[] args ) {
-        ChatNoteLogic cLogic = new ChatNoteLogic();
-        // cLogic.chatNote();
-        cLogic.chatMsgInsert( "user", "tomato", "msg" ); // 채팅하는 누군가의 값 필요
     }
 }

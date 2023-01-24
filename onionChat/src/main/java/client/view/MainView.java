@@ -36,7 +36,7 @@ import model.FriendAddLogic;
 import model.StatusMessageLogic;
 import util.command.Protocol;
 import util.dto.Account;
-import util.dto.FriendVO;
+import util.dto.Friend;
 
 @Log4j2
 @SuppressWarnings( "serial" )
@@ -50,7 +50,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     Account myAccount;
     
     // 친구 이름(아이디)를 받아오기 위한 전역변수 선언
-    FriendVO friendVO;
+    Friend friend;
     
     // 선언부
     String    imgPath   = "src/main/resources/images/";

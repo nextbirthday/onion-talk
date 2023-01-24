@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j2;
 import util.oracle.OracleConnection;
 
+@Log4j2( topic = "database" )
 public class ChatListLogic {
     private Connection        conn;
     private PreparedStatement pstmt;
@@ -29,10 +31,10 @@ public class ChatListLogic {
                 roomName = rs.getString( "ch_title" );
                 chatList.add( roomName );
             }
-            System.out.println( chatList );
+            chatList.forEach( e -> log.debug( e ) );
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
@@ -58,7 +60,7 @@ public class ChatListLogic {
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
@@ -89,19 +91,14 @@ public class ChatListLogic {
                 roomName = rs.getString( "" );
                 chatList.add( roomName );
             }
-            System.out.println( chatList );
+            chatList.forEach( e -> log.debug( e ) );
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "Exception :", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
         }
         return chatList;
-    }
-    
-    public static void main( String[] args ) {
-        ChatListLogic cll = new ChatListLogic();
-        cll.chatList();
     }
 }

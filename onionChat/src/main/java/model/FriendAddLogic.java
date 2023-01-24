@@ -4,15 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import javax.swing.JOptionPane;
-
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.dto.FriendVO;
 import util.oracle.OracleConnection;
 
-@Log4j2
-
+@Log4j2( topic = "database" )
 public class FriendAddLogic {
     
     private Connection        conn;
@@ -52,16 +48,15 @@ public class FriendAddLogic {
         return account;
     }
     
-    public FriendVO friendAdd( Account account, String friendID ) {
+    public int friendAdd( Account account, String friendID ) {
         
         int result = 0;
         
-        FriendVO friendVO = new FriendVO();
-        
         StringBuilder sql = new StringBuilder();
-        log.info( "MyAccount = " + account + ", " + "friendID = " + friendID );
+        log.debug( "MyAccount = {}, friendID = {}", account, friendID );
         
-        sql.append( " INSERT INTO ONION." + account.getUser_id() + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
+        sql.append( " INSERT INTO ONION." + account.getUser_id()
+                        + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
         
         try {
             conn = OracleConnection.getConnection();
@@ -76,8 +71,6 @@ public class FriendAddLogic {
         catch ( Exception e ) {
             log.error( "error", e );
         }
-        
-        return friendVO;
+        return result;
     }
-    
 }

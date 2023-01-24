@@ -9,7 +9,7 @@ import util.dto.Account;
 import util.dto.Friend;
 import util.oracle.OracleConnection;
 
-@Log4j2
+@Log4j2( topic = "database" )
 public class MainFriendLogic {
     
     private Connection        conn;
