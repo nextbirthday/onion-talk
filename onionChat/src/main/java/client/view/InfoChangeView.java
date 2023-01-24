@@ -200,7 +200,7 @@ public class InfoChangeView extends JFrame implements ActionListener {
 			@Override
 			public void keyTyped (KeyEvent ke) {
 				JTextField src = (JTextField) ke.getSource ();
-				if (src.getText ().length () >= 8) // 15자리 이하
+				if (src.getText ().length () >= 6) // 15자리 이하
 //                    if (src.getText ().length () <= 8) // 8자리 이상
 					ke.consume ();
 			}

@@ -7,13 +7,13 @@ import java.awt.event.ActionListener;
 
 @SuppressWarnings( "serial" )
 public class SettingsView extends JFrame implements ActionListener {
-	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\img\\";
-	ImageIcon i = new ImageIcon(imgPath+ "onion1.png");
+	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\";
+	ImageIcon i = new ImageIcon(imgPath+ "1.png");
 	Image im=i.getImage();
 	JFrame jf_setting = new JFrame (); // 메인 프레임
 	JLabel msg = new JLabel ();//메시지
 	JButton btn_chgBG = new JButton ("배경화면 변경"); // 배경화면 변경 버튼
-	JButton btn_mem_info = new JButton ("닉네임 변경");// 닉네임 변경 버튼
+	JButton btn_mem_info = new JButton ("회원정보 변경");// 닉네임 변경 버튼
 	JButton btn_out = new JButton ("탈퇴하기");// 탈퇴하기 버튼
 	JButton btn_home = new JButton ("홈");// 홈 가기 버튼
 	JButton btn_lobby = new JButton ("로비");// 로비 가기 버튼
@@ -107,22 +107,26 @@ public class SettingsView extends JFrame implements ActionListener {
 			}*/
 		} else if (obj == btn_mem_info) {
 			setTitle ("회원정보 변경");
+			jf_setting.dispose ();
+			InfoChangeView mi = new InfoChangeView ();
+			mi.initDisplay ();
 			System.out.println ("회원정보 변경");
-			// 닉네임 변경
-			String newName = JOptionPane.showInputDialog (jf_setting, "변경할 닉네임 입력", "닉네임 변경", JOptionPane.INFORMATION_MESSAGE);
-			System.out.println ("변경할 닉네임 : " + newName);
+//			String newName = JOptionPane.showInputDialog (jf_setting, "변경할 닉네임 입력", "닉네임 변경", JOptionPane.INFORMATION_MESSAGE);
+//			System.out.println ("변경할 닉네임 : " + newName);
 			// DB에 저장
 		
 		} else if (obj == btn_out) {
 			setTitle ("탈퇴하기");
 			System.out.println ("탈퇴하기");
+
 			// 탈퇴하기
 			int result = JOptionPane.showConfirmDialog (jf_setting, "정말 탈퇴하시겠습니까?", "탈퇴", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				JOptionPane.showMessageDialog (jf_setting, "다음에 또 만나요~", "탈퇴", JOptionPane.INFORMATION_MESSAGE);
 				jf_setting.dispose ();
-				// DB에서 삭제
-				// 로비로 이동
+			if (result == JOptionPane.NO_OPTION) {
+				JOptionPane.showMessageDialog (jf_setting, "탈퇴를 취소합니다.", "탈퇴", JOptionPane.INFORMATION_MESSAGE);
+			}
 			}
 //			=========================================하단 버튼 4개
 		} else if (obj == btn_home) {
@@ -150,35 +154,16 @@ public class SettingsView extends JFrame implements ActionListener {
 			setTitle ("로그아웃");
 			System.out.println ("로그아웃");
 			int result = JOptionPane.showConfirmDialog (jf_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
-			System.exit (0);
-			
+			if (result == JOptionPane.YES_OPTION) {
+				JOptionPane.showMessageDialog (jf_setting, "다음에 또 만나요~", "로그아웃", JOptionPane.INFORMATION_MESSAGE);
+//				jf_setting.dispose ();
+				System.exit (0);
+				if (result == JOptionPane.NO_OPTION) {
+					JOptionPane.showMessageDialog (jf_setting, "로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		}
+
 			
 		}
 	}
-}
-/*} else if (obj == jbtn_chgName) {
-			System.out.println ("닉네임 변경");
-			// 닉네임 변경
-			String nickname = JOptionPane.showInputDialog (jf_setting, "변경할 닉네임을 입력하세요");
-			if (nickname != null) {
-				System.out.println ("변경할 닉네임 : " + nickname);
-				// 닉네임 변경
-				// DB에 저장
-			}
-		} else if (obj == btn_chgPW) {
-			System.out.println ("비밀번호 변경");
-			// 비밀번호 변경
-			String password = JOptionPane.showInputDialog (jf_setting, "변경할 비밀번호를 입력하세요");
-			if (password != null) {
-				System.out.println ("변경할 비밀번호 : " + password);
-			
-				
-			
-			} else if (obj == btn_out){
-				System.out.println ("탈퇴");
-				// 탈퇴 확인
-				String out = JOptionPane.showInputDialog (jf_setting, "정말로 탈퇴하시겠습니까?");
-				if (out != null) {
-					System.out.println ("정말로 탈퇴하시겠습니까 ? : " + out);
-				}
-			}*/
