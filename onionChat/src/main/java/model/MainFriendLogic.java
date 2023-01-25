@@ -27,12 +27,12 @@ public class MainFriendLogic {
         Friend        result = null;
         StringBuilder sql    = new StringBuilder();
         sql.append( "    SELECT FRIEND_ID        " );
-        sql.append( "    FROM ONION.FRIENDLIST   " ); // 프랜드 리스트에서 친구아이디 전부 가져오기
+        sql.append( "    FROM ONION.?   " ); // 프랜드 리스트에서 친구아이디 전부 가져오기
         
         try {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
-            // pstmt.setString( 1, id );
+            pstmt.setString( 1, id );
             rs = pstmt.executeQuery();
             
             if ( rs.next() ) {
@@ -135,5 +135,7 @@ public class MainFriendLogic {
         
         return result;
     }
+
+    
     
 }

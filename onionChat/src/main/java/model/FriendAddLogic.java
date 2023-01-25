@@ -47,7 +47,42 @@ public class FriendAddLogic {
         
         return account;
     }
-    
+
+    ///////////////////////////////////////////////////// 친구 삭제 수정중
+    public Account friendIDDelete( String friendID ) {
+        
+        StringBuilder sql = new StringBuilder();
+        
+        log.info( friendID );
+        
+        sql.append( "    SELECT USER_NAME, USER_ID, USER_NICK  " );
+        sql.append( "    FROM ONION.INFO            " );
+        sql.append( "    WHERE USER_ID = ?          " );
+        Account account = new Account();
+        
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, friendID );
+            rs = pstmt.executeQuery();
+            
+            log.info( sql.toString() );
+            
+            while ( rs.next() ) {
+                account.setUser_name( rs.getString( "user_name" ) );
+                account.setUser_id( rs.getString( "user_id" ) );
+                account.setUser_nick( rs.getString( "user_nick" ) );
+            }
+            log.info( account );
+        }
+        catch ( Exception e ) {
+            log.error( "error", e );
+        }
+        
+        return account;
+    }
+    /////////////////////////////////////////////////////////////
+
     public int friendAdd( Account account, String friendID ) {
         
         int result = 0;

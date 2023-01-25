@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionListener;
 import client.thread.TalkClientThread;
 import lombok.extern.log4j.Log4j2;
 import model.FriendAddLogic;
+import model.MainFriendLogic;
 import model.StatusMessageLogic;
 import util.command.Protocol;
 import util.dto.Account;
@@ -79,30 +80,37 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     
     // generic type 명시할 것
     DefaultListModel<String> model      = new DefaultListModel<>(); // JList에 보이는 실제 데이터
+
     JList<String>            list       = new JList<>( model );; // 리스트
     JScrollPane              scrolled   = new JScrollPane( list );
     JTextField               inputField = new JTextField( 10 ); // 테스트 입력 Field
     JButton                  addBtn     = new JButton( "검색" );; // 검색 버튼
     JButton                  delBtn     = new JButton( "삭제" ); // 삭제 버튼
     String                   existStatusMessage;
+    String                   existUserNick;
+    
     
     public MainView() {}
     
     // 생성자
     public MainView( Account account ) {
+
+       
         this.myAccount = account;
         this.existStatusMessage = account.getUser_msg();
+        this.existUserNick = account.getUser_nick();
         log.info( this.myAccount );
-        
         initDisplay();
-        
         connectSocket();
+
     }
+
+
     
     private void connectSocket() {
         
         try {
-            client = new Socket( "localhost", 20000 );
+            client = new Socket( "focusrite.iptime.org", 20000 );
             oos = new ObjectOutputStream( client.getOutputStream() );
             ois = new ObjectInputStream( client.getInputStream() );
             oos.writeObject( Protocol.SIGN_IN + Protocol.SEPARATOR + myAccount.getUser_nick() + Protocol.SEPARATOR
@@ -148,7 +156,9 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         delBtn.addMouseListener( this ); // 아이템 삭제
         
         // 상단 - 닉네임 - 상태메세지
+        
         jp_north.add( jlb_nick );// 닉네임
+        jlb_nick.setText( existUserNick );
         // jlb_nick.setText( account.getUser_nick() );
         jp_north.add( jlb_msg ); // 상태메세지
         // jlb_msg.setText( account.getUser_msg() );
@@ -179,6 +189,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         jp_center.add( delBtn ); // 위쪽 패널 [textfield] [add] [del]
         jp_center.setBorder( BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) ); // 상, 좌, 하, 우 공백(Padding)
         jp_center.setBackground( new Color( 146, 208, 80 ) ); // 판넬색 변경
+
         scrolled = new JScrollPane( list );
         scrolled.setPreferredSize( new Dimension( 300, 400 ) ); // jlist 사이즈 변경
         scrolled.setBorder( BorderFactory.createEmptyBorder( 0, 0, 10, 10 ) );// jlist 상하좌우공백
@@ -197,21 +208,29 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
         this.setVisible( true );
     }
     
-    // ====== 버튼 클릭 됐을 때 ===========
-    @Override
-    public void mouseClicked( MouseEvent e ) {
-        
-        // if ( e.getSource() == addBtn ) {
-        // // addItem();
-        // }
-        //
-        // if ( e.getSource() == delBtn ) {
-        // int selected = list.getSelectedIndex();
-        // removeItem( selected );
-        // System.out.println( selected );
-        // }
-        
-    }
+        // ====== 버튼 클릭 됐을 때 ===========
+        @Override
+        public void mouseClicked(MouseEvent e) {
+    
+            if (e.getSource() == addBtn) { // 검색버튼 눌렀을 때 실행 
+                addItem();
+            }
+            
+            if ( e.getSource() == delBtn ) {
+                int selected = list.getSelectedIndex();
+                removeItem( selected );
+                System.out.println( selected );
+            }
+    
+            if(e.getClickCount() ==2)
+            if (e.getSource() == list){   //리스트 눌렀을 때 채팅방으로 이동
+                int selected = list.getSelectedIndex();
+                System.out.println(selected);
+                if(selected >= 0){
+                    ChatView chatView = new ChatView();  //친구방에 들어가야됨
+                }
+            }
+        }
     
     public void removeItem( int index ) {
         
@@ -314,7 +333,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed( ActionEvent ae ) {
         Object obj = ae.getSource();
-        
+        /////////////////////상태메시지 변경////////////////////////
         if ( obj == jbtn_change_msg ) {
             String statusMessage = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "",
                             JOptionPane.INFORMATION_MESSAGE );
@@ -337,7 +356,7 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                 }
             }
         }
-        
+        /////////////////////친구 추가 버튼 눌렀을 때 이벤트////////////////////////
         if ( obj == addBtn ) {
             
             String         friendID       = inputField.getText();
@@ -370,6 +389,39 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                 }
             }
         }
+
+        /////////////////////친구 삭제 버튼 눌렀을 때 이벤트////////////////////////
+        if ( obj == delBtn ) {
+            String         friendID       = inputField.getText();
+            String         friendID2      = null;
+            FriendAddLogic friendAddLogic = new FriendAddLogic();
+            Account        friendAccount  = new Account();
+            if ( friendID == null || friendID.length() == 0 ) {
+                JOptionPane.showMessageDialog( null, "삭제할 아이디를 입력해주세요." );
+            }
+            else {
+                log.info( friendAccount );
+                
+                friendAccount = friendAddLogic.friendIDCheck( friendID );
+                
+                log.info( friendAccount );
+                
+                if ( friendAccount.getUser_id() == null ) {
+                    JOptionPane.showMessageDialog( null, "존재하지 않는 회원입니다." );
+                    return;
+                }
+                else {
+                    friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
+                    
+                    friendAddLogic.friendAdd( myAccount, friendID );
+                    
+                    model.addElement( friendID2 );
+                    inputField.setText( "" );// 내용 지우기
+                    inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
+                }
+            }
+        }
+
     }
     
     // public static void main( String[] args ) {
