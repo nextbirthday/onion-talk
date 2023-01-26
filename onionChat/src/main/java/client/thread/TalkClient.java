@@ -93,15 +93,15 @@ public class TalkClient extends JFrame implements ActionListener {
                 String message = jtf_msg.getText();
                 
                 if ( message == null || message.length() == 0 ) {
-                    // JOptionPane.showMessageDialog( this, "메세지를 입력하세요." );
+                    // 아무것도 입력되지않았으면 아래 코드를 실행하지 않는다. 화이트스페이스는 허용한다.
                     return;
                 }
+                
                 oos.writeObject( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                 jtf_msg.setText( "" );
             }
             else if ( object == jbtn_exit ) {
-                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
-                                + "님이 퇴장하셨습니다." );
+                oos.writeObject( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + "님이 퇴장하셨습니다." );
                 this.dispose();
             }
             else {

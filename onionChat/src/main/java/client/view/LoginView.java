@@ -60,7 +60,7 @@ public class LoginView implements ActionListener, KeyListener {
     public LoginView() {}
     
     public void initDisplay() {
-        
+        jlb_idtext.requestFocus();
         getJtf_id().addKeyListener( this );
         getJtf_pw().addKeyListener( this );
         
@@ -165,8 +165,8 @@ public class LoginView implements ActionListener, KeyListener {
         
         SignInLogic signInLogic = new SignInLogic();
         
-        Account account = signInLogic.signIn( new Account( getJtf_id().getText(),
-                        String.valueOf( getJtf_pw().getPassword() ), null, null, null, null, null, null ) );
+        Account account = signInLogic.signIn( new Account( getJtf_id().getText(), String.valueOf( getJtf_pw().getPassword() ), null, null,
+                        null, null, null, null ) );
         
         if ( account.getUser_nick() != null ) {
             
@@ -176,7 +176,7 @@ public class LoginView implements ActionListener, KeyListener {
             log.info( account.toString() );
             
             new MainView( account );
-            // TalkClient talkClient = new TalkClient( account );
+            
             jf_login.dispose();
         }
         else {

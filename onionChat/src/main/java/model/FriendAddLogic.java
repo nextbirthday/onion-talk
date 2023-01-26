@@ -55,8 +55,7 @@ public class FriendAddLogic {
         StringBuilder sql = new StringBuilder();
         log.debug( "MyAccount = {}, friendID = {}", account, friendID );
         
-        sql.append( " INSERT INTO ONION." + account.getUser_id()
-                        + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
+        sql.append( " INSERT INTO ONION." + account.getUser_id() + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
         
         try {
             conn = OracleConnection.getConnection();

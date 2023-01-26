@@ -31,33 +31,33 @@ public class TalkClientThread extends Thread {
                 
                 StringTokenizer st       = new StringTokenizer( receive, Protocol.SEPARATOR );
                 int             protocol = Integer.parseInt( st.nextToken() );
-                String          nickName = st.nextToken();
+                String          nickname = st.nextToken();
                 String          message  = st.nextToken();
                 
                 switch ( protocol ) {
                     
                     // 입장
                     case Protocol.TALK_IN:
-                        tc = new TalkClient( nickName, oos );
-                        tc.jta_display.append( nickName + message + "\n" );
+                        tc = new TalkClient( nickname, oos );
+                        tc.jta_display.append( nickname + message + "\n" );
                         
                         Vector<String> temp = new Vector<>();
-                        temp.add( nickName );
+                        temp.add( nickname );
                         tc.dtm.addRow( temp );
                         break;
                     
                     // 메시지 수신
                     case Protocol.MESSAGE:
-                        tc.jta_display.append( "[" + nickName + "]" + message + "\n" );
+                        tc.jta_display.append( "[" + nickname + "]" + message + "\n" );
                         tc.jta_display.setCaretPosition( tc.jta_display.getDocument().getLength() );
                         break;
                     
                     // 상대방이 나갔을 경우 채팅방 나갔을 경우 목록에서 삭제
                     case Protocol.TALK_OUT:
-                        tc.jta_display.append( nickName + ": " + message + "\n" );
+                        tc.jta_display.append( nickname + ": " + message + "\n" );
                         
                         for ( int i = 0; i < tc.dtm.getRowCount(); i++ )
-                            if ( nickName.equals( tc.dtm.getValueAt( i, 0 ) ) ) {
+                            if ( nickname.equals( tc.dtm.getValueAt( i, 0 ) ) ) {
                                 tc.dtm.removeRow( i );
                                 break;
                             }

@@ -17,14 +17,14 @@ public class FriendTableLogic {
     private PreparedStatement pstmt;
     private ResultSet         rs;
     
-    public boolean createFriendTable( Account account ) {
+    public void createFriendTable( Account account ) {
         
-        boolean result = false;
-        
-        // StringBuilder sql = new StringBuilder();
+        // String sql = "CREATE TABLE " + account.getUser_id()
+        // + " (USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), CONSTRAINT FRIEND_ID_uq UNIQUE(FRIEND_ID), FRIEND_REG DATE DEFAULT
+        // SYSDATE ) ";
         
         String sql = "CREATE TABLE " + account.getUser_id()
-                        + " (USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), CONSTRAINT FRIEND_ID_uq UNIQUE(FRIEND_ID), FRIEND_REG DATE DEFAULT SYSDATE  ) ";
+                        + " (USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), FRIEND_REG DATE DEFAULT SYSDATE  ) ";
         
         try {
             conn = OracleConnection.getConnection();
@@ -37,8 +37,6 @@ public class FriendTableLogic {
         finally {
             OracleConnection.freeConnection( conn, pstmt );
         }
-        
-        return result;
     }
     
     public int insertFriend( Account account, String friendID ) {
