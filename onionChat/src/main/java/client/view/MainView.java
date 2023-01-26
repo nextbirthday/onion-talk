@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -89,13 +90,22 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     String                   existStatusMessage;
     String                   existUserNick;
     
+
+    MainFriendLogic m = new MainFriendLogic();
+    //친구추가목록 가져오기
+    List<Friend> myFriend = null;
+
     
     public MainView() {}
     
     // 생성자
     public MainView( Account account ) {
 
-       
+        myFriend=m.friendList(account.getUser_id());
+        for(int i=0;i<myFriend.size();i++){
+            Friend rFriend = myFriend.get(i);
+            model.addElement(rFriend.getFriend_id());
+        }
         this.myAccount = account;
         this.existStatusMessage = account.getUser_msg();
         this.existUserNick = account.getUser_nick();
@@ -137,7 +147,8 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
     // }// end of MyPanel - 사용자 패널정의 - LoginForm$1.class, LoginForm$MyPanel.class
     // 화면그리기
     
-    public void initDisplay() {
+    public void 
+    initDisplay() {
         
         addBtn.addActionListener( this );
         
@@ -356,13 +367,17 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                 }
             }
         }
-        /////////////////////친구 추가 버튼 눌렀을 때 이벤트////////////////////////
+        ///////////////////친구 추가 버튼 눌렀을 때 이벤트////////////////////////
         if ( obj == addBtn ) {
             
             String         friendID       = inputField.getText();
             String         friendID2      = null;
             FriendAddLogic friendAddLogic = new FriendAddLogic();
             Account        friendAccount  = new Account();
+            MainFriendLogic mainFriendLogic = new MainFriendLogic();
+
+            int result  = mainFriendLogic.FriendCheck(friendID); //친구 추가 중복 검사
+
             
             if ( friendID == null || friendID.length() == 0 ) {
                 JOptionPane.showMessageDialog( null, "친구 아이디를 입력해주세요." );
@@ -378,7 +393,10 @@ public class MainView extends JFrame implements ActionListener, KeyListener, Mou
                     JOptionPane.showMessageDialog( null, "존재하지 않는 회원입니다." );
                     return;
                 }
-                else {
+                else if(result == 1){
+                    JOptionPane.showMessageDialog( null, "이미 친구인 회원입니다." );
+                }
+                else{
                     friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
                     
                     friendAddLogic.friendAdd( myAccount, friendID );
