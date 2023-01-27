@@ -16,6 +16,7 @@ public class StatusMessageLogic {
         
         int           result = 0;
         StringBuilder sql    = new StringBuilder();
+
         
         sql.append( "  UPDATE ONION.INFO             " );
         sql.append( "  SET                           " );
@@ -25,8 +26,8 @@ public class StatusMessageLogic {
         try {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, statusMessage );
-            pstmt.setString( 2, account.getUser_id() );
+            pstmt.setString( 1, null );
+            pstmt.setString( 2, null );
             
             result = pstmt.executeUpdate();
         }
