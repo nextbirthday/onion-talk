@@ -17,14 +17,20 @@ public class FriendTableLogic {
     private PreparedStatement pstmt;
     private ResultSet         rs;
     
+    /**
+     * 사용자가 로그인에 성공하면 Oracle 서버에 친구목록 테이블을 생성하는 메서드이다.
+     * 테이블 네임은 사용자의 아이디로 생성한다.
+     * 
+     * @param account
+     */
     public void createFriendTable( Account account ) {
         
         // String sql = "CREATE TABLE " + account.getUser_id()
         // + " (USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), CONSTRAINT FRIEND_ID_uq UNIQUE(FRIEND_ID), FRIEND_REG DATE DEFAULT
         // SYSDATE ) ";
         
-        String sql = "CREATE TABLE " + account.getUser_id()
-                        + " (USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), FRIEND_REG DATE DEFAULT SYSDATE  ) ";
+        String sql = " CREATE TABLE " + account.getUser_id()
+                        + " ( USER_ID VARCHAR2(40), FRIEND_ID VARCHAR2(40), FRIEND_REG DATE DEFAULT SYSDATE ) ";
         
         try {
             conn = OracleConnection.getConnection();
@@ -39,6 +45,13 @@ public class FriendTableLogic {
         }
     }
     
+    /**
+     * Main 화면에서
+     * 
+     * @param account  - 사용자의 계정정보
+     * @param friendID - Main 화면에서 입력받은 친구의 ID
+     * @return INSERT 여부 - 성공 1, 실패 0
+     */
     public int insertFriend( Account account, String friendID ) {
         
         int result = 0;

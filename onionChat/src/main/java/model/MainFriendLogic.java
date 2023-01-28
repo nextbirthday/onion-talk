@@ -3,6 +3,8 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.Vector;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
@@ -18,37 +20,41 @@ public class MainFriendLogic {
     
     /**
      * @author leehs
-     *         사용자가 로그인하면 db에서 사용자의 친구목록을 불러온다
+     *         사용자가 로그인하면 DB에서 사용자의 친구목록 테이블에서 친구 RECORDS를 불러온다
      *         
-     * @param id (DB COLUMN NAME : USER_ID)
-     * @return 검색버튼을 눌렀을 때 DB에 ID가 있으면 친구 아이디를 반환
+     * @param Account - 사용자가 로그인한 정보
+     * @return 친구 RECORDS
      */
-    public Friend friendList( String id ) {
-        Friend        result = null;
-        StringBuilder sql    = new StringBuilder();
+    public List<Friend> friendList( Account myAccount ) {
+        
+        Friend        friend;
+        List<Friend>  friendList = new Vector<>();
+        StringBuilder sql        = new StringBuilder();
+        
         sql.append( "    SELECT FRIEND_ID        " );
-        sql.append( "    FROM ONION.FRIENDLIST   " ); // 프랜드 리스트에서 친구아이디 전부 가져오기
+        sql.append( "    FROM ONION." + myAccount.getUser_id() ); // 프랜드 리스트에서 친구아이디 전부 가져오기
         
         try {
             conn = OracleConnection.getConnection();
             pstmt = conn.prepareStatement( sql.toString() );
-            // pstmt.setString( 1, id );
             rs = pstmt.executeQuery();
             
-            if ( rs.next() ) {
-                System.out.println();
+            while ( rs.next() ) {
+                friend = new Friend();
+                friend.setFriend_id( rs.getString( "FRIEND_ID" ) );
+                friendList.add( friend );
             }
-            result = new Friend();
-            result.setFriend_id( rs.getString( "FRIEND_ID" ) );
+            
+            log.info( friendList );
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "error", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
         }
         
-        return result;
+        return friendList;
     }
     
     /**
@@ -84,12 +90,53 @@ public class MainFriendLogic {
             }
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "error", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt, rs );
         }
         
+        return result;
+    }
+    
+    /*
+     * 
+     * @author leehs
+     * 검색버튼을 눌렀을 때 입력된 ID를 DB서버와 연동해서 사용자의 친구목록 테이블에 RECORD에 존재하는지 확인한다.
+     * 
+     * @param
+     * 
+     * @return 친구아이디 추가를 눌렀을때 친구ID가 중복이 아니면 0을, ID가 중복이면 1을 반환
+     */
+    public int friendIDCheck( String id, String friend ) {
+        int result = 0;
+        
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append( "    SELECT FRIEND_ID        " );
+        sql.append( "    FROM " + id ); //
+        sql.append( "     WHERE FRIEND_ID = ?" ); //
+        
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, id );
+            pstmt.setString( 1, friend );
+            rs = pstmt.executeQuery();
+            
+            log.info( id );
+            
+            // ResultSet
+            if ( rs.next() ) {
+                result++;
+            }
+        }
+        catch ( Exception e ) {
+            log.error( "error", e );
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt, rs );
+        }
         return result;
     }
     
@@ -127,7 +174,7 @@ public class MainFriendLogic {
             
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.error( "error", e );
         }
         finally {
             OracleConnection.freeConnection( conn, pstmt );

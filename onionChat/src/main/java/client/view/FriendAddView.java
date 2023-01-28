@@ -64,13 +64,14 @@ public class FriendAddView extends JDialog implements ActionListener {
         Object object = e.getSource();
         
         if ( object == addButton ) {
-            String friendID  = mainview.inputField.getText();
+            // String friendID = mainview.inputField.getText();
             String friendID2 = null;
             friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
             
-            FriendAddLogic friendAddLogic = new FriendAddLogic();
-            friendAddLogic.friendAdd( myAccount, friendID );
+            // FriendAddLogic friendAddLogic = new FriendAddLogic();
+            // friendAddLogic.friendAdd( myAccount, friendAccount.getUser_id() );
             
+            new FriendAddLogic().friendAdd( myAccount, friendAccount.getUser_id() );
             mainview.model.addElement( friendID2 );
             mainview.inputField.setText( "" );
             mainview.inputField.requestFocus();

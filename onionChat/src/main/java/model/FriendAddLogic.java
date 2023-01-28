@@ -17,14 +17,13 @@ public class FriendAddLogic {
     
     public Account friendIDCheck( String friendID ) {
         
-        StringBuilder sql = new StringBuilder();
+        Account account = new Account();
         
-        log.info( friendID );
+        StringBuilder sql = new StringBuilder();
         
         sql.append( "    SELECT USER_NAME, USER_ID, USER_NICK  " );
         sql.append( "    FROM ONION.INFO            " );
         sql.append( "    WHERE USER_ID = ?          " );
-        Account account = new Account();
         
         try {
             conn = OracleConnection.getConnection();

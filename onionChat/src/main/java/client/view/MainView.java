@@ -5,14 +5,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -50,7 +50,8 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     Account myAccount;
     
     // 친구 이름(아이디)를 받아오기 위한 전역변수 선언
-    Friend friend;
+    List<Friend> friendList = new Vector<>();
+    Friend       friend;
     
     // 선언부
     String    imgPath   = "src/main/resources/images/";
@@ -89,10 +90,12 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     public MainView() {}
     
     // 생성자
-    public MainView( Account account ) {
+    public MainView( Account account, List<Friend> friendList ) {
         this.myAccount = account;
         this.existStatusMessage = account.getUser_msg();
+        this.friendList = friendList;
         log.info( this.myAccount );
+        log.info( friendList );
         
         initDisplay();
         
@@ -121,7 +124,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     public void initDisplay() {
         
         addBtn.addActionListener( this );
-        
+        jbtn_logout.addActionListener( this );
         this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         // this.setContentPane( new MyPanel() );
         this.setLayout( new BorderLayout( 50, 20 ) );// 배치
@@ -176,6 +179,13 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
         
         // 로그인 시 기존 상태메시지 DB서버에서 불러오기
         jlb_msg.setText( existStatusMessage );
+        
+        // 로그인시 받아온 친구record 화면에 뿌려주기
+        for ( int i = 0; i < friendList.size(); i++ ) {
+            friend = friendList.get( i );
+            model.addElement( friend.getFriend_id() );
+        }
+        
         this.add( "North", jp_north );
         this.add( "Center", jp_center ); // 가운데 list
         this.add( "South", jp_south );
@@ -260,7 +270,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
         if ( obj == jbtn_change_msg ) {
             String statusMessage = JOptionPane.showInputDialog( jf, "변경할 상태메세지를 입력하세요", "", JOptionPane.INFORMATION_MESSAGE );
             
-            // 공백 입력 허용불가하게 바꾸기
+            // Condition: 공백 입력 허용불가
             if ( statusMessage.length() > 0 ) {
                 int result = 0;
                 
@@ -284,32 +294,6 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
             FriendAddLogic friendAddLogic = new FriendAddLogic();
             Account        friendAccount  = new Account();
             
-            // if ( friendID == null || friendID.length() == 0 ) {
-            // showDialog( "친구 아이디를 입력해주세요." );
-            // }
-            // else {
-            //
-            // friendAccount = friendAddLogic.friendIDCheck( friendID );
-            //
-            // log.info( friendAccount );
-            //
-            // if ( friendAccount.getUser_id() == null ) {
-            // showDialog( "존재하지 않는 회원입니다." );
-            // return;
-            // }
-            // else {
-            //
-            // friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
-            //
-            // friendAddLogic.friendAdd( myAccount, friendID );
-            //
-            // model.addElement( friendID2 );
-            // inputField.setText( "" );// 내용 지우기
-            // inputField.requestFocus(); // 다음 입력을 편하게 받기 위해서 TextField에 포커스 요청
-            //
-            // scrolled.getVerticalScrollBar().setValue( scrolled.getVerticalScrollBar().getMaximum() );
-            // }
-            
             if ( friendID == null || friendID.length() == 0 ) {
                 showDialog( "친구 아이디를 입력해주세요." );
             }
@@ -326,6 +310,12 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
                     new FriendAddView( this, myAccount, friendAccount );
                 }
             }
+            inputField.setText( "" );
+            inputField.requestFocus();
+        }
+        
+        if ( obj == jbtn_logout ) {
+            this.dispose();
         }
     }
 }

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,8 +25,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import model.FriendTableLogic;
+import model.MainFriendLogic;
 import model.SignInLogic;
 import util.dto.Account;
+import util.dto.Friend;
 
 @Getter
 @Setter
@@ -173,9 +176,11 @@ public class LoginView implements ActionListener, KeyListener {
             FriendTableLogic friendTableLogic = new FriendTableLogic();
             friendTableLogic.createFriendTable( account );
             
+            List<Friend> friendList = new MainFriendLogic().friendList( account );
+            
             log.info( account.toString() );
             
-            new MainView( account );
+            new MainView( account, friendList );
             
             jf_login.dispose();
         }
