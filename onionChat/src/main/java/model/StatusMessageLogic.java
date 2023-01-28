@@ -1,41 +1,27 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OracleConnection;
+import util.oracle.DBSessionFactory;
 
-@Log4j2( topic = "database" )
+@Log4j2( topic = "login" )
 public class StatusMessageLogic {
-    private Connection        conn;
-    private PreparedStatement pstmt;
     
-    public int statusMessage( Account account, String statusMessage ) {
+    private SqlSessionFactory sqlSessionFactory;
+    private SqlSession        sqlSession;
+    
+    public int setStatusMessage( Account account ) {
         
-        int           result = 0;
-        StringBuilder sql    = new StringBuilder();
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        sql.append( "  UPDATE ONION.INFO             " );
-        sql.append( "  SET                           " );
-        sql.append( "  USER_MSG = ?               " );
-        sql.append( "  WHERE USER_ID = ?           " );
+        int result = sqlSession.update( "login.setStatusMessage", account );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, statusMessage );
-            pstmt.setString( 2, account.getUser_id() );
-            
-            result = pstmt.executeUpdate();
-        }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt );
-        }
+        log.info( account );
+        
         return result;
     }
 }

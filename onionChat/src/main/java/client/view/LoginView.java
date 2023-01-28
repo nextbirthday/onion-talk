@@ -36,7 +36,7 @@ import util.dto.Friend;
 @SuppressWarnings( "serial" )
 public class LoginView implements ActionListener, KeyListener {
     
-    String imgPath  = "src/main/resources/images/";
+    String imgPath  = "src\\main\\resources\\images\\";
     JLabel msg      = new JLabel();
     JFrame jf_login = new JFrame(); // 메인 프레임
     JPanel jp_login = new JPanel( null ); // 제일 큰 도화지

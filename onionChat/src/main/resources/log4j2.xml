@@ -30,7 +30,11 @@
         <Logger name="logger" level="DEBUG" additivity="false">
             <AppenderRef ref="consoleAppender" />
         </Logger>
-        <Logger name="database" level="TRACE" additivity="false">
+        <Logger name="login" level="TRACE" additivity="false">
+            <AppenderRef ref="consoleAppender" />
+            <AppenderRef ref="databaseAppender" />
+        </Logger>
+        <Logger name="friend" level="TRACE" additivity="false">
             <AppenderRef ref="consoleAppender" />
             <AppenderRef ref="databaseAppender" />
         </Logger>

@@ -27,7 +27,6 @@ public class DBSessionFactory {
             }
             catch ( IOException e ) {
                 log.error( "데이터베이스 연결 실패 : {}", e );
-                e.printStackTrace();
             }
         }
         return sqlSessionFactory;

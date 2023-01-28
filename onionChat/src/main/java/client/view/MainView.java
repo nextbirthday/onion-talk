@@ -54,7 +54,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     Friend       friend;
     
     // 선언부
-    String    imgPath   = "src/main/resources/images/";
+    String    imgPath   = "src\\main\\resources\\images\\";
     ImageIcon imageIcon = new ImageIcon( imgPath + "main.png" );
     JFrame    jf        = new JFrame();
     
@@ -273,8 +273,8 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
             // Condition: 공백 입력 허용불가
             if ( statusMessage.length() > 0 ) {
                 int result = 0;
-                
-                result = new StatusMessageLogic().statusMessage( myAccount, statusMessage );
+                myAccount.setUser_msg( statusMessage );
+                result = new StatusMessageLogic().setStatusMessage( myAccount );
                 
                 log.info( myAccount.toString() + ", " + "statusMessage = " + statusMessage + ", result = " + result );
                 

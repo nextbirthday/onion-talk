@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
+import util.oracle.DBSessionFactory;
 import util.oracle.OracleConnection;
 
 @Log4j2( topic = "database" )
@@ -13,6 +17,9 @@ public class FindIDPWLogic {
     private Connection        conn;
     private PreparedStatement pstmt;
     private ResultSet         rs;
+    
+    private SqlSessionFactory sqlSessionFactory;
+    private SqlSession        sqlSession;
     
     /**
      * @author HOJAE
@@ -24,68 +31,30 @@ public class FindIDPWLogic {
      * @return ID 찾기 버튼을 눌렀을 때 입력한 이름과 번호가 맞으면 1을, 틀리면 1을 반환
      */
     public Account findID( String username, String phone ) {
-        StringBuilder sql = new StringBuilder();
-        Account       acc = new Account();
         
-        sql.append( "    SELECT USER_ID          " );
-        sql.append( "    FROM ONION.INFO      " );
-        sql.append( "    WHERE USER_NAME = ?     " );
-        sql.append( "    AND USER_PHONE = ?      " );
+        Account account = new Account();
+        account.setUser_name( username );
+        account.setUser_phone( phone );
         
         log.debug( "{}, {}", username, phone );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, username );
-            pstmt.setString( 2, phone );
-            rs = pstmt.executeQuery();
-            
-            if ( rs.next() ) {
-                acc.setUser_id( rs.getString( "USER_ID" ) );
-            }
-            
-        }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt, rs );
-        }
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        return acc;
+        return sqlSession.selectOne( "login.findID", account );
     }
     
     public Account pwFind( String username, String id ) {
         
-        StringBuilder sql = new StringBuilder();
-        Account       acc = new Account();
-        
-        sql.append( "    SELECT USER_PW          " );
-        sql.append( "    FROM ONION.INFO      " );
-        sql.append( "    WHERE USER_NAME = ?     " );
-        sql.append( "    AND USER_ID = ?      " );
+        Account account = new Account();
+        account.setUser_name( username );
+        account.setUser_id( id );
         
         log.debug( "{}, {}", username, id );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, username );
-            pstmt.setString( 2, id );
-            rs = pstmt.executeQuery();
-            
-            if ( rs.next() ) {
-                acc.setUser_pw( rs.getString( "USER_PW" ) );
-            }
-            
-        }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt, rs );
-        }
-        return acc;
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
+        
+        return sqlSession.selectOne( "login.pwFind", account );
     }
 }

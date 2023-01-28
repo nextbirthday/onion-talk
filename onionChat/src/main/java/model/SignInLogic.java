@@ -1,21 +1,20 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import client.view.LoginView;
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OracleConnection;
+import util.oracle.DBSessionFactory;
 
-@Log4j2( topic = "database" )
+@Log4j2( topic = "login" )
 public class SignInLogic {
     
-    private Connection        conn;
-    private PreparedStatement pstmt;
-    private ResultSet         rs;
-    LoginView                 loginView;
+    LoginView loginView;
+    
+    private SqlSessionFactory sqlSessionFactory;
+    private SqlSession        sqlSession;
     
     public SignInLogic() {}
     
@@ -34,32 +33,13 @@ public class SignInLogic {
      */
     public Account signIn( Account account ) {
         
-        StringBuilder sql = new StringBuilder();
-        sql.append( "   SELECT USER_ID, USER_NICK, USER_MSG      " );
-        sql.append( "   FROM ONION.INFO                 " );
-        sql.append( "   WHERE USER_ID = ?           " );
-        sql.append( "   AND USER_PW = ?             " );
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, account.getUser_id() );
-            pstmt.setString( 2, account.getUser_pw() );
-            rs = pstmt.executeQuery();
-            
-            if ( rs.next() ) {
-                account.setUser_id( rs.getString( "USER_ID" ) );
-                account.setUser_nick( rs.getString( "USER_NICK" ) );
-                account.setUser_msg( rs.getString( "USER_MSG" ) );
-                log.info( account.toString() );
-            }
-        }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt, rs );
-        }
-        return account;
+        Account result = sqlSession.selectOne( "login.signIn", account );
+        
+        log.info( result );
+        
+        return result;
     }
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import lombok.extern.log4j.Log4j2;
@@ -68,14 +69,18 @@ public class FriendAddView extends JDialog implements ActionListener {
             String friendID2 = null;
             friendID2 = friendAccount.getUser_nick() + "(" + friendAccount.getUser_id() + ")";
             
-            // FriendAddLogic friendAddLogic = new FriendAddLogic();
-            // friendAddLogic.friendAdd( myAccount, friendAccount.getUser_id() );
+            int result = new FriendAddLogic().friendAdd( myAccount, friendAccount.getUser_id() );
             
-            new FriendAddLogic().friendAdd( myAccount, friendAccount.getUser_id() );
-            mainview.model.addElement( friendID2 );
-            mainview.inputField.setText( "" );
-            mainview.inputField.requestFocus();
-            this.dispose();
+            if ( result == 0 ) {
+                JOptionPane.showMessageDialog( null, "친구 추가에 실패하였습니다." );
+            }
+            else {
+                mainview.model.addElement( friendID2 );
+                mainview.inputField.setText( "" );
+                mainview.inputField.requestFocus();
+                this.dispose();
+            }
+            
         }
         else if ( object == exitButton ) {
             this.dispose();

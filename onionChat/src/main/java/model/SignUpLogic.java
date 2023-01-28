@@ -1,21 +1,20 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import client.view.JoinView;
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OracleConnection;
+import util.oracle.DBSessionFactory;
 
-@Log4j2( topic = "database" )
+@Log4j2( topic = "login" )
 public class SignUpLogic {
     
-    private JoinView          view;
-    private Connection        conn;
-    private PreparedStatement pstmt;
-    private ResultSet         rs;
+    private JoinView view;
+    
+    private SqlSessionFactory sqlSessionFactory;
+    private SqlSession        sqlSession;
     
     public SignUpLogic() {}
     
@@ -36,31 +35,15 @@ public class SignUpLogic {
         
         int result = 0;
         
-        StringBuilder sql = new StringBuilder();
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        sql.append( "      SELECT USER_ID " ); // COLUMN USER_ID
-        sql.append( "  FROM ONION.INFO " ); // ACCOUNT TABLE
-        sql.append( "  WHERE USER_ID = ?" ); // CONDITION USER_ID data와 ?일치하면
+        String userID = sqlSession.selectOne( "login.idCheck", view.getJtf_id().getText() );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, view.getJtf_id().getText() );
-            rs = pstmt.executeQuery();
-            
-            log.info( view.getJtf_id().getText() );
-            
-            // ResultSet
-            if ( rs.next() ) {
-                result++;
-            }
+        if ( userID != null ) {
+            result++;
         }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt, rs );
-        }
+        
         return result;
     }
     
@@ -72,31 +55,14 @@ public class SignUpLogic {
      * @return INSERT 성공 시 : 성공한 개수, 실패 시 0
      */
     public int register( Account account ) {
-        StringBuilder sql = new StringBuilder();
-        log.info( account.toString() );
-        int result = 0;
-        sql.append( " INSERT INTO ONION.INFO " );
-        sql.append( " VALUES (?, ?, ?, ?, ?, ?, ?, SYSDATE ) " );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, account.getUser_id() );
-            pstmt.setString( 2, account.getUser_pw() );
-            pstmt.setString( 3, account.getUser_name() );
-            pstmt.setString( 4, account.getUser_birth() );
-            pstmt.setString( 5, account.getUser_phone() );
-            pstmt.setString( 6, account.getUser_nick() );
-            pstmt.setString( 7, null );
-            // pstmt.setString( 8, null );
-            result = pstmt.executeUpdate();
-        }
-        catch ( Exception e ) {
-            log.error( "Exception :", e );
-        }
-        finally {
-            OracleConnection.freeConnection( conn, pstmt );
-        }
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
+        
+        int result = sqlSession.insert( "login.register", account );
+        
+        log.info( account );
+        
         return result;
     }
 }

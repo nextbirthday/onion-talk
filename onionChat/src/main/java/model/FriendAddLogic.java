@@ -1,74 +1,47 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
-import util.oracle.OracleConnection;
+import util.oracle.DBSessionFactory;
 
-@Log4j2( topic = "database" )
+@Log4j2( topic = "friend" )
 public class FriendAddLogic {
     
-    private Connection        conn;
-    private PreparedStatement pstmt;
-    private ResultSet         rs;
+    private SqlSessionFactory sqlSessionFactory;
+    private SqlSession        sqlSession;
     
     public Account friendIDCheck( String friendID ) {
         
         Account account = new Account();
         
-        StringBuilder sql = new StringBuilder();
+        account.setUser_id( friendID );
         
-        sql.append( "    SELECT USER_NAME, USER_ID, USER_NICK  " );
-        sql.append( "    FROM ONION.INFO            " );
-        sql.append( "    WHERE USER_ID = ?          " );
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, friendID );
-            rs = pstmt.executeQuery();
-            
-            log.info( sql.toString() );
-            
-            while ( rs.next() ) {
-                account.setUser_name( rs.getString( "user_name" ) );
-                account.setUser_id( rs.getString( "user_id" ) );
-                account.setUser_nick( rs.getString( "user_nick" ) );
-            }
-            log.info( account );
-        }
-        catch ( Exception e ) {
-            log.error( "error", e );
-        }
-        
-        return account;
+        return sqlSession.selectOne( "friend.friendIDCheck", account );
     }
     
     public int friendAdd( Account account, String friendID ) {
         
-        int result = 0;
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put( "user_id", account.getUser_id() );
+        param.put( "friend_id", friendID );
         
-        StringBuilder sql = new StringBuilder();
-        log.debug( "MyAccount = {}, friendID = {}", account, friendID );
+        sqlSessionFactory = DBSessionFactory.getInstance();
+        sqlSession = sqlSessionFactory.openSession();
         
-        sql.append( " INSERT INTO ONION." + account.getUser_id() + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
+        int result = sqlSession.insert( "friend.friendAdd", param );
         
-        try {
-            conn = OracleConnection.getConnection();
-            pstmt = conn.prepareStatement( sql.toString() );
-            pstmt.setString( 1, account.getUser_id() );
-            pstmt.setString( 2, friendID );
-            result = pstmt.executeUpdate();
-            
-            log.info( sql.toString() );
-            
-        }
-        catch ( Exception e ) {
-            log.error( "error", e );
-        }
+        if ( result > 0 )
+            sqlSession.commit();
+        
         return result;
     }
 }

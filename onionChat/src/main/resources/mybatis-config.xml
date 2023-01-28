@@ -22,6 +22,7 @@
     </environments>
     <mappers>
         <!-- SQL 파일과 매핑 -->
-        <mapper resource="oracle.xml" />
+        <mapper resource="login.xml" />
+        <mapper resource="friend.xml" />
     </mappers>
 </configuration>

@@ -225,7 +225,6 @@ public class FindIdPwView extends JDialog {
             public void actionPerformed( ActionEvent e ) {
                 System.out.println( "2번카드" );
                 acc = findIdPwLogic.findID( jtf_name.getText(), jtf_phone.getText() );
-                // acc = model.findID( jtf_name.getText(), jtf_phone.getText() );
                 
                 if ( acc.getUser_id() != null ) {
                     // jp_idfind.setVisible( true );
