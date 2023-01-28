@@ -1,13 +1,16 @@
 package client.view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 @SuppressWarnings ("serial")
 public class SettingsBG extends JFrame implements ActionListener {
-	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\";// 이미지 경로
+	String imgPath = "C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images";
 	JPanel BGpanel = new JPanel ();
 	Container con = getContentPane (); // 컨테이너 생성
 	JPanel jp_setting = new JPanel (); // 배경화면 설정 창
@@ -26,8 +29,10 @@ public class SettingsBG extends JFrame implements ActionListener {
 	JButton btn_logout = new JButton ("로그아웃");// 종료 버튼
 	
 	Font msgf = new Font ("맑은 고딕", Font.BOLD, 12);
+	private ImageIcon icon1;
 	
-	//	======================================= 이벤트 처리 ====================================================
+	// ======================================= 이벤트 처리
+	// ====================================================
 	
 	public static void main (String[] args) {
 		SettingsBG sbg = new SettingsBG ();
@@ -37,11 +42,10 @@ public class SettingsBG extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed (ActionEvent e) {
-//		======================================하단버튼4개=======================================
+		// ======================================하단버튼4개=======================================
 		Object obj = e.getSource ();
-		
 		if (obj == btn_home) {
-//			jp_setting.dispose ();  // 배경화면 설정 창 닫기
+			// jp_setting.dispose (); // 배경화면 설정 창 닫기
 			jlb_bgname.setText ("Home");
 			jlb_bgname.setIcon (new ImageIcon (imgPath + "home.png"));
 			
@@ -61,13 +65,14 @@ public class SettingsBG extends JFrame implements ActionListener {
 			int result = JOptionPane.showConfirmDialog (jf_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				JOptionPane.showMessageDialog (jf_setting, "로그아웃 되었습니다.", "로그아웃", JOptionPane.INFORMATION_MESSAGE);
-//				jf_setting.dispose ();
+				// jf_setting.dispose ();
 				System.exit (0);
 				if (result == JOptionPane.NO_OPTION) {
-					JOptionPane.showMessageDialog (jf_setting, "로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog (jf_setting, gi"로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
-//=====================================등록, 돌아가기 버튼 ===========================================
+			// =====================================등록, 돌아가기 버튼
+			// ===========================================
 		} else if (obj == btn_add) {
 			
 			JOptionPane.showMessageDialog (jp_setting, "선택하신 배경화면이 등록되었습니다.");
@@ -76,31 +81,51 @@ public class SettingsBG extends JFrame implements ActionListener {
 			jf_setting.dispose ();
 			SettingsView sv = new SettingsView ();
 			sv.initDisplay ();
-
-//===================================배경화면 변경 버튼===========================================================
+			
+			// ===================================배경화면 변경
+			// 버튼===========================================================
 		} else if (obj == btn_setbg1) {
-			if (jlb_bgname.getText ().equals ("Home")) {
+			if (jf_setting.isShowing ()) {
+				icon1 = new ImageIcon (imgPath + "1.png");
 				jlb_bgname.setText ("배경화면 1");
-				jlb_bgname.setIcon (new ImageIcon (imgPath + "1.png"));
-			} else {
-				jlb_bgname.setText ("배경화면 1");
-				jlb_bgname.setIcon (new ImageIcon (imgPath + "1.png"));
+				jf_setting.setIconImage (new ImageIcon (imgPath + ".png").getImage ());
+				BGset test = new BGset ();
 			}
 			
-			
 			JOptionPane.showMessageDialog (jp_setting, "배경화면 1이 선택되었습니다.");
+			
 		} else if (obj == btn_setbg2) {
+			if (jf_setting.isShowing ()) {
+				jlb_bgname.setText ("배경화면 2");
+				jf_setting.setIconImage (new ImageIcon (imgPath + "2.png").getImage ());
+			}
 			JOptionPane.showMessageDialog (jp_setting, "배경화면 2이 선택되었습니다.");
+			
 		} else if (obj == btn_setbg3) {
+			if (jf_setting.isShowing ()) {
+				jlb_bgname.setText ("배경화면 3");
+				jf_setting.setIconImage (new ImageIcon (imgPath + "3.png").getImage ());
+			}
 			JOptionPane.showMessageDialog (jp_setting, "배경화면 3이 선택되었습니다.");
+			
 		} else if (obj == btn_setbg4) {
+			if (jf_setting.isShowing ()) {
+				jlb_bgname.setText ("배경화면 4");
+				jf_setting.setIconImage (new ImageIcon (imgPath + "4.png").getImage ());
+			}
 			JOptionPane.showMessageDialog (jp_setting, "배경화면 4이 선택되었습니다.");
+			
 		} else if (obj == btn_setbg5) {
+			if (jf_setting.isShowing ()) {
+				jlb_bgname.setText ("배경화면 5");
+				jf_setting.setIconImage (new ImageIcon (imgPath + "5.png").getImage ());
+			}
 			JOptionPane.showMessageDialog (jp_setting, "배경화면 5이 선택되었습니다.");
 		}
 	}
 	
-	//	======================================= 화면 설계 ====================================================
+	// ======================================= 화면 설계
+	// ====================================================
 	public void initDisplay () {
 		
 		con.add (jp_setting);
@@ -168,15 +193,15 @@ public class SettingsBG extends JFrame implements ActionListener {
 		jf_setting.add (btn_lobby);
 		jf_setting.add (btn_settings);
 		jf_setting.add (btn_logout);
-		//		============================================================================
+		// ============================================================================
 	}
 	
 	class BGset extends JPanel {
-		ImageIcon icon1 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\1.png");
-		ImageIcon icon2 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\2.png");
-		ImageIcon icon3 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\3.png");
-		ImageIcon icon4 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\4.png");
-		ImageIcon icon5 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\5.png");
+		ImageIcon icon1 = new ImageIcon ("C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images\\i.png");
+		ImageIcon icon2 = new ImageIcon ("C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images\\2.png");
+		ImageIcon icon3 = new ImageIcon ("C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images\\3.png");
+		ImageIcon icon4 = new ImageIcon ("C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images\\4.png");
+		ImageIcon icon5 = new ImageIcon ("C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\resources\\images\\5.png");
 		Image img1 = icon1.getImage ();
 		Image img2 = icon2.getImage ();
 		Image img3 = icon3.getImage ();
@@ -184,13 +209,19 @@ public class SettingsBG extends JFrame implements ActionListener {
 		Image img5 = icon5.getImage ();
 		
 		public void paintComponent (Graphics g) {
-			g.drawImage (img1, 0, 0, null);
-			g.drawImage (img2, 0, 0, null);
-			g.drawImage (img3, 0, 0, null);
-			g.drawImage (img4, 0, 0, null);
-			g.drawImage (img5, 0, 0, null);
-			setOpaque (false);
-			super.paintComponent (g);
+			try {
+				
+				g.drawImage (ImageIO.read (new File (imgPath + "1.png")), 0, 0, null);
+				g.drawImage (img2, 0, 0, null);
+				g.drawImage (img3, 0, 0, null);
+				g.drawImage (img4, 0, 0, null);
+				g.drawImage (img5, 0, 0, null);
+				setOpaque (false);
+				super.paintComponent (g);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace ();
+			}
 		}
 	}
 }
