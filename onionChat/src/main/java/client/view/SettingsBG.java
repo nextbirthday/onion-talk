@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-@SuppressWarnings( "serial" )
+@SuppressWarnings ("serial")
 public class SettingsBG extends JFrame implements ActionListener {
-	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\img\\";// 이미지 경로
+	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\";// 이미지 경로
 	JPanel BGpanel = new JPanel ();
 	Container con = getContentPane (); // 컨테이너 생성
 	JPanel jp_setting = new JPanel (); // 배경화면 설정 창
@@ -24,9 +24,81 @@ public class SettingsBG extends JFrame implements ActionListener {
 	JButton btn_lobby = new JButton ("로비");// 로비 가기 버튼
 	JButton btn_settings = new JButton ("설정");// 설정 가기 버튼
 	JButton btn_logout = new JButton ("로그아웃");// 종료 버튼
-	ImageIcon icon = new ImageIcon (imgPath + "onion1.jpg");
+	
 	Font msgf = new Font ("맑은 고딕", Font.BOLD, 12);
 	
+	//	======================================= 이벤트 처리 ====================================================
+	
+	public static void main (String[] args) {
+		SettingsBG sbg = new SettingsBG ();
+		sbg.initDisplay ();
+		
+	}
+	
+	@Override
+	public void actionPerformed (ActionEvent e) {
+//		======================================하단버튼4개=======================================
+		Object obj = e.getSource ();
+		
+		if (obj == btn_home) {
+//			jp_setting.dispose ();  // 배경화면 설정 창 닫기
+			jlb_bgname.setText ("Home");
+			jlb_bgname.setIcon (new ImageIcon (imgPath + "home.png"));
+			
+		} else if (obj == btn_lobby) {
+			ChatList cl = new ChatList ();
+			cl.initDisplay ();
+			jf_setting.dispose ();
+			
+		} else if (obj == btn_settings) {
+			jf_setting.dispose ();
+			SettingsView sv = new SettingsView ();
+			sv.initDisplay ();
+			
+		} else if (obj == btn_logout) {
+			setTitle ("로그아웃");
+			System.out.println ("로그아웃");
+			int result = JOptionPane.showConfirmDialog (jf_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				JOptionPane.showMessageDialog (jf_setting, "로그아웃 되었습니다.", "로그아웃", JOptionPane.INFORMATION_MESSAGE);
+//				jf_setting.dispose ();
+				System.exit (0);
+				if (result == JOptionPane.NO_OPTION) {
+					JOptionPane.showMessageDialog (jf_setting, "로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+//=====================================등록, 돌아가기 버튼 ===========================================
+		} else if (obj == btn_add) {
+			
+			JOptionPane.showMessageDialog (jp_setting, "선택하신 배경화면이 등록되었습니다.");
+			
+		} else if (obj == btn_cancel) { // 돌아가기 버튼 누르면 SettingsView로 돌아감
+			jf_setting.dispose ();
+			SettingsView sv = new SettingsView ();
+			sv.initDisplay ();
+
+//===================================배경화면 변경 버튼===========================================================
+		} else if (obj == btn_setbg1) {
+			if (jlb_bgname.getText ().equals ("Home")) {
+				jlb_bgname.setText ("배경화면 1");
+				jlb_bgname.setIcon (new ImageIcon (imgPath + "1.png"));
+			} else {
+				jlb_bgname.setText ("배경화면 1");
+				jlb_bgname.setIcon (new ImageIcon (imgPath + "1.png"));
+			}
+			
+			
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 1이 선택되었습니다.");
+		} else if (obj == btn_setbg2) {
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 2이 선택되었습니다.");
+		} else if (obj == btn_setbg3) {
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 3이 선택되었습니다.");
+		} else if (obj == btn_setbg4) {
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 4이 선택되었습니다.");
+		} else if (obj == btn_setbg5) {
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 5이 선택되었습니다.");
+		}
+	}
 	
 	//	======================================= 화면 설계 ====================================================
 	public void initDisplay () {
@@ -99,71 +171,26 @@ public class SettingsBG extends JFrame implements ActionListener {
 		//		============================================================================
 	}
 	
-	
+	class BGset extends JPanel {
+		ImageIcon icon1 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\1.png");
+		ImageIcon icon2 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\2.png");
+		ImageIcon icon3 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\3.png");
+		ImageIcon icon4 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\4.png");
+		ImageIcon icon5 = new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\5.png");
+		Image img1 = icon1.getImage ();
+		Image img2 = icon2.getImage ();
+		Image img3 = icon3.getImage ();
+		Image img4 = icon4.getImage ();
+		Image img5 = icon5.getImage ();
 		
-		
-		//	======================================= 이벤트 처리 ====================================================
-		@Override
-		public void actionPerformed (ActionEvent e){
-//		======================================하단버튼4개=======================================
-			Object obj = e.getSource ();
-			
-			if (obj == btn_home) {
-//			jp_setting.dispose ();  // 배경화면 설정 창 닫기
-				jlb_bgname.setText ("Home");
-				jlb_bgname.setIcon (icon);
-//			MainPage mp = new MainPage ();
-//			mp.initDisplay ();
-			
-			} else if (obj == btn_lobby) {
-				ChatList cl = new ChatList ();
-				cl.initDisplay ();
-				jf_setting.dispose ();
-				
-			} else if (obj == btn_settings) {
-				jf_setting.dispose ();
-				SettingsView sv = new SettingsView ();
-				sv.initDisplay ();
-				
-			} else if (obj == btn_logout) {
-				int result = JOptionPane.showConfirmDialog (jp_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
-				if (result == JOptionPane.NO_OPTION) {
-				
-				}
-				System.exit (0);
-
-//=====================================등록, 돌아가기 버튼 ===========================================
-			} else if (obj == btn_add) {
-				JOptionPane.showMessageDialog (jp_setting, "선택하신 배경화면이 등록되었습니다.");
-				//			jp_setting.dispose (); // 배경화면 등록 후 설정창 닫기
-				//			SettingsView sv = new SettingsView (); // 설정창 다시 띄우기
-				//			sv.initDisplay ();
-			} else if (obj == btn_cancel) { // 돌아가기 버튼 누르면 SettingsView로 돌아감
-				jf_setting.dispose ();
-				SettingsView sv = new SettingsView ();
-				sv.initDisplay ();
-
-//===================================배경화면 변경 버튼===========================================================
-			} else if (obj == btn_setbg1) {
-				setContentPane (new JLabel (new ImageIcon ("C:\\Users\\thdau\\Desktop\\SP\\img\\onion1.png")));
-				JOptionPane.showMessageDialog (jp_setting, "배경화면 1이 선택되었습니다.");
-//				SettingsView sv = new SettingsView ();
-//				sv.initDisplay ();
-//  			jf_setting.dispose ();
-			} else if (obj == btn_setbg2) {
-				JOptionPane.showMessageDialog (jp_setting, "배경화면 2이 선택되었습니다.");
-			} else if (obj == btn_setbg3) {
-				JOptionPane.showMessageDialog (jp_setting, "배경화면 3이 선택되었습니다.");
-			} else if (obj == btn_setbg4) {
-				JOptionPane.showMessageDialog (jp_setting, "배경화면 4이 선택되었습니다.");
-			} else if (obj == btn_setbg5) {
-				JOptionPane.showMessageDialog (jp_setting, "배경화면 5이 선택되었습니다.");
-			}
-		}
-		
-		public static void main (String[]args){
-			SettingsBG sbg = new SettingsBG ();
-			sbg.initDisplay ();
-			
+		public void paintComponent (Graphics g) {
+			g.drawImage (img1, 0, 0, null);
+			g.drawImage (img2, 0, 0, null);
+			g.drawImage (img3, 0, 0, null);
+			g.drawImage (img4, 0, 0, null);
+			g.drawImage (img5, 0, 0, null);
+			setOpaque (false);
+			super.paintComponent (g);
 		}
 	}
+}
