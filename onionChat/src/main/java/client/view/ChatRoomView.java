@@ -30,12 +30,13 @@ public class ChatRoomView extends JFrame implements ActionListener {
     
     public ChatRoomView() {}
     
-    public ChatRoomView( String nickname ) {
+    public ChatRoomView( boolean isView, String nickname ) {
         // 전역변수로 선언된 nickname 초기화 시점
         this.nickname = nickname;
+        initChatRoomView( isView );
     }
     
-    public void initChatRoomView() {
+    public void initChatRoomView( boolean isView ) {
         
         centerPanel.setLayout( new BorderLayout() );
         centerPanel.add( "Center", scrollPane );
@@ -52,8 +53,8 @@ public class ChatRoomView extends JFrame implements ActionListener {
         chatDisplay.append( nickname + "님이 입장하셨습니다.\n" );
         this.setLayout( new GridLayout( 1, 2 ) );
         this.add( centerPanel );
-        this.setTitle( "[" + nickname + "]" + "님과의채팅방" );
-        this.setVisible( true );
+        this.setTitle( "nickname" );
+        this.setVisible( isView );
         this.setSize( 400, 600 );
         this.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
     }
@@ -69,8 +70,4 @@ public class ChatRoomView extends JFrame implements ActionListener {
         }
     }
     
-    public static void main( String[] args ) {
-        ChatRoomView c = new ChatRoomView();
-        c.initChatRoomView();
-    }
 }
