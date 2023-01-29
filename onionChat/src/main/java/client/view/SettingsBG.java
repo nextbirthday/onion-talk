@@ -1,14 +1,9 @@
 package client.view;
 
-import util.dto.Account;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 @SuppressWarnings( "serial" )
 public class SettingsBG extends JFrame implements ActionListener {
@@ -35,11 +30,11 @@ public class SettingsBG extends JFrame implements ActionListener {
 	//	======================================= 이벤트 처리 ====================================================
 
 		 class BGset extends JPanel {
-			ImageIcon icon1 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\1.png");
-			ImageIcon icon2 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\2.png");
-			ImageIcon icon3 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\3.png");
-			ImageIcon icon4 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\4.png");
-			ImageIcon icon5 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\5.png");
+			ImageIcon icon1 = new ImageIcon ("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images");
+			ImageIcon icon2 = new ImageIcon (imgPath + "\\2.png");
+			ImageIcon icon3 = new ImageIcon (imgPath + "\\3.png");
+			ImageIcon icon4 = new ImageIcon (imgPath + "\\4.png");
+			ImageIcon icon5 = new ImageIcon (imgPath + "\\5.png");
 			Image img1 = icon1.getImage ();
 			Image img2 = icon2.getImage ();
 			Image img3 = icon3.getImage ();
@@ -47,26 +42,13 @@ public class SettingsBG extends JFrame implements ActionListener {
 			Image img5 = icon5.getImage ();
 
 			public void paintComponent (Graphics g) {
-				try {
-					g.drawImage(ImageIO.read(new File("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\1.png")), 0, 0, null);
-					g.drawImage(ImageIO.read(new File("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\2.png")), 0, 0, null);
-					g.drawImage(ImageIO.read(new File("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\3.png")), 0, 0, null);
-					g.drawImage(ImageIO.read(new File("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\4.png")), 0, 0, null);
-					g.drawImage(ImageIO.read(new File("D:\\Intelli_J_dev\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\5.png")), 0, 0, null);
-
-
-
-
-
-//					g.drawImage(img2, 0, 0, null);
-//					g.drawImage(img3, 0, 0, null);
-//					g.drawImage(img4, 0, 0, null);
-//					g.drawImage(img5, 0, 0, null);
-//				setOpaque (false);
-//				super.paintComponent (g);
-				}catch (IOException e) {
-					e.printStackTrace ();
-				}
+				g.drawImage (img1, 0, 0, null);
+				g.drawImage (img2, 0, 0, null);
+				g.drawImage (img3, 0, 0, null);
+				g.drawImage (img4, 0, 0, null);
+				g.drawImage (img5, 0, 0, null);
+				setOpaque (false);
+				super.paintComponent (g);
 			}
 		}
 
@@ -193,18 +175,15 @@ public class SettingsBG extends JFrame implements ActionListener {
             sv.initDisplay();
 
 //===================================배경화면 변경 버튼===========================================================
-        } else if (obj == btn_setbg1) {
-            if (jlb_bgname.getText().equals("Home")) {
-                jlb_bgname.setIcon(new ImageIcon(imgPath + "1.png"));
-            } else {
-                BGset bGset = new BGset();
-                Graphics g = jf_setting.getGraphics();
-                bGset.paintComponent(g);
+		} else if (obj == btn_setbg1) {
+			if (jf_setting.isShowing ()) {
+				icon1 = new ImageIcon (imgPath + "1.png");
+				jlb_bgname.setText ("배경화면 1");
+				jf_setting.setIconImage (new ImageIcon (imgPath + ".png").getImage ());
+				BGset test = new BGset ();
+			}
 
-				Account account = new Account();
-				account.setUser_msg("배경화면 1이 선택되었습니다.");
-            }
-            JOptionPane.showMessageDialog(jp_setting, "배경화면 1이 선택되었습니다.");
+			JOptionPane.showMessageDialog (jp_setting, "배경화면 1이 선택되었습니다.");
         } else if (obj == btn_setbg2) {
             if (jlb_bgname.getText().equals("")) {
                 jlb_bgname.setIcon(new ImageIcon(imgPath + "1.png"));

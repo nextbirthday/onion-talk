@@ -1,61 +1,76 @@
 package client.thread;
 
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import lombok.extern.log4j.Log4j2;
+import util.command.Protocol;
 
-@Log4j2
+@Log4j2( topic = "logger" )
 public class TalkClientThread extends Thread {
     
-    TalkClient        tc;
-    ObjectInputStream ois;
+    private ObjectOutputStream oos;
+    private ObjectInputStream  ois;
+    private TalkClient         tc;
     
-    public TalkClientThread() {}
-    
-    public TalkClientThread( TalkClient tc, ObjectInputStream ois ) {
-        this.tc = tc;
+    public TalkClientThread( ObjectOutputStream oos, ObjectInputStream ois ) {
+        this.oos = oos;
         this.ois = ois;
     }
     
     @Override
     public void run() {
         
-        while ( true ) {
+        try {
             
-            try {
-                String message = "";
-                message = ( String ) ois.readObject();
-                System.out.println( "서버에서 전송된 message:" + message );
-                StringTokenizer st       = null;
-                int             protocol = 0; // 100 200 300 400 500
+            while ( true ) {
+                String receive = ( String ) ois.readObject();
+                log.debug( "클라이언트 수신 메시지 : {}", receive );
                 
-                if ( message != null ) {
-                    st = new StringTokenizer( message, "#" );
-                    protocol = Integer.parseInt( st.nextToken() );
-                }
-                System.out.println( "protocol:" + protocol );
+                StringTokenizer st       = new StringTokenizer( receive, Protocol.SEPARATOR );
+                int             protocol = Integer.parseInt( st.nextToken() );
+                String          nickname = st.nextToken();
+                String          message  = st.nextToken();
                 
                 switch ( protocol ) {
-                    case util.command.Protocol.TALK_IN: {
-                        String nickName = st.nextToken();
-                        // tc.jta_display.append( nickName + "님이 입장하였습니다.\n" );
-                        // JTable은 양식일 뿐이고 데이터셋은 DefaultTableModel이니까 거기에 닉네임을 출력함
+                    
+                    // 입장
+                    case Protocol.TALK_IN:
+                        tc = new TalkClient( nickname, oos );
+                        tc.jta_display.append( nickname + message + "\n" );
+                        
                         Vector<String> temp = new Vector<>();
-                        temp.add( nickName );
-                        // 데이터셋 객체에 한 개 row 추가하기
-                        // tc.dtm.addRow( temp );
+                        temp.add( nickname );
+                        tc.dtm.addRow( temp );
                         break;
-                    }
+                    
+                    // 메시지 수신
+                    case Protocol.MESSAGE:
+                        tc.jta_display.append( "[" + nickname + "]" + message + "\n" );
+                        tc.jta_display.setCaretPosition( tc.jta_display.getDocument().getLength() );
+                        break;
+                    
+                    // 상대방이 나갔을 경우 채팅방 나갔을 경우 목록에서 삭제
+                    case Protocol.TALK_OUT:
+                        tc.jta_display.append( nickname + ": " + message + "\n" );
+                        
+                        for ( int i = 0; i < tc.dtm.getRowCount(); i++ )
+                            if ( nickname.equals( tc.dtm.getValueAt( i, 0 ) ) ) {
+                                tc.dtm.removeRow( i );
+                                break;
+                            }
+                        break;
+                    
                     default:
-                        System.out.println( "해당하는 프로토콜이 존재하지 않습니다." );
+                        log.error( "no matched protocol" );
+                        break;
                 }
             }
-            catch ( Exception e ) {
-                e.printStackTrace();
-            }
+        }
+        catch ( Exception e ) {
+            log.error( "Exception : ", e );
         }
     }
-    
 }

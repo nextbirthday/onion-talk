@@ -1,16 +1,19 @@
 package client.view;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Graphics;
-import java.awt.Font;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-// import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,17 +24,14 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import java.awt.Image;
-import java.awt.Graphics2D;
-import java.awt.AlphaComposite;
+import model.ChatNoteLogic;
 
 public class ChatView extends JDialog implements ActionListener {
     // 선언
-    String    onioniconimgPath = ".\\src\\main\\java\\"; // 아이콘
-    ImageIcon onionIcon        = new ImageIcon( onioniconimgPath + "onionicon.png" ); //
-    String    onionbgimgPath   = ".\\src\\main\\java\\"; // 배경
-    ImageIcon onionbgIcon      = new ImageIcon( onionbgimgPath + "onionbg.png" ); //
-    JLabel    jlb_bgLabel      = new JLabel( onionbgIcon ); //
+    String    imagePath   = "src/main/resources/images/";
+    ImageIcon onionIcon   = new ImageIcon( imagePath + "onionicon.png" ); //
+    ImageIcon onionbgIcon = new ImageIcon( imagePath + "onionbg.png" ); //
+    JLabel    jlb_bgLabel = new JLabel( onionbgIcon ); //
     // Container con = this.getContentPane();
     JPanel         jp_centerPanel    = new JPanel(); // 텍스트 메인 페널
     JPanel         jp_sendPanel      = new JPanel(); // 텍스트 전송 페널
@@ -44,7 +44,8 @@ public class ChatView extends JDialog implements ActionListener {
                                              Image img = onionbgIcon.getImage(); //
                                              setOpaque( false );
                                              Graphics2D gd = ( Graphics2D ) g;
-                                             gd.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.7f ) );
+                                             gd.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER,
+                                                             0.7f ) );
                                              g.drawImage( img, 0, 0, this );
                                              super.paintComponent( g );
                                          }
@@ -83,13 +84,14 @@ public class ChatView extends JDialog implements ActionListener {
         jtf_chatTextField.addActionListener( this );
         jbtn_sendButton.addActionListener( this );
         
-        this.setIconImage( onionIcon.getImage() ); // 아이콘 선언
-        this.setLayout( new GridLayout( 1, 2 ) );
-        this.add( jp_centerPanel );
-        this.setTitle( "양파쿵야TALK" );
-        this.setVisible( true );
-        this.setSize( 400, 600 );
-        this.setDefaultCloseOperation( EXIT_ON_CLOSE ); // X 클릭 자동 종료
+        setIconImage( onionIcon.getImage() ); // 아이콘 선언
+        setLayout( new GridLayout( 1, 2 ) );
+        add( jp_centerPanel );
+        setTitle( "양파쿵야TALK" );
+        setVisible( true );
+        setSize( 400, 600 );
+        // Dialog는 Frame에 종속되기 때문에 EXIT이 아니라 DISPOSE이다.
+        setDefaultCloseOperation( DISPOSE_ON_CLOSE ); // X 클릭 자동 종료
     }
     
     // 메인
@@ -103,7 +105,12 @@ public class ChatView extends JDialog implements ActionListener {
         
         // 전송 ??
         if ( jbtn_sendButton == object || jtf_chatTextField == object ) {
+            // 사용자가 입력한 메시지
             String message = jtf_chatTextField.getText(); // 전송 시 입력 메시지 받아옴
+            // 사용자가 입력한 메시지를 받아서 소켓서버에 전송하기
+            // ex) oos.writeObject(300|tomato|오늘뭐해?);
+            // 서버소켓에 메시지를 전송하자마자 오라클 서버의 chatnode테이블에 insert문 처리하기
+            ChatNoteLogic cn = new ChatNoteLogic();
             
             try {
                 sd_display.insertString( sd_display.getLength(), message + "\n", null );

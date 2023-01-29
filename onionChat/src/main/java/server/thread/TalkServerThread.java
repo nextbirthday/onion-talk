@@ -7,47 +7,45 @@ import java.net.Socket;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import server.TalkServer;
+import lombok.extern.log4j.Log4j2;
+import util.command.Protocol;
 
+@Log4j2( topic = "talk-server" )
 public class TalkServerThread extends Thread {
     
-    TalkServer             talkServer;
-    List<TalkServerThread> userList;
+    // 서버로부터 클라이언트 연결정보를 받아오기 위한 전역변수 추가
+    
+    private List<TalkServerThread> userList;
+    private Socket                 socket;
+    private ObjectOutputStream     oos;
+    private ObjectInputStream      ois;
+    
+    String nickname = null;
     
     String user_id;
     String user_nick;
     String user_msg;
     
-    // 서버로부터 클라이언트 연결정보를 받아오기 위한 전역변수 추가
-    Socket             client;
-    ObjectOutputStream oos;
-    ObjectInputStream  ois;
-    
-    public TalkServerThread( List<TalkServerThread> userList, Socket socket, TalkServer talkServer ) throws IOException {
-        oos = new ObjectOutputStream( socket.getOutputStream() );
-        ois = new ObjectInputStream( socket.getInputStream() );
-        this.client = socket;
+    public TalkServerThread( Socket socket, List<TalkServerThread> userList ) throws IOException {
+        this.socket = socket;
         this.userList = userList;
-        this.talkServer = talkServer;
-        
-        // 나 보다 먼저 들어와 있는 사람들에 대한 처리
-        
-        userList.add( this );// 현재 들어온 클라이언트 스레드
-        String enterMsg = "100#tomato";
-        this.broadCasting( enterMsg );// 로그인하고 입장했다는 정보전송하기
     }
     
     @Override
     public void run() {
         
         try {
+            oos = new ObjectOutputStream( socket.getOutputStream() );
+            ois = new ObjectInputStream( socket.getInputStream() );
+            
             talk_stop: while ( true ) {
-                StringTokenizer st = null;
-                // 200|tomato|오늘뭐해
-                String receive = ( String ) ois.readObject();
+                StringTokenizer st      = null; // 200|tomato|오늘뭐해
+                String          receive = ( String ) ois.readObject();
+                
+                log.debug( "서버 수신 메시지 : {}", receive );
                 
                 if ( receive != null && receive.trim().length() > 0 ) {
-                    st = new StringTokenizer( receive, util.command.Protocol.separator );
+                    st = new StringTokenizer( receive, Protocol.SEPARATOR );
                 }
                 
                 int protocol = 0;
@@ -57,53 +55,88 @@ public class TalkServerThread extends Thread {
                 }
                 
                 switch ( protocol ) {
-                    case util.command.Protocol.TALK_IN: {
-                        String nickName = st.nextToken();
-                        String msg      = st.nextToken();
-                    }
+                    case Protocol.SIGN_IN:
+                        userList.add( this );
+                        nickname = st.nextToken();
+                        log.info( "{} 입장, 현재 접속자 수 : {}", nickname, userList.size() );
                         break;
-                    case util.command.Protocol.MESSAGE: {
-                        String nickName = st.nextToken();
-                        String msg      = st.nextToken();
-                    }
-                        break;
-                    case util.command.Protocol.TALK_OUT: {
+                    
+                    case Protocol.TALK_IN: {
+                        String receiveNick = st.nextToken();
+                        String message     = st.nextToken();
                         
+                        // 현재 접속 중인 유저(스레드) 전체 루프
+                        // n번째 유저는 n-1번째까지 ~님이 입장하셨습니다. 가 반복되는 이슈
+                        // for ( TalkServerThread user : userList ) {
+                        //
+                        // // 다른 유저들의 [100#닉네임#님이 입장하셨습니다.]를 나에게 전송
+                        // if ( !user.equals( this ) ) {
+                        // send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
+                        // + message );
+                        // }
+                        // }
+                        
+                        for ( TalkServerThread user : userList ) {
+                            
+                            if ( user.nickname.equals( nickname ) || user.nickname.equals( receiveNick ) ) {
+                                user.send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
+                                                + message );
+                            }
+                        }
                     }
-                        break talk_stop;//
+                        break;
+                    
+                    case Protocol.MESSAGE: {
+                        
+                        String nickname = st.nextToken();
+                        String message  = st.nextToken();
+                        
+                        broadCasting( Protocol.MESSAGE + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
+                        break;
+                    }
+                    // 채팅방에서 나간다는 메시지 전송, 서버와의 연결은 유지하도록 수정
+                    case Protocol.TALK_OUT: {
+                        String nickname = st.nextToken();
+                        String message  = st.nextToken();
+                        // userList.remove( this );
+                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
+                                        + message );
+                        // log.info( "{} 퇴장, 현재 접속자 수 : {}", nickname, userList.size() );
+                    }
+                        break talk_stop; // TALK_OUT일 때 루프 종료
                 }
-                
             }
-            // Talk_OUT이면 여기로 탈출
         }
-        catch ( IOException e ) {
-            e.printStackTrace();
-        }
-        catch ( ClassNotFoundException e ) {
-            e.printStackTrace();
-        }
-        finally {
-            
-        }
-        
-    }
-    
-    // 현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
-    public void broadCasting( String message ) {
-        
-        for ( TalkServerThread talkServerThread : userList ) {// 여러사람
-            talkServerThread.send( message );
+        catch ( Exception e ) {
+            log.error( "Exception : ", e );
         }
     }
     
-    // 클라이언트에게 말하기 구현
-    public void send( String message ) {
+    /**
+     * 현재 입장해 있는 친구들 모두에게 메시지 전송하기 구현
+     * 
+     * @param message
+     */
+    public void broadCasting( Object message ) {
+        
+        for ( TalkServerThread user : userList ) {// 여러사람
+            user.send( message );
+        }
+    }
+    
+    /**
+     * 클라이언트에게 말하기
+     * <p>
+     * 
+     * @param message
+     */
+    public void send( Object message ) {
         
         try {
             oos.writeObject( message );
         }
         catch ( Exception e ) {
-            e.printStackTrace(); // stack에 쌓여있는 error message log print
+            log.error( "Exception : ", e );
         }
     }
     

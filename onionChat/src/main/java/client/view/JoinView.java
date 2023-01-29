@@ -26,35 +26,32 @@ import util.dto.Account;
 @SuppressWarnings( "serial" )
 public class JoinView implements ActionListener, FocusListener {
     
-    public static String register       = "SYSDATE"; // 가입 날짜
-    boolean              isIdCheck      = false;
-    String               imgPath        = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
-    JDialog              jdl_join       = new JDialog(); // 회원가입 프레임
-    JPanel               jp_join        = new JPanel( null ); // 회원가입 도화지
-    JLabel               jlb_name       = new JLabel( "이름" );
-    JLabel               jlb_id         = new JLabel( "아이디" );
-    JLabel               jlb_pw         = new JLabel( "비밀번호" );
-    JLabel               jlb_pw2        = new JLabel( "비밀번호확인" );
-    JLabel               jlb_birth      = new JLabel( "생년월일" );
-    JLabel               jlb_phone      = new JLabel( "전화번호" );
-    JLabel               jlb_nickName   = new JLabel( "닉네임" );
-    JLabel               jlb_idAvble    = new JLabel( "사용가능한 아이디 입니다." );
-    JLabel               jlb_idNotAvble = new JLabel( "중복된 아이디 입니다." );
-    JLabel               jlb_title      = new JLabel( "회원가입" );// 회원가입 , title 라벨
-    JTextField           jtf_name       = new JTextField( "ex) ONION" ); // 이름
-    JTextField           jtf_id         = new JTextField( "영문, 숫자만 입력할 수 있습니다." ); // 아이디
-    JPasswordField       jtf_pw         = new JPasswordField(); // 비밀번호
-    JPasswordField       jtf_pw2        = new JPasswordField(); // 비밀번호 확인
-    JTextField           jtf_birth      = new JTextField( "ex) 941225" ); // 생년월일
-    JTextField           jtf_phone      = new JTextField( "ex) 010-1234-5678" ); // 폰번호
-    JTextField           jtf_nickName   = new JTextField( "ex) 양파쿵야" ); // 닉네임
-    ImageIcon            imgic_join     = new ImageIcon( imgPath + "bt_join.png" ); // 로그인 버튼 이미지
-    JButton              jbtn_idconfirm = new JButton( "중복검사" ); // 로그인 버튼
-    JButton              jbtn_join      = new JButton( imgic_join );// 회원가입 버튼
-    Font                 f_join         = new Font( "맑은 고딕", Font.PLAIN, 25 );
-    Font                 f_label        = new Font( "맑은 고딕", Font.PLAIN, 12 );
-    
-    // SignUpModel signUpModel = new SignUpModel( this );
+    boolean        isIdCheck      = false;
+    String         imgPath        = "src/main/resources/images/";
+    JDialog        jdl_join       = new JDialog(); // 회원가입 프레임
+    JPanel         jp_join        = new JPanel( null ); // 회원가입 도화지
+    JLabel         jlb_name       = new JLabel( "이름" );
+    JLabel         jlb_id         = new JLabel( "아이디" );
+    JLabel         jlb_pw         = new JLabel( "비밀번호" );
+    JLabel         jlb_pw2        = new JLabel( "비밀번호확인" );
+    JLabel         jlb_birth      = new JLabel( "생년월일" );
+    JLabel         jlb_phone      = new JLabel( "전화번호" );
+    JLabel         jlb_nickName   = new JLabel( "닉네임" );
+    JLabel         jlb_idAvble    = new JLabel( "사용가능한 아이디 입니다." );
+    JLabel         jlb_idNotAvble = new JLabel( "중복된 아이디 입니다." );
+    JLabel         jlb_title      = new JLabel( "회원가입" );// 회원가입 , title 라벨
+    JTextField     jtf_name       = new JTextField( "ex) ONION" ); // 이름
+    JTextField     jtf_id         = new JTextField( "영문, 숫자만 입력할 수 있습니다." ); // 아이디
+    JPasswordField jtf_pw         = new JPasswordField(); // 비밀번호
+    JPasswordField jtf_pw2        = new JPasswordField(); // 비밀번호 확인
+    JTextField     jtf_birth      = new JTextField( "ex) 941225" ); // 생년월일
+    JTextField     jtf_phone      = new JTextField( "ex) 010-1234-5678" ); // 폰번호
+    JTextField     jtf_nickName   = new JTextField( "ex) 양파쿵야" ); // 닉네임
+    ImageIcon      imgic_join     = new ImageIcon( imgPath + "bt_join.png" ); // 로그인 버튼 이미지
+    JButton        jbtn_idconfirm = new JButton( "중복검사" ); // 로그인 버튼
+    JButton        jbtn_join      = new JButton( imgic_join );// 회원가입 버튼
+    Font           f_join         = new Font( "맑은 고딕", Font.PLAIN, 25 );
+    Font           f_label        = new Font( "맑은 고딕", Font.PLAIN, 12 );
     
     SignUpLogic signUpLogic = new SignUpLogic( this );
     
@@ -142,7 +139,6 @@ public class JoinView implements ActionListener, FocusListener {
     // }
     
     private void showDialog( String message ) {
-        // showMessageDialog (Component parentComponent, Object message)
         // 첫 번째 파라미터 자리에 null이 들어가 있으면 지 혼자이고, Component가 들어오면
         JOptionPane.showMessageDialog( jdl_join, message );
     }
@@ -190,6 +186,7 @@ public class JoinView implements ActionListener, FocusListener {
                                                         jtf_birth.getText(), jtf_phone.getText(), jtf_nickName.getText(), null, null ) );
                         
                         if ( result > 0 ) {
+                            
                             showDialog( "회원가입 완료" );
                             jdl_join.dispose();
                         }

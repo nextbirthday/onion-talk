@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,8 +24,11 @@ import javax.swing.border.Border;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import model.FriendTableLogic;
+import model.MainFriendLogic;
 import model.SignInLogic;
 import util.dto.Account;
+import util.dto.Friend;
 
 @Getter
 @Setter
@@ -32,7 +36,7 @@ import util.dto.Account;
 @SuppressWarnings( "serial" )
 public class LoginView implements ActionListener, KeyListener {
     
-    String imgPath  = "C:\\Users\\HOJAE\\Desktop\\Java\\workout\\images\\";
+    String imgPath  = "src/main/resources/images/";
     JLabel msg      = new JLabel();
     JFrame jf_login = new JFrame(); // 메인 프레임
     JPanel jp_login = new JPanel( null ); // 제일 큰 도화지
@@ -59,7 +63,7 @@ public class LoginView implements ActionListener, KeyListener {
     public LoginView() {}
     
     public void initDisplay() {
-        
+        jlb_idtext.requestFocus();
         getJtf_id().addKeyListener( this );
         getJtf_pw().addKeyListener( this );
         
@@ -169,7 +173,15 @@ public class LoginView implements ActionListener, KeyListener {
         
         if ( account.getUser_nick() != null ) {
             
-            MainView mainView = new MainView( account );
+            FriendTableLogic friendTableLogic = new FriendTableLogic();
+            friendTableLogic.createFriendTable( account );
+            
+            List<Friend> friendList = new MainFriendLogic().friendList( account );
+            
+            log.info( account.toString() );
+            
+            new MainView( account, friendList );
+            
             jf_login.dispose();
         }
         else {
