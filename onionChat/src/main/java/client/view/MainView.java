@@ -63,7 +63,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     JPanel jp_south  = new JPanel(); // 아래 버튼 도화지
     
     JLabel       jlb_cht  = new JLabel();
-    JLabel       jlb_nick = new JLabel( "닉네임" ); // 닉네임 레이블
+    JLabel       jlb_id   = new JLabel();
     JLabel       jlb_list = new JLabel( "친구추가" );
     JLabel       jlb_msg  = new JLabel( " " ); // 상태메시지 레이블
     EtchedBorder eborder  = new EtchedBorder( EtchedBorder.RAISED ); // 라벨 테두리
@@ -77,6 +77,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     JButton jbtn_chatroom = new JButton( "채팅목록" );// 채팅방 버튼
     JButton jbtn_setting  = new JButton( "설정" );// 설정 버튼
     JButton jbtn_logout   = new JButton( "로그아웃" );// 로그아웃 버튼
+    JButton lithButton    = new JButton( "리스항구" );
     
     // generic type 명시할 것
     DefaultListModel<String> model      = new DefaultListModel<>(); // JList에 보이는 실제 데이터
@@ -123,6 +124,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
     
     public void initDisplay() {
         
+        lithButton.addActionListener( this );
         addBtn.addActionListener( this );
         jbtn_logout.addActionListener( this );
         this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -139,12 +141,12 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
         delBtn.addMouseListener( this ); // 아이템 삭제
         
         // 상단 - 닉네임 - 상태메세지
-        jp_north.add( jlb_nick );// 닉네임
+        jp_north.add( jlb_id );// 닉네임
         // jlb_nick.setText( account.getUser_nick() );
         jp_north.add( jlb_msg ); // 상태메세지
         // jlb_msg.setText( account.getUser_msg() );
         jp_north.add( jbtn_change_msg );
-        jlb_nick.setBounds( 40, 20, 100, 35 );
+        jlb_id.setBounds( 40, 20, 100, 35 );
         jlb_msg.setBounds( 100, 20, 200, 35 );
         jlb_msg.setToolTipText( "수정버튼을 누르면 메세지를 변경하실 수 있습니다" );
         jbtn_change_msg.setBounds( 280, 20, 60, 35 );
@@ -155,6 +157,7 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
         jp_south.add( jbtn_chatroom );
         jp_south.add( jbtn_setting );
         jp_south.add( jbtn_logout );
+        jp_south.add( lithButton );
         jp_south.setBackground( new Color( 146, 208, 80 ) );
         
         // 가운데 - 친구목록
@@ -179,6 +182,9 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
         
         // 로그인 시 기존 상태메시지 DB서버에서 불러오기
         jlb_msg.setText( existStatusMessage );
+        
+        // 로그인 시 아이디 화면에 뿌려주기
+        jlb_id.setText( "ID: " + myAccount.getUser_id() );
         
         // 로그인시 받아온 친구record 화면에 뿌려주기
         for ( int i = 0; i < friendList.size(); i++ ) {
@@ -312,6 +318,10 @@ public class MainView extends JFrame implements ActionListener, MouseListener, L
             }
             inputField.setText( "" );
             inputField.requestFocus();
+        }
+        
+        if ( obj == lithButton ) {
+            LithHarbor lithHarbor = new LithHarbor( "harbor.wav" );
         }
         
         if ( obj == jbtn_logout ) {

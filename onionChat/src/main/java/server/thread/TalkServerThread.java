@@ -14,7 +14,6 @@ import util.command.Protocol;
 public class TalkServerThread extends Thread {
     
     // 서버로부터 클라이언트 연결정보를 받아오기 위한 전역변수 추가
-    
     private List<TalkServerThread> userList;
     private Socket                 socket;
     private ObjectOutputStream     oos;
@@ -79,8 +78,7 @@ public class TalkServerThread extends Thread {
                         for ( TalkServerThread user : userList ) {
                             
                             if ( user.nickname.equals( nickname ) || user.nickname.equals( receiveNick ) ) {
-                                user.send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR
-                                                + message );
+                                user.send( Protocol.TALK_IN + Protocol.SEPARATOR + user.nickname + Protocol.SEPARATOR + message );
                             }
                         }
                     }
@@ -99,8 +97,7 @@ public class TalkServerThread extends Thread {
                         String nickname = st.nextToken();
                         String message  = st.nextToken();
                         // userList.remove( this );
-                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR
-                                        + message );
+                        broadCasting( Protocol.TALK_OUT + Protocol.SEPARATOR + nickname + Protocol.SEPARATOR + message );
                         // log.info( "{} 퇴장, 현재 접속자 수 : {}", nickname, userList.size() );
                     }
                         break talk_stop; // TALK_OUT일 때 루프 종료

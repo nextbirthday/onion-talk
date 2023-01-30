@@ -40,6 +40,6 @@ public class SignInLogic {
         
         log.info( result );
         
-        return result;
+        return sqlSession.selectOne( "login.signIn", account );
     }
 }
