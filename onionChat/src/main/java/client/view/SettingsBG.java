@@ -130,7 +130,7 @@ public class SettingsBG extends JFrame implements ActionListener {
 			jlb_bgname.setText ("Home");
 			jlb_bgname.setIcon (new ImageIcon (imgPath + "home.png"));
 			jf_setting.dispose ();
-		
+			
 		} else if (obj == btn_lobby) {
 			ChatList cl = new ChatList ();
 			cl.initDisplay ();
@@ -147,14 +147,14 @@ public class SettingsBG extends JFrame implements ActionListener {
 			int result = JOptionPane.showConfirmDialog (jf_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				JOptionPane.showMessageDialog (jf_setting, "다음에 또 만나요~", "로그아웃", JOptionPane.INFORMATION_MESSAGE);
-//				jf_setting.dispose ();
-				System.exit (0);
+				LoginView lv = new LoginView ();
+				lv.initDisplay ();
+				
 				if (result == JOptionPane.NO_OPTION) {
 					JOptionPane.showMessageDialog (jf_setting, "로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
 				}
+				jf_setting.dispose ();
 			}
-
-
 //=====================================등록, 돌아가기 버튼 ===========================================
 		} else if (obj == btn_add) {
 			JOptionPane.showMessageDialog (jp_setting, "선택하신 배경화면이 등록되었습니다.");

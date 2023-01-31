@@ -156,11 +156,13 @@ public class SettingsView extends JFrame implements ActionListener {
 			int result = JOptionPane.showConfirmDialog (jf_setting, "로그아웃 하시겠습니까?", "로그아웃 확인", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				JOptionPane.showMessageDialog (jf_setting, "다음에 또 만나요~", "로그아웃", JOptionPane.INFORMATION_MESSAGE);
-//				jf_setting.dispose ();
-				System.exit (0);
+				LoginView lv = new LoginView ();
+				lv.initDisplay ();
+				
 				if (result == JOptionPane.NO_OPTION) {
 					JOptionPane.showMessageDialog (jf_setting, "로그아웃 취소", "로그아웃 취소", JOptionPane.INFORMATION_MESSAGE);
 				}
+				jf_setting.dispose ();
 			}
 		}
 
