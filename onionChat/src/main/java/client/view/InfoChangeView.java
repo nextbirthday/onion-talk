@@ -70,6 +70,16 @@ public class InfoChangeView extends JFrame implements ActionListener {
 	
 	}
 	
+	public static String isValidPW (String pw) {
+		String result = "";
+		if (pw.length () < 8 || pw.length () > 15) {
+			result = "비밀번호는 8자리 이상 15자리 이하로 입력해주세요.";
+		} else {
+			result = "사용가능한 비밀번호입니다.";
+		}
+		return result;
+	}
+	
 	public void initDisplay () {
 		jbtn_join.addActionListener (this);
 		jbtn_idconfirm.addActionListener (this);
@@ -183,18 +193,6 @@ public class InfoChangeView extends JFrame implements ActionListener {
 		phone.setFont (f_lblPlain);
 		phone.setForeground (Color.black);
 
-
-//        jf_warning.setTitle("글자 수가 6개 이하입니다.");
-//        jf_warning.setContentPane(jp_join);
-//        jf_warning.setSize(300, 150);
-//        jf_warning.setLocationRelativeTo(null);
-//        jf_warning.setVisible(true);
-//        jf_warning.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-
-
-
-
 //    ============================글자 입력 갯수 제한 메소드=================================
 		jtf_name.addKeyListener (new KeyAdapter () { // PW확인 글자입력갯수제한
 			@Override
@@ -235,13 +233,13 @@ public class InfoChangeView extends JFrame implements ActionListener {
 			@Override
 			public void keyTyped (KeyEvent ke) {
 				JTextField src = (JTextField) ke.getSource ();
-				if (src.getText ().length () >8 && src.getText ().length () <15) // 8자리 이상, 15자리 이하
-				ke.consume ();
+				if (src.getText ().length () >= 15) // 15자리 이하
+					ke.consume ();
 			}
 		});
 		phone.addKeyListener (new KeyAdapter () { // 폰번호 숫자 이외 입력금지 메소드
 			public void keyTyped (KeyEvent ke) {
-				if (((JFormattedTextField) ke.getSource ()).getText ().length () >= 11) {
+				if (((JFormattedTextField) ke.getSource ()).getText ().length () >= 11) { // 11자리 이하
 					ke.consume ();
 				}
 			}
@@ -274,18 +272,6 @@ public class InfoChangeView extends JFrame implements ActionListener {
 		
 		JOptionPane.showMessageDialog (jf_warning, message);
 	}
-	
-	
-	public static String isValidPW(String pw) {
-		String result = "";
-		if (pw.length () < 8 || pw.length () > 15) {
-			result = "비밀번호는 8자리 이상 15자리 이하로 입력해주세요.";
-		} else {
-			result = "사용가능한 비밀번호입니다.";
-		}
-		return result;
-	}
-	
 	
 	@Override
 	public void actionPerformed (ActionEvent e) {
@@ -351,12 +337,13 @@ public class InfoChangeView extends JFrame implements ActionListener {
 		if (object == jtf_birth) {
 			jtf_birth.setEditable (false);
 		}
-
+		
 		
 		if (jtf_pw == jtf_pw2) {
 			JOptionPane.showMessageDialog (jf_warning, "비밀번호가 일치합니다.");
 		} else {
-		} JOptionPane.showMessageDialog (jf_warning, "비밀번호가 일치하지 않습니다.");
+		}
+		JOptionPane.showMessageDialog (jf_warning, "비밀번호가 일치하지 않습니다.");
 		
 	}
 }

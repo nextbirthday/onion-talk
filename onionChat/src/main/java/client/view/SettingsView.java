@@ -15,8 +15,8 @@ public class SettingsView extends JFrame implements ActionListener {
 	JButton btn_chgBG = new JButton ("배경화면 변경"); // 배경화면 변경 버튼
 	JButton btn_mem_info = new JButton ("회원정보 변경");// 닉네임 변경 버튼
 	JButton btn_out = new JButton ("탈퇴하기");// 탈퇴하기 버튼
-	JButton btn_home = new JButton ("홈");// 홈 가기 버튼
-	JButton btn_lobby = new JButton ("로비");// 로비 가기 버튼
+	JButton btn_home = new JButton ("친구");// 홈 가기 버튼
+	JButton btn_lobby = new JButton ("채팅");// 로비 가기 버튼
 	JButton btn_settings = new JButton ("설정");// 설정 가기 버튼
 	JButton btn_logout = new JButton ("로그아웃");// 종료 버튼
 	
