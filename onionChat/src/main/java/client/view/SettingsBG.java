@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @SuppressWarnings ("serial")
 public class SettingsBG extends JFrame implements ActionListener {
-	String imgPath = "C:\\Users\\thdau\\eclipse-workspace\\onion-talk\\onionChat\\src\\main\\java\\client\\view\\images\\";
+	String imgPath = "./src/main/java/client/view/images/";
 	JPanel BGpanel = new JPanel ();
 	Container con = getContentPane (); // 컨테이너 생성
 	JPanel jp_setting = new JPanel (); // 배경화면 설정 창
@@ -124,11 +124,12 @@ public class SettingsBG extends JFrame implements ActionListener {
 		Object obj = e.getSource ();
 		
 		if (obj == btn_home) {
+			MainView mv = new MainView ();
+			mv.initDisplay ();
 //			jp_setting.dispose ();  // 배경화면 설정 창 닫기
 			jlb_bgname.setText ("Home");
 			jlb_bgname.setIcon (new ImageIcon (imgPath + "home.png"));
-//			MainPage mp = new MainPage ();
-//			mp.initDisplay ();
+			jf_setting.dispose ();
 		
 		} else if (obj == btn_lobby) {
 			ChatList cl = new ChatList ();

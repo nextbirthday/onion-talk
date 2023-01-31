@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 @SuppressWarnings( "serial" )
 public class SettingsView extends JFrame implements ActionListener {
-	String imgPath = "C:\\Users\\thdau\\Desktop\\SP\\";
+	String imgPath = "./src/main/java/client/view/images/";
 	ImageIcon i = new ImageIcon(imgPath+ "1.png");
 	Image im=i.getImage();
 	JFrame jf_setting = new JFrame (); // 메인 프레임
@@ -132,8 +132,8 @@ public class SettingsView extends JFrame implements ActionListener {
 		} else if (obj == btn_home) {
 			setTitle ("홈");
 			System.out.println ("홈");
-			MainView fl = new MainView ();
-			fl.initDisplay ();
+			MainView mv = new MainView ();
+			mv.initDisplay ();
 			jf_setting.dispose ();
 			// 홈으로 이동
 			
