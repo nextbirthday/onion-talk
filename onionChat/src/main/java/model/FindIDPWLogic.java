@@ -1,22 +1,14 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import lombok.extern.log4j.Log4j2;
 import util.dto.Account;
 import util.oracle.DBSessionFactory;
-import util.oracle.OracleConnection;
 
 @Log4j2( topic = "database" )
 public class FindIDPWLogic {
-    private Connection        conn;
-    private PreparedStatement pstmt;
-    private ResultSet         rs;
     
     private SqlSessionFactory sqlSessionFactory;
     private SqlSession        sqlSession;
