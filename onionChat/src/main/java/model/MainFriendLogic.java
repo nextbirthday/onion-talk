@@ -140,6 +140,46 @@ public class MainFriendLogic {
         return result;
     }
     
+  /* 작성중 ////////////////////////////////////////////////////////////////////////////////////
+    * @author leehs
+    *         검색버튼을 눌렀을 때 입력된 ID를 DB서버와 연동해서 친구추가된 아이디인지 확인한다
+    *         
+    * @param 
+    * @return 친구아이디 추가를 눌렀을때 친구ID가 중복이 아니면 0을, ID가 중복이면 1을 반환
+    */
+    public int FriendCheck(Account myAccount, String id) {
+        int result = 0;
+        
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append( "    SELECT FRIEND_ID        " );
+        sql.append( "    FROM "+ myAccount.getUser_id() ); // 
+        sql.append( "     WHERE FRIEND_ID = ?" ); // 
+        
+
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, id );
+            rs = pstmt.executeQuery();
+            
+            log.info( id );
+            
+            // ResultSet
+            if ( rs.next() ) {
+                result++;
+            }
+        }
+        catch ( Exception e ) {
+            log.error( "Exception :", e );
+        }
+        finally {
+            OracleConnection.freeConnection( conn, pstmt, rs );
+        }
+        return result;
+    }
+    
+
     /**
      * @author leehs
      *         [친구를 등록하시겠습니까] > [예] 를 누르면 친구 정보가 친구 db에 저장된다.
@@ -182,5 +222,59 @@ public class MainFriendLogic {
         
         return result;
     }
-    
+
+    /**
+     * @author leehs
+     *         친구를 삭제한다
+     *         
+     * @param 사용자가 친구삭제를 원하는 아이디 (DB COLUMN NAME : FRIRND_ID)
+     * @return db에 있는 친구 정보를 삭제한다
+     */
+    public int frienddel(Account myAccount, String id ) {
+            //Account account = new Account();
+            int result = 0;
+            StringBuilder sql = new StringBuilder();
+            sql.append( "    DELETE FROM " + myAccount.getUser_id() );
+            sql.append( "    WHERE FRIEND_ID = ?          " );
+
+            try {
+                conn = OracleConnection.getConnection();
+                pstmt = conn.prepareStatement( sql.toString() );
+                pstmt.setString( 1, id );
+                result = pstmt.executeUpdate();
+                if (result == 1)
+                System.out.println("삭제 성공");
+            else
+                System.out.println("실패");
+        } catch (Exception e) {
+            log.error("Exception :", e);
+        } finally {
+            OracleConnection.freeConnection(conn, pstmt, rs);
+        }
+        return result;
+    }
+
+    public int friendAdd2( Account account, String friendID ) {
+        
+        int result = 0;
+        
+        StringBuilder sql = new StringBuilder();        
+
+        sql.append( " INSERT INTO " + friendID + " ( USER_ID, FRIEND_ID, FRIEND_REG )  VALUES( ? , ? , SYSDATE )  " );
+        try {
+            conn = OracleConnection.getConnection();
+            pstmt = conn.prepareStatement( sql.toString() );
+            pstmt.setString( 1, friendID );
+            pstmt.setString( 2, account.getUser_id());
+            result = pstmt.executeUpdate();
+            
+            log.info( sql.toString() );
+            
+        }
+        catch ( Exception e ) {
+            log.error( "error", e );
+        }
+        return result;
+    }
+
 }
